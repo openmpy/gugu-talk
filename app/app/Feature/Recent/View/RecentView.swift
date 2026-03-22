@@ -73,8 +73,8 @@ struct RecentView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        // 검색
+                    NavigationLink {
+                        MemberSearchView()
                     } label: {
                         Image(systemName: "magnifyingglass")
                     }
