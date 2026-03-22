@@ -82,7 +82,7 @@ struct LoginView: View {
                 }
             }
             .navigationDestination(isPresented: $goMain) {
-                EmptyView()
+                ContentView()
             }
             .navigationTitle("로그인")
             .navigationBarTitleDisplayMode(.inline)
