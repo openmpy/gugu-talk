@@ -1,18 +1,11 @@
 import SwiftUI
 
-struct ChatView: View {
+struct ChatSearchView: View {
 
-    @State private var selectStatus: String = "전체"
+    @State private var searchNickname: String = ""
 
     var body: some View {
         NavigationStack {
-            Picker("전체", selection: $selectStatus) {
-                Text("전체").tag("전체")
-                Text("안읽음").tag("안읽음")
-            }
-            .pickerStyle(.segmented)
-            .padding(.horizontal)
-
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     ForEach(0..<1000) { i in
@@ -62,29 +55,19 @@ struct ChatView: View {
                     }
                 }
             }
-            .navigationTitle("채팅")
+            .searchable(
+                text: $searchNickname,
+                placement: .navigationBarDrawer(displayMode: .always),
+                prompt: "닉네임 입력"
+            )
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle("채팅 검색")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        ChatSearchView()
-                    } label: {
-                        Image(systemName: "magnifyingglass")
-                    }
-                }
-
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        // 채팅 수신
-                    } label: {
-                        Image(systemName: "bell")
-                    }
-                }
-            }
+            .toolbar(.hidden, for: .tabBar)
         }
     }
 }
 
 #Preview {
-    ChatView()
+    MemberSearchView()
 }
