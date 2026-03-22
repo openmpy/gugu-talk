@@ -9,7 +9,7 @@ struct SettingSection: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 13) {
             Image(systemName: icon)
                 .font(.system(size: 25))
                 .foregroundColor(color)
@@ -17,7 +17,7 @@ struct SettingSection: View {
 
             Text(title)
                 .foregroundColor(.primary)
-                .font(.system(size: 18, weight: .medium))
+                .font(.system(size: 16, weight: .medium))
 
             Spacer()
         }

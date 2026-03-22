@@ -7,7 +7,7 @@ struct SettingView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
+                VStack(spacing: 15) {
                     VStack(spacing: 0) {
                         SettingSection(title: "내 프로필", icon: "person.crop.circle.fill", color: .blue)
                     }
