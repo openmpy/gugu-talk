@@ -15,7 +15,7 @@ struct SettingView: View {
 
                     VStack(spacing: 0) {
                         SettingSection(title: "좋아요 목록", icon: "heart.fill", color: .red)
-                        SettingSection(title: "비밀 사진 공개 목록", icon: "photo.fill", color: .green)
+                        SettingSection(title: "비밀 사진 목록", icon: "photo.fill", color: .green)
                         SettingSection(title: "차단 목록", icon: "nosign", color: .red)
                     }
                     .cornerRadius(12)
