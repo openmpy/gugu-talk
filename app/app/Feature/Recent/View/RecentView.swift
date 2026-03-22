@@ -3,6 +3,8 @@ import SwiftUI
 struct RecentView: View {
 
     @State private var selectGender: String = "전체"
+    @State private var showAlert: Bool = false
+    @State private var comment: String = ""
 
     var body: some View {
         NavigationStack {
@@ -83,10 +85,20 @@ struct RecentView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // 코멘트 작성
+                        showAlert = true
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
+                }
+            }
+            .alert("코멘트", isPresented: $showAlert) {
+                TextField("내용 입력", text: $comment)
+
+                Button("작성", role: .confirm) {
+                    // 작성
+                }
+                Button("취소", role: .cancel) {
+                    // 취소
                 }
             }
         }
