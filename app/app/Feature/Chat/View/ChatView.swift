@@ -52,7 +52,7 @@ struct ChatView: View {
                                         .foregroundColor(Color(.systemBackground))
                                         .padding(.horizontal, 6)
                                         .padding(.vertical, 2)
-                                        .background(Color(.systemGray4))
+                                        .background(Color(.systemGray2))
                                         .clipShape(Capsule())
                                 }
                             }
