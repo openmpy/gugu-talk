@@ -46,7 +46,7 @@ struct MemberSearchView: View {
             .searchable(
                 text: $searchNickname,
                 placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "닉네임을 입력해주세요"
+                prompt: "닉네임 입력"
             )
             .scrollDismissesKeyboard(.interactively)
             .navigationTitle("회원 검색")
