@@ -2,8 +2,17 @@ import SwiftUI
 
 struct ChatView: View {
 
+    @State private var selectStatus: String = "전체"
+
     var body: some View {
         NavigationStack {
+            Picker("전체", selection: $selectStatus) {
+                Text("전체").tag("전체")
+                Text("안읽음").tag("안읽음")
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     ForEach(0..<1000) { i in
