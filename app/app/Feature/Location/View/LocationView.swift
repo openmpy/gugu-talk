@@ -16,7 +16,7 @@ struct LocationView: View {
 
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    ForEach(0..<1000) { _ in
+                    ForEach(0..<1000) { i in
                         HStack(spacing: 12) {
                             Image(systemName: "person.fill")
                                 .font(.title)
@@ -29,6 +29,7 @@ struct LocationView: View {
                                 HStack {
                                     Text("닉네임")
                                         .font(.headline.bold())
+                                        .foregroundColor(i % 2 == 0 ? .blue : .pink)
 
                                     Spacer()
 
