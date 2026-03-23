@@ -20,8 +20,8 @@ class MemberLikeService(
     fun add(likerId: Long, targetId: Long): MemberLikeCountResponse {
         if (likerId == targetId) throw CustomException("자기 자신에게 좋아요할 수 없습니다.")
 
-        memberRepository.findByIdOrNull(targetId)
-            ?: throw CustomException("존재하지 않는 회원입니다.")
+        val target = (memberRepository.findByIdOrNull(targetId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
 
         if (memberLikeRepository.existsByLikerIdAndTargetId(likerId, targetId)) {
             throw CustomException("이미 좋아요한 회원입니다.")
@@ -29,19 +29,22 @@ class MemberLikeService(
 
         val like = MemberLike(likerId = likerId, targetId = targetId)
         memberLikeRepository.save(like)
+        target.increaseLike()
 
-        val likes = memberLikeRepository.countByTargetId(targetId)
-        return MemberLikeCountResponse(likes)
+        return MemberLikeCountResponse(target.likes)
     }
 
     @Transactional
     fun cancel(likerId: Long, targetId: Long): MemberLikeCountResponse {
+        val target = (memberRepository.findByIdOrNull(targetId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
         val like = memberLikeRepository.findByLikerIdAndTargetId(likerId, targetId)
             ?: throw CustomException("좋아요 내역이 존재하지 않습니다.")
 
         memberLikeRepository.delete(like)
+        target.decreaseLike()
 
-        val likes = memberLikeRepository.countByTargetId(targetId)
-        return MemberLikeCountResponse(likes)
+        return MemberLikeCountResponse(target.likes)
     }
 }

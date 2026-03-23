@@ -8,6 +8,4 @@ interface MemberLikeRepository : JpaRepository<MemberLike, Long> {
     fun findByLikerIdAndTargetId(likerId: Long, targetId: Long): MemberLike?
 
     fun existsByLikerIdAndTargetId(likeId: Long, targetId: Long): Boolean
-
-    fun countByTargetId(targetId: Long): Long
 }

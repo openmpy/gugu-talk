@@ -1,5 +1,6 @@
 package com.openmpy.server.member.domain.entity
 
+import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.domain.type.Gender
 import com.openmpy.server.member.domain.type.MemberStatus
 import jakarta.persistence.*
@@ -46,7 +47,7 @@ class Member(
     val comment: String? = null,
 
     @Column(nullable = false)
-    val likes: Long = 0,
+    var likes: Long = 0,
 
     @Column(nullable = false)
     val createdAt: LocalDateTime = LocalDateTime.now(),
@@ -63,5 +64,17 @@ class Member(
         this.birthYear = birthYear
         this.bio = bio
         this.updatedAt = LocalDateTime.now()
+    }
+
+    fun increaseLike() {
+        this.likes += 1
+    }
+
+    fun decreaseLike() {
+        if (this.likes <= 0) {
+            throw CustomException("좋아요 수는 0 이하가 될 수 없습니다.")
+        }
+
+        this.likes -= 1
     }
 }
