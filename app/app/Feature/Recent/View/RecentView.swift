@@ -2,23 +2,25 @@ import SwiftUI
 
 struct RecentView: View {
 
-    @State private var selectGender: String = "전체"
+    @StateObject private var vm = RecentViewModel()
+
+    @State private var selectGender: String = "ALL"
     @State private var showAlert: Bool = false
     @State private var comment: String = ""
 
     var body: some View {
         NavigationStack {
             Picker("성별", selection: $selectGender) {
-                Text("전체").tag("전체")
-                Text("여자").tag("여자")
-                Text("남자").tag("남자")
+                Text("전체").tag("ALL")
+                Text("여자").tag("FEMALE")
+                Text("남자").tag("MALE")
             }
             .pickerStyle(.segmented)
             .padding(.horizontal)
 
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    ForEach(0..<1000) { i in
+                    ForEach(vm.comments) { it in
                         NavigationLink {
                             ProfileView()
                         } label: {
@@ -32,49 +34,68 @@ struct RecentView: View {
 
                                 VStack(alignment: .leading) {
                                     HStack {
-                                        Text("닉네임")
+                                        Text(it.nickname)
                                             .font(.headline.bold())
-                                            .foregroundColor(i % 2 == 0 ? .blue : .pink)
+                                            .foregroundColor(it.gender == "MALE" ? .blue : .pink)
 
                                         Spacer()
 
-                                        Text("방금 전")
+                                        Text(it.createdAt.relativeTime)
                                             .font(.caption)
                                             .foregroundColor(Color(.systemGray))
                                     }
 
-                                    Text("코멘트")
+                                    Text(it.comment)
                                         .lineLimit(1)
                                         .font(.subheadline)
                                         .foregroundColor(Color(.systemGray))
 
                                     HStack {
                                         HStack {
-                                            Text("남자")
+                                            Text(it.gender == "MALE" ? "남자" : "여자")
                                             Text("·")
-                                            Text("20살")
+                                            Text("\(it.age)살")
                                             Text("·")
-                                            Text("♥ 100")
+                                            Text("♥ \(it.likes)")
                                         }
                                         .font(.footnote)
                                         .foregroundColor(Color(.systemGray))
 
                                         Spacer()
 
-                                        Text("12.3km")
-                                            .font(.caption)
-                                            .foregroundColor(Color(.systemGray))
+                                        if let distance = it.distance {
+                                            Text("\(distance)km")
+                                                .font(.caption)
+                                                .foregroundColor(Color(.systemGray))
+                                        }
                                     }
                                 }
                             }
                             .padding(.horizontal)
                             .padding(.vertical, 5)
                         }
+                        .onAppear {
+                            if it.id == vm.comments.last?.id {
+                                Task {
+                                    await vm.loadMoreComments(gender: selectGender)
+                                }
+                            }
+                        }
                     }
                 }
             }
             .refreshable {
-                try? await Task.sleep(nanoseconds: 1_000_000_000)
+                Task {
+                    await vm.fetchComments(gender: selectGender)
+                }
+            }
+            .task {
+                await vm.fetchComments(gender: selectGender)
+            }
+            .onChange(of: selectGender) { _, newValue in
+                Task {
+                    await vm.fetchComments(gender: newValue)
+                }
             }
             .navigationTitle("최근")
             .navigationBarTitleDisplayMode(.inline)

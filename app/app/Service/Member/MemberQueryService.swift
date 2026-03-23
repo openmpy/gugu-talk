@@ -1,0 +1,30 @@
+import Alamofire
+
+final class MemberQueryService {
+
+    static let shared = MemberQueryService()
+
+    let session = Session(interceptor: AuthInterceptor())
+
+    func getComments(
+        gender: String,
+        cursorId: Int64?,
+        limit: Int
+    ) async throws -> CursorResponse<MemberGetCommentResponse> {
+        let url = "\(NetworkConfig.baseURL)/v1/members/comments"
+        var params: Parameters = [
+            "gender": gender,
+            "limit": 20
+        ]
+        if let cursorId = cursorId {
+            params["cursorId"] = cursorId
+        }
+
+        return try await session.request(
+            url,
+            method: .get,
+            parameters: params.compactMapValues { $0 }
+        )
+        .decodingWithErrorHandling(CursorResponse<MemberGetCommentResponse>.self)
+    }
+}

@@ -1,5 +1,3 @@
-import Foundation
-
 struct MemberLoginResponse: Codable {
 
     let memberId: Int64
