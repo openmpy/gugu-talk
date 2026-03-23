@@ -27,7 +27,7 @@ class Member(
     val status: MemberStatus = MemberStatus.ACTIVE,
 
     @Column(unique = true, nullable = false)
-    val nickname: String = UUID.randomUUID().toString()
+    var nickname: String = UUID.randomUUID().toString()
         .replace("-", "")
         .substring(0, 10),
 
@@ -36,10 +36,10 @@ class Member(
     val gender: Gender,
 
     @Column(nullable = false)
-    val birthYear: Int = 2000,
+    var birthYear: Int = 2000,
 
     @Column
-    val bio: String? = null,
+    var bio: String? = null,
 
     @Column
     val comment: String? = null,
@@ -51,8 +51,16 @@ class Member(
     val createdAt: LocalDateTime = LocalDateTime.now(),
 
     @Column(nullable = false)
-    val updatedAt: LocalDateTime = LocalDateTime.now(),
+    var updatedAt: LocalDateTime = LocalDateTime.now(),
 
     @Column
     val deletedAt: LocalDateTime? = null
-)
+) {
+
+    fun setup(nickname: String, birthYear: Int, bio: String) {
+        this.nickname = nickname
+        this.birthYear = birthYear
+        this.bio = bio
+        this.updatedAt = LocalDateTime.now()
+    }
+}
