@@ -19,53 +19,57 @@ struct RecentView: View {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     ForEach(0..<1000) { i in
-                        HStack(spacing: 12) {
-                            Image(systemName: "person.fill")
-                                .font(.title)
-                                .frame(width: 55, height: 55)
-                                .foregroundColor(Color(.systemGray6))
-                                .background(Color(.systemGray4))
-                                .clipShape(Circle())
+                        NavigationLink {
+                            ProfileView()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "person.fill")
+                                    .font(.title)
+                                    .frame(width: 55, height: 55)
+                                    .foregroundColor(Color(.systemGray6))
+                                    .background(Color(.systemGray4))
+                                    .clipShape(Circle())
 
-                            VStack(alignment: .leading) {
-                                HStack {
-                                    Text("닉네임")
-                                        .font(.headline.bold())
-                                        .foregroundColor(i % 2 == 0 ? .blue : .pink)
-
-                                    Spacer()
-
-                                    Text("방금 전")
-                                        .font(.caption)
-                                        .foregroundColor(Color(.systemGray))
-                                }
-
-                                Text("코멘트")
-                                    .lineLimit(1)
-                                    .font(.subheadline)
-                                    .foregroundColor(Color(.systemGray))
-
-                                HStack {
+                                VStack(alignment: .leading) {
                                     HStack {
-                                        Text("남자")
-                                        Text("·")
-                                        Text("20살")
-                                        Text("·")
-                                        Text("♥ 100")
+                                        Text("닉네임")
+                                            .font(.headline.bold())
+                                            .foregroundColor(i % 2 == 0 ? .blue : .pink)
+
+                                        Spacer()
+
+                                        Text("방금 전")
+                                            .font(.caption)
+                                            .foregroundColor(Color(.systemGray))
                                     }
-                                    .font(.footnote)
-                                    .foregroundColor(Color(.systemGray))
 
-                                    Spacer()
-
-                                    Text("12.3km")
-                                        .font(.caption)
+                                    Text("코멘트")
+                                        .lineLimit(1)
+                                        .font(.subheadline)
                                         .foregroundColor(Color(.systemGray))
+
+                                    HStack {
+                                        HStack {
+                                            Text("남자")
+                                            Text("·")
+                                            Text("20살")
+                                            Text("·")
+                                            Text("♥ 100")
+                                        }
+                                        .font(.footnote)
+                                        .foregroundColor(Color(.systemGray))
+
+                                        Spacer()
+
+                                        Text("12.3km")
+                                            .font(.caption)
+                                            .foregroundColor(Color(.systemGray))
+                                    }
                                 }
                             }
+                            .padding(.horizontal)
+                            .padding(.vertical, 5)
                         }
-                        .padding(.horizontal)
-                        .padding(.vertical, 5)
                     }
                 }
             }
