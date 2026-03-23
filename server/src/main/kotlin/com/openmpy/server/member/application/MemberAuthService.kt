@@ -1,6 +1,7 @@
 package com.openmpy.server.member.application
 
 import com.openmpy.server.auth.application.JwtService
+import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.common.properties.JwtProperties
 import com.openmpy.server.member.domain.entity.Member
 import com.openmpy.server.member.dto.request.MemberSetupRequest
@@ -29,7 +30,7 @@ class MemberAuthService(
         val key = VERIFICATION_CODE_KEY + phone
 
         redisTemplate.opsForValue().get(key)?.let {
-            throw IllegalArgumentException("이미 인증 번호가 전송되었습니다.")
+            throw CustomException("이미 인증 번호가 전송되었습니다.")
         }
 
         val verificationCode = generateVerificationCode()
@@ -46,10 +47,12 @@ class MemberAuthService(
     fun signup(request: MemberSignupRequest): MemberSignupResponse {
         val verificationKey = VERIFICATION_CODE_KEY + request.phone
 
-        check(redisTemplate.opsForValue().get(verificationKey) == request.verificationCode)
-        { "인증 번호가 일치하지 않습니다." }
-        check(!memberRepository.existsByPhone(request.phone))
-        { "이미 가입된 휴대폰 번호입니다." }
+        if (redisTemplate.opsForValue().get(verificationKey) != request.verificationCode) {
+            throw CustomException("인증 번호가 일치하지 않습니다.")
+        }
+        if (memberRepository.existsByPhone(request.phone)) {
+            throw CustomException("이미 가입된 휴대폰 번호입니다.")
+        }
 
         val member = Member(
             uuid = request.uuid,
@@ -73,11 +76,12 @@ class MemberAuthService(
         memberId: Long,
         request: MemberSetupRequest
     ) {
-        check(!memberRepository.existsByNickname(request.nickname))
-        { "이미 가입된 닉네임입니다." }
+        if (memberRepository.existsByNickname(request.nickname)) {
+            throw CustomException("이미 가입된 닉네임입니다.")
+        }
 
         val member = memberRepository.findById(memberId)
-            .orElseThrow { IllegalArgumentException("찾을 수 없는 회원 번호입니다.") }
+            .orElseThrow { CustomException("찾을 수 없는 회원 번호입니다.") }
 
         member.setup(request.nickname, request.birthYear, request.bio)
     }
