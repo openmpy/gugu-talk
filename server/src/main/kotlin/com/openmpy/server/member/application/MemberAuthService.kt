@@ -61,18 +61,10 @@ class MemberAuthService(
         memberRepository.save(member)
         redisTemplate.delete(verificationKey)
 
-        val refreshToken = jwtService.generateRefreshToken()
-        val refreshTokenKey = REFRESH_TOKEN_KEY + refreshToken
-
-        redisTemplate.opsForValue().set(
-            refreshTokenKey,
-            member.id.toString(),
-            Duration.ofSeconds(jwtProperties.refreshTokenExpiration)
-        )
         return MemberSignupResponse(
             member.id,
             jwtService.generateAccessToken(member.id),
-            refreshToken
+            generateRefreshKey(member.id)
         )
     }
 
@@ -92,5 +84,17 @@ class MemberAuthService(
 
     private fun generateVerificationCode(): String {
         return (10000..99999).random().toString()
+    }
+
+    private fun generateRefreshKey(memberId: Long): String {
+        val refreshToken = jwtService.generateRefreshToken()
+        val refreshTokenKey = REFRESH_TOKEN_KEY + refreshToken
+
+        redisTemplate.opsForValue().set(
+            refreshTokenKey,
+            memberId.toString(),
+            Duration.ofSeconds(jwtProperties.refreshTokenExpiration)
+        )
+        return refreshToken
     }
 }
