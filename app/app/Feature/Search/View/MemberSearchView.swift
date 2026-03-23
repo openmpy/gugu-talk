@@ -11,15 +11,9 @@ struct MemberSearchView: View {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     if vm.members.isEmpty {
-                        VStack(spacing: 8) {
-                            Image(systemName: "person.slash")
-                                .font(.largeTitle)
-                                .foregroundColor(.secondary)
-
-                            Text("검색 결과가 없습니다")
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.top, 100)
+                        Text("검색 결과가 없습니다")
+                            .foregroundColor(.secondary)
+                            .padding(.vertical)
                     } else {
                         ForEach(vm.members) { it in
                             NavigationLink {
