@@ -7,6 +7,8 @@ import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.util.*
 
+private const val DEFAULT_COMMENT = "반갑습니다."
+
 @Entity
 @Table(name = "member")
 class Member(
@@ -44,7 +46,7 @@ class Member(
     var bio: String? = null,
 
     @Column
-    val comment: String? = null,
+    var comment: String? = null,
 
     @Column(nullable = false)
     var likes: Long = 0,
@@ -63,6 +65,13 @@ class Member(
         this.nickname = nickname
         this.birthYear = birthYear
         this.bio = bio
+        this.updatedAt = LocalDateTime.now()
+    }
+
+    fun bumpComment() {
+        if (this.comment.isNullOrBlank()) {
+            this.comment = DEFAULT_COMMENT
+        }
         this.updatedAt = LocalDateTime.now()
     }
 
