@@ -65,6 +65,23 @@ final class RecentViewModel: ObservableObject {
         }
     }
 
+    func updateComment(comment: String) async {
+        guard !isLoading else {
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            try await commandService.updateComment(comment: comment)
+            ToastManager.shared.show("코멘트를 작성하셨습니다.")
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
+
     func bumpComment() async {
         guard !isLoading else {
             return

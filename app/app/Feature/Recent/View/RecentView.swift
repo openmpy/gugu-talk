@@ -120,11 +120,11 @@ struct RecentView: View {
                 TextField("내용 입력", text: $comment)
 
                 Button("작성", role: .confirm) {
-                    // 작성
+                    Task {
+                        await vm.updateComment(comment: comment)
+                    }
                 }
-                Button("취소", role: .cancel) {
-                    // 취소
-                }
+                Button("취소", role: .cancel) { }
             }
         }
     }

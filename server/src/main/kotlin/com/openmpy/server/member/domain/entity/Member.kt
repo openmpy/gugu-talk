@@ -68,6 +68,11 @@ class Member(
         this.updatedAt = LocalDateTime.now()
     }
 
+    fun updateComment(comment: String) {
+        this.comment = comment
+        this.updatedAt = LocalDateTime.now()
+    }
+
     fun bumpComment() {
         if (this.comment.isNullOrBlank()) {
             this.comment = DEFAULT_COMMENT
