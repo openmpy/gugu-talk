@@ -17,7 +17,7 @@ struct SettingSection: View {
 
             Text(title)
                 .foregroundColor(.primary)
-                .font(.system(size: 16, weight: .medium))
+                .font(.subheadline)
 
             Spacer()
         }

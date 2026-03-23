@@ -42,13 +42,14 @@ struct ChatView: View {
                                     
                                     HStack(alignment: .center) {
                                         Text(i % 2 == 0
-                                             ? "메시지메시지메시지메시지메시지메시지"
+                                             ? "메시지메시지메시지메시지메시지메시지메시지"
                                              : "메시지메시지메시지메시지메시지메시지메시지메시지메시지메시지메시지메시지메시지메시"
                                         )
                                         .lineLimit(2)
                                         .font(.subheadline)
                                         .foregroundColor(Color(.systemGray))
-                                        
+                                        .multilineTextAlignment(.leading)
+
                                         Spacer()
                                         
                                         Text("99")

@@ -129,8 +129,8 @@ struct ChatRoomView: View {
             .toolbar(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        // 프로필
+                    NavigationLink {
+                        ProfileView()
                     } label: {
                         Image(systemName: "person.fill")
                             .font(.caption2)

@@ -8,8 +8,9 @@ struct MemberSearchView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    ForEach(0..<1000) { _ in
+                    ForEach(0..<1000) { i in
                         NavigationLink {
+                            ProfileView()
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "person.fill")
@@ -23,7 +24,8 @@ struct MemberSearchView: View {
                                     HStack {
                                         Text("닉네임")
                                             .font(.headline.bold())
-                                        
+                                            .foregroundColor(i % 2 == 0 ? .blue : .pink)
+
                                         Spacer()
                                         
                                         Text("방금 전")
