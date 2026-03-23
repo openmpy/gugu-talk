@@ -38,7 +38,6 @@ class MemberLikeService(
     fun cancel(likerId: Long, targetId: Long): MemberLikeCountResponse {
         val target = (memberRepository.findByIdOrNull(targetId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
-
         val like = memberLikeRepository.findByLikerIdAndTargetId(likerId, targetId)
             ?: throw CustomException("좋아요 내역이 존재하지 않습니다.")
 
