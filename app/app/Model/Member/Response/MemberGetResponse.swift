@@ -10,7 +10,7 @@ struct MemberGetResponse: Codable, Identifiable {
     let updatedAt: String
     var isLike: Bool
     let isPrivatePhoto: Bool
-    let isOpenPrivatePhoto: Bool
+    var isOpenPrivatePhoto: Bool
     let isBlock: Bool
 
     var id: Int64 { memberId }

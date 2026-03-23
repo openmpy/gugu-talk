@@ -90,6 +90,7 @@ struct ProfileView: View {
                                         .glassEffect(.regular.interactive())
                                         .glassEffectUnion(id: 1, namespace: namespace)
                                 }
+
                                 Button {
                                     showMessage = true
                                 } label: {
@@ -100,7 +101,9 @@ struct ProfileView: View {
                                         .glassEffect(.regular.interactive())
                                         .glassEffectUnion(id: 1, namespace: namespace)
                                 }
+
                                 Button {
+                                    print("클릭")
                                 } label: {
                                     Image(systemName: "photo.fill")
                                         .frame(width: 60, height: 60)
@@ -109,6 +112,8 @@ struct ProfileView: View {
                                         .glassEffect(.regular.interactive())
                                         .glassEffectUnion(id: 1, namespace: namespace)
                                 }
+                                .disabled(!member.isPrivatePhoto)
+
                                 Button {
                                     showBlock = true
                                 } label: {
@@ -132,6 +137,13 @@ struct ProfileView: View {
                             }
                             .confirmationDialog("메뉴", isPresented: $showSheet) {
                                 Button(member.isOpenPrivatePhoto ? "비밀 사진 닫기" : "비밀 사진 열기") {
+                                    Task {
+                                        if member.isOpenPrivatePhoto {
+                                            await vm.closePrivatePhoto(targetId: memberId)
+                                        } else {
+                                            await vm.openPrivatePhoto(targetId: memberId)
+                                        }
+                                    }
                                 }
                                 Button("신고하기", role: .destructive) {
                                 }
