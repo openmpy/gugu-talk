@@ -32,4 +32,23 @@ interface MemberRepository : JpaRepository<Member, Long> {
         @Param("cursorId") cursorId: Long?,
         @Param("limit") limit: Int,
     ): List<Member>
+
+    @Query(
+        value = """
+            SELECT m.*
+            FROM member m 
+            WHERE m.id <> :id 
+                AND m.nickname LIKE CONCAT(:nickname, '%')
+                AND (:cursorId IS NULL OR m.id < :cursorId)
+            ORDER BY m.updated_at DESC
+            LIMIT :limit
+        """,
+        nativeQuery = true
+    )
+    fun findByNicknameStartsWith(
+        @Param("id") id: Long,
+        @Param("nickname") nickname: String,
+        @Param("cursorId") cursorId: Long?,
+        @Param("limit") limit: Int,
+    ): List<Member>
 }
