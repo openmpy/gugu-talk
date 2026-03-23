@@ -163,11 +163,15 @@ struct ProfileView: View {
                     }
                     .alert(member.isBlock ? "차단 해제" : "차단", isPresented: $showBlock) {
                         Button(member.isBlock ? "차단 해제" : "차단", role: .destructive) {
-                            // 차단
+                            Task {
+                                if member.isBlock {
+                                    await vm.removeBlock(targetId: memberId)
+                                } else {
+                                    await vm.addBlock(targetId: memberId)
+                                }
+                            }
                         }
-                        Button("취소", role: .cancel) {
-                            // 취소
-                        }
+                        Button("취소", role: .cancel) { }
                     } message: {
                         Text(member.isBlock
                              ? "차단을 해제하면 서로의 목록에서도 표시됩니다."
