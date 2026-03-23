@@ -20,7 +20,7 @@ struct MemberSearchView: View {
                                     .background(Color(.systemGray4))
                                     .clipShape(Circle())
                                 
-                                VStack(alignment: .leading, spacing: 5) {
+                                VStack(alignment: .leading, spacing: 4) {
                                     HStack {
                                         Text("닉네임")
                                             .font(.headline.bold())
