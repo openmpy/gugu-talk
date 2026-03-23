@@ -5,6 +5,8 @@ struct LoginView: View {
 
     @AppStorage("isLoggedIn") private var isLoggedIn = false
 
+    @StateObject private var vm = LoginViewModel()
+
     @Validated(.regularExpression("^010[0-9]{8}$"))
     private var phone = String()
 
@@ -61,11 +63,15 @@ struct LoginView: View {
                 VStack {
                     Button {
                         if _phone.isInvalid {
-                            print("휴대폰 번호를 다시 한번 확인해주세요.")
+                            ToastManager.shared.show("휴대폰 번호를 다시 한번 확인해주세요.", type: .error)
                         } else if _password.isInvalid {
-                            print("비밀번호를 입력해주세요.")
+                            ToastManager.shared.show("비밀번호를 입력해주세요.", type: .error)
                         } else {
-                            isLoggedIn = true
+                            Task {
+                                if await vm.login(phone: phone, password: password) {
+                                    isLoggedIn = true
+                                }
+                            }
                         }
                     } label: {
                         Text("로그인")

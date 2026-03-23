@@ -63,4 +63,23 @@ final class AuthService {
         )
         .validateWithErrorHandling()
     }
+
+    func login(
+        phone: String,
+        password: String
+    ) async throws -> MemberLoginResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/members/login"
+        let request = MemberLoginRequest(
+            phone: phone,
+            password: password
+        )
+
+        return try await AF.request(
+            url,
+            method: .post,
+            parameters: request,
+            encoder: JSONParameterEncoder.default
+        )
+        .decodingWithErrorHandling(MemberLoginResponse.self)
+    }
 }

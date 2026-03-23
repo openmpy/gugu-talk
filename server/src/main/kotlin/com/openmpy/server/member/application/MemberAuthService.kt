@@ -4,8 +4,10 @@ import com.openmpy.server.auth.application.JwtService
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.common.properties.JwtProperties
 import com.openmpy.server.member.domain.entity.Member
+import com.openmpy.server.member.dto.request.MemberLoginRequest
 import com.openmpy.server.member.dto.request.MemberSetupRequest
 import com.openmpy.server.member.dto.request.MemberSignupRequest
+import com.openmpy.server.member.dto.response.MemberLoginResponse
 import com.openmpy.server.member.dto.response.MemberSignupResponse
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.data.redis.core.StringRedisTemplate
@@ -84,6 +86,22 @@ class MemberAuthService(
             .orElseThrow { CustomException("찾을 수 없는 회원 번호입니다.") }
 
         member.setup(request.nickname, request.birthYear, request.bio)
+    }
+
+    @Transactional(readOnly = true)
+    fun login(request: MemberLoginRequest): MemberLoginResponse {
+        val member = memberRepository.findByPhone(request.phone)
+            ?: throw CustomException("다시 한번 확인해주시길 바랍니다.")
+
+        if (member.password != request.password) {
+            throw CustomException("다시 한번 확인해주시길 바랍니다.")
+        }
+
+        return MemberLoginResponse(
+            member.id,
+            jwtService.generateAccessToken(member.id),
+            generateRefreshKey(member.id)
+        )
     }
 
     private fun generateVerificationCode(): String {

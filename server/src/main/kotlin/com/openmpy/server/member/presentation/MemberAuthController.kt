@@ -2,8 +2,10 @@ package com.openmpy.server.member.presentation
 
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.member.application.MemberAuthService
+import com.openmpy.server.member.dto.request.MemberLoginRequest
 import com.openmpy.server.member.dto.request.MemberSetupRequest
 import com.openmpy.server.member.dto.request.MemberSignupRequest
+import com.openmpy.server.member.dto.response.MemberLoginResponse
 import com.openmpy.server.member.dto.response.MemberSignupResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -38,5 +40,13 @@ class MemberAuthController(
     ): ResponseEntity<Unit> {
         memberAuthService.setup(memberId, request)
         return ResponseEntity.noContent().build()
+    }
+
+    @PostMapping("/v1/members/login")
+    fun login(
+        @RequestBody request: MemberLoginRequest
+    ): ResponseEntity<MemberLoginResponse> {
+        val response = memberAuthService.login(request)
+        return ResponseEntity.ok(response)
     }
 }
