@@ -15,5 +15,6 @@ data class MemberGetResponse(
     val updatedAt: LocalDateTime,
     val isLike: Boolean,
     val isPrivatePhoto: Boolean,
+    val isOpenPrivatePhoto: Boolean,
     val isBlock: Boolean,
 )

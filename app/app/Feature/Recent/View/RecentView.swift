@@ -22,7 +22,7 @@ struct RecentView: View {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.comments) { it in
                         NavigationLink {
-                            ProfileView()
+                            ProfileView(memberId: it.memberId)
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "person.fill")

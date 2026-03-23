@@ -18,7 +18,7 @@ struct LocationView: View {
                 LazyVStack(spacing: 10) {
                     ForEach(0..<1000) { i in
                         NavigationLink {
-                            ProfileView()
+                            ProfileView(memberId: 1)
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "person.fill")

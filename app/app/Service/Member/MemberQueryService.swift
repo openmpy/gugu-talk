@@ -27,4 +27,16 @@ final class MemberQueryService {
         )
         .decodingWithErrorHandling(CursorResponse<MemberGetCommentResponse>.self)
     }
+
+    func get(
+        targetId: Int64
+    ) async throws -> MemberGetResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/members/\(targetId)"
+
+        return try await session.request(
+            url,
+            method: .get
+        )
+        .decodingWithErrorHandling(MemberGetResponse.self)
+    }
 }

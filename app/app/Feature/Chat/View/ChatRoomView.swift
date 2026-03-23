@@ -130,7 +130,7 @@ struct ChatRoomView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        ProfileView()
+                        ProfileView(memberId: 1)
                     } label: {
                         Image(systemName: "person.fill")
                             .font(.caption2)

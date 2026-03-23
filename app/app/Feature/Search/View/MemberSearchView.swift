@@ -23,7 +23,7 @@ struct MemberSearchView: View {
                     } else {
                         ForEach(vm.members) { it in
                             NavigationLink {
-                                ProfileView()
+                                ProfileView(memberId: it.memberId)
                             } label: {
                                 HStack(spacing: 12) {
                                     Image(systemName: "person.fill")

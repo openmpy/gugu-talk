@@ -78,6 +78,7 @@ class MemberQueryService(
             target.updatedAt,
             memberLikeRepository.existsByLikerIdAndTargetId(member.id, target.id),
             memberPrivatePhotoRepository.existsByOwnerAndTarget(target, member),
+            memberPrivatePhotoRepository.existsByOwnerAndTarget(member, target),
             memberBlockRepository.existsByBlockerAndBlocked(member, target)
         )
     }
