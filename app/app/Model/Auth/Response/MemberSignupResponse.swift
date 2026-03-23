@@ -1,0 +1,8 @@
+import Foundation
+
+struct MemberSignupResponse: Codable {
+
+    let memberId: Int64
+    let accessToken: String
+    let refreshToken: String
+}

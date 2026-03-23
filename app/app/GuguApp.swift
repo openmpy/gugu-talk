@@ -1,11 +1,31 @@
 import SwiftUI
+import SimpleToast
 
 @main
 struct GuguApp: App {
 
+    @StateObject private var toast = ToastManager.shared
+
+    private let toastOptions = SimpleToastOptions(alignment: .top, hideAfter: 5)
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ZStack {
+                LoginView()
+            }
+            .simpleToast(isPresented: $toast.isShow, options: toastOptions) {
+                if let data = toast.toast {
+                    Label(data.message, systemImage: data.type == .error
+                          ? "xmark.circle.fill"
+                          : "checkmark.circle.fill"
+                    )
+                    .padding()
+                    .background(data.type == .error ? Color.red.opacity(0.8) : Color.blue.opacity(0.8))
+                    .foregroundColor(Color.white)
+                    .cornerRadius(12)
+                    .padding(.top, 60)
+                }
+            }
         }
     }
 }
