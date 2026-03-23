@@ -5,18 +5,46 @@ import com.openmpy.server.member.dto.request.MemberSetupRequest
 import com.openmpy.server.member.dto.request.MemberSignupRequest
 import com.openmpy.server.member.dto.response.MemberSignupResponse
 import com.openmpy.server.member.repository.MemberRepository
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Duration
+
+private const val VERIFICATION_CODE_KEY = "auth:phone:"
 
 @Service
 class MemberAuthService(
 
     private val memberRepository: MemberRepository,
+    private val redisTemplate: StringRedisTemplate,
 ) {
 
     @Transactional
+    fun sendVerificationCode(phone: String) {
+        val key = VERIFICATION_CODE_KEY + phone
+
+        redisTemplate.opsForValue().get(key)?.let {
+            throw IllegalArgumentException("이미 인증 번호가 전송되었습니다.")
+        }
+
+        val verificationCode = generateVerificationCode()
+        redisTemplate.opsForValue().set(key, verificationCode, Duration.ofMinutes(5))
+
+        // 가입되어 있으면 보낸 척만 하고 SMS API 호출 X
+        if (!memberRepository.existsByPhone(phone)) {
+            // SMS API 호출
+            println("인증번호: $verificationCode")
+        }
+    }
+
+    @Transactional
     fun signup(request: MemberSignupRequest): MemberSignupResponse {
-        check(!memberRepository.existsByPhone(request.phone)) { "이미 가입된 휴대폰 번호입니다." }
+        val key = VERIFICATION_CODE_KEY + request.phone
+
+        check(redisTemplate.opsForValue().get(key) == request.verificationCode)
+        { "인증 번호가 일치하지 않습니다." }
+        check(!memberRepository.existsByPhone(request.phone))
+        { "이미 가입된 휴대폰 번호입니다." }
 
         val member = Member(
             uuid = request.uuid,
@@ -24,7 +52,9 @@ class MemberAuthService(
             password = request.password,
             gender = request.gender
         )
+
         memberRepository.save(member)
+        redisTemplate.delete(key)
 
         return MemberSignupResponse(
             member.id,
@@ -44,5 +74,9 @@ class MemberAuthService(
             .orElseThrow { IllegalArgumentException("찾을 수 없는 회원 번호입니다.") }
 
         member.setup(request.nickname, request.birthYear, request.bio)
+    }
+
+    private fun generateVerificationCode(): String {
+        return (10000..99999).random().toString()
     }
 }

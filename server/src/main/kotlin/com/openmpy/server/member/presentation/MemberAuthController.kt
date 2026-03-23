@@ -14,6 +14,14 @@ class MemberAuthController(
     private val memberAuthService: MemberAuthService
 ) {
 
+    @PostMapping("/v1/members/send-verification-code")
+    fun sendVerificationCode(
+        @RequestParam(value = "phone", required = true) phone: String
+    ): ResponseEntity<Unit> {
+        memberAuthService.sendVerificationCode(phone)
+        return ResponseEntity.noContent().build()
+    }
+
     @PostMapping("/v1/members/signup")
     fun signup(
         @RequestBody request: MemberSignupRequest

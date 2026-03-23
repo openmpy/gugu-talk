@@ -13,3 +13,7 @@ spring:
         show_sql: false
         highlight_sql: true
     open-in-view: false
+  data:
+    redis:
+      host: localhost
+      password:
