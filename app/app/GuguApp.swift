@@ -4,6 +4,8 @@ import SimpleToast
 @main
 struct GuguApp: App {
 
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
+
     @StateObject private var toast = ToastManager.shared
 
     private let toastOptions = SimpleToastOptions(alignment: .top, hideAfter: 5)
@@ -11,7 +13,11 @@ struct GuguApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                LoginView()
+                if isLoggedIn {
+                    ContentView()
+                } else {
+                    LoginView()
+                }
             }
             .simpleToast(isPresented: $toast.isShow, options: toastOptions) {
                 if let data = toast.toast {

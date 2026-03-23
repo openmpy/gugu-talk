@@ -42,4 +42,25 @@ final class AuthService {
         )
         .decodingWithErrorHandling(MemberSignupResponse.self)
     }
+
+    func setup(
+        nickname: String,
+        birthYear: Int,
+        bio: String
+    ) async throws {
+        let url = "\(NetworkConfig.baseURL)/v1/members/setup"
+        let request = MemberSetupRequest(
+            nickname: nickname,
+            birthYear: birthYear,
+            bio: bio
+        )
+
+        return try await session.request(
+            url,
+            method: .put,
+            parameters: request,
+            encoder: JSONParameterEncoder.default
+        )
+        .validateWithErrorHandling()
+    }
 }

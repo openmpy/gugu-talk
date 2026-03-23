@@ -3,6 +3,10 @@ import ValidatedPropertyKit
 
 struct ProfileSetupView: View {
 
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
+
+    @StateObject private var vm = ProfileSetupViewModel()
+
     @Validated(!.isEmpty)
     private var nickname = String()
 
@@ -71,9 +75,19 @@ struct ProfileSetupView: View {
             .safeAreaInset(edge: .bottom) {
                 Button {
                     if _nickname.isInvalid {
-                        print("닉네임을 입력해주세요.")
+                        ToastManager.shared.show("닉네임을 입력해주세요.", type: .error)
                     } else if _birthYear.isInvalid {
-                        print("출생연도를 다시 한번 확인해주세요.")
+                        ToastManager.shared.show("출생연도를 다시 한번 확인해주세요.", type: .error)
+                    } else {
+                        Task {
+                            if await vm.setup(
+                                nickname: nickname,
+                                birthYear: Int(birthYear) ?? 2000,
+                                bio: bio
+                            ) {
+                                isLoggedIn = true
+                            }
+                        }
                     }
                 } label: {
                     Text("들어가기")

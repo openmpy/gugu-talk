@@ -3,7 +3,7 @@ import ValidatedPropertyKit
 
 struct LoginView: View {
 
-    @State private var goMain: Bool = false
+    @AppStorage("isLoggedIn") private var isLoggedIn = false
 
     @Validated(.regularExpression("^010[0-9]{8}$"))
     private var phone = String()
@@ -65,7 +65,7 @@ struct LoginView: View {
                         } else if _password.isInvalid {
                             print("비밀번호를 입력해주세요.")
                         } else {
-                            goMain = true
+                            isLoggedIn = true
                         }
                     } label: {
                         Text("로그인")
@@ -80,9 +80,6 @@ struct LoginView: View {
                     }
                     .disabled(!isSubmit)
                 }
-            }
-            .navigationDestination(isPresented: $goMain) {
-                ContentView()
             }
             .navigationTitle("로그인")
             .navigationBarTitleDisplayMode(.inline)
