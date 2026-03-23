@@ -11,6 +11,7 @@ import com.openmpy.server.member.dto.response.MemberLoginResponse
 import com.openmpy.server.member.dto.response.MemberSignupResponse
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.data.redis.core.StringRedisTemplate
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
@@ -82,8 +83,8 @@ class MemberAuthService(
             throw CustomException("이미 가입된 닉네임입니다.")
         }
 
-        val member = memberRepository.findById(memberId)
-            .orElseThrow { CustomException("찾을 수 없는 회원 번호입니다.") }
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
 
         member.setup(request.nickname, request.birthYear, request.bio)
     }
