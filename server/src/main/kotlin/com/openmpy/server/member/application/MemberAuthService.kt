@@ -1,5 +1,7 @@
 package com.openmpy.server.member.application
 
+import com.openmpy.server.auth.application.JwtService
+import com.openmpy.server.common.properties.JwtProperties
 import com.openmpy.server.member.domain.entity.Member
 import com.openmpy.server.member.dto.request.MemberSetupRequest
 import com.openmpy.server.member.dto.request.MemberSignupRequest
@@ -11,12 +13,15 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 
 private const val VERIFICATION_CODE_KEY = "auth:phone:"
+private const val REFRESH_TOKEN_KEY = "auth:refresh_token:"
 
 @Service
 class MemberAuthService(
 
     private val memberRepository: MemberRepository,
     private val redisTemplate: StringRedisTemplate,
+    private val jwtService: JwtService,
+    private val jwtProperties: JwtProperties,
 ) {
 
     @Transactional
@@ -39,9 +44,9 @@ class MemberAuthService(
 
     @Transactional
     fun signup(request: MemberSignupRequest): MemberSignupResponse {
-        val key = VERIFICATION_CODE_KEY + request.phone
+        val verificationKey = VERIFICATION_CODE_KEY + request.phone
 
-        check(redisTemplate.opsForValue().get(key) == request.verificationCode)
+        check(redisTemplate.opsForValue().get(verificationKey) == request.verificationCode)
         { "인증 번호가 일치하지 않습니다." }
         check(!memberRepository.existsByPhone(request.phone))
         { "이미 가입된 휴대폰 번호입니다." }
@@ -54,12 +59,20 @@ class MemberAuthService(
         )
 
         memberRepository.save(member)
-        redisTemplate.delete(key)
+        redisTemplate.delete(verificationKey)
 
+        val refreshToken = jwtService.generateRefreshToken()
+        val refreshTokenKey = REFRESH_TOKEN_KEY + refreshToken
+
+        redisTemplate.opsForValue().set(
+            refreshTokenKey,
+            member.id.toString(),
+            Duration.ofSeconds(jwtProperties.refreshTokenExpiration)
+        )
         return MemberSignupResponse(
             member.id,
-            "access-token",
-            "refresh-token"
+            jwtService.generateAccessToken(member.id),
+            refreshToken
         )
     }
 
@@ -68,7 +81,8 @@ class MemberAuthService(
         memberId: Long,
         request: MemberSetupRequest
     ) {
-        check(!memberRepository.existsByNickname(request.nickname)) { "이미 가입된 닉네임입니다." }
+        check(!memberRepository.existsByNickname(request.nickname))
+        { "이미 가입된 닉네임입니다." }
 
         val member = memberRepository.findById(memberId)
             .orElseThrow { IllegalArgumentException("찾을 수 없는 회원 번호입니다.") }

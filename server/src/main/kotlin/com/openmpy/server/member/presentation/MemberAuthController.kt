@@ -1,5 +1,6 @@
 package com.openmpy.server.member.presentation
 
+import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.member.application.MemberAuthService
 import com.openmpy.server.member.dto.request.MemberSetupRequest
 import com.openmpy.server.member.dto.request.MemberSignupRequest
@@ -32,9 +33,10 @@ class MemberAuthController(
 
     @PutMapping("/v1/members/setup")
     fun setup(
+        @Login memberId: Long,
         @RequestBody request: MemberSetupRequest
     ): ResponseEntity<Unit> {
-        memberAuthService.setup(1L, request)
+        memberAuthService.setup(memberId, request)
         return ResponseEntity.noContent().build()
     }
 }
