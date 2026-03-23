@@ -37,7 +37,7 @@ class MemberQueryService(
                 LocalDate.now().year - it.birthYear,
                 it.likes,
                 null,
-                it.createdAt
+                it.updatedAt
             )
         }
 

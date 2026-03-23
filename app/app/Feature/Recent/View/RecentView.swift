@@ -40,7 +40,7 @@ struct RecentView: View {
 
                                         Spacer()
 
-                                        Text(it.createdAt.relativeTime)
+                                        Text(it.updatedAt.relativeTime)
                                             .font(.caption)
                                             .foregroundColor(Color(.systemGray))
                                     }

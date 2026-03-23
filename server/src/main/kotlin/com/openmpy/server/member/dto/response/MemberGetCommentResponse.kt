@@ -13,5 +13,5 @@ data class MemberGetCommentResponse(
     val age: Int,
     val likes: Long,
     val distance: Double?,
-    val createdAt: LocalDateTime,
+    val updatedAt: LocalDateTime,
 )

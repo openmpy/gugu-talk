@@ -8,7 +8,7 @@ struct MemberGetCommentResponse: Codable, Identifiable {
     let age: Int
     let likes: Int64
     let distance: Double?
-    let createdAt: String
+    let updatedAt: String
 
     var id: Int64 { memberId }
 }
