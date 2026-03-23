@@ -4,11 +4,11 @@ struct MemberGetResponse: Codable, Identifiable {
     let nickname: String
     let gender: String
     let age: Int
-    let likes: Int64
+    var likes: Int64
     let distance: Double?
     let bio: String?
     let updatedAt: String
-    let isLike: Bool
+    var isLike: Bool
     let isPrivatePhoto: Bool
     let isOpenPrivatePhoto: Bool
     let isBlock: Bool

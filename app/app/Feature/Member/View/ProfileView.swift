@@ -75,6 +75,13 @@ struct ProfileView: View {
                         GlassEffectContainer {
                             HStack(spacing: 25) {
                                 Button {
+                                    Task {
+                                        if member.isLike {
+                                            await vm.unlike(targetId: memberId)
+                                        } else {
+                                            await vm.like(targetId: memberId)
+                                        }
+                                    }
                                 } label: {
                                     Image(systemName: "heart.fill")
                                         .frame(width: 60, height: 60)

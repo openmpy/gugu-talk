@@ -12,7 +12,7 @@ final class MemberCommandService {
             comment: comment
         )
 
-        return try await session.request(
+        try await session.request(
             url,
             method: .put,
             parameters: request,
