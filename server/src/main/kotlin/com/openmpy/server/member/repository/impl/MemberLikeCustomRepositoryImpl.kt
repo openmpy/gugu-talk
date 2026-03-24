@@ -4,7 +4,7 @@ import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpql
 import com.openmpy.server.member.domain.entity.Member
 import com.openmpy.server.member.domain.entity.MemberLike
 import com.openmpy.server.member.repository.MemberLikeCustomRepository
-import com.openmpy.server.member.repository.projection.MemberSettingProjection
+import com.openmpy.server.member.repository.dto.MemberSettingResult
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -16,12 +16,12 @@ class MemberLikeCustomRepositoryImpl(
         likerId: Long,
         cursorId: Long?,
         limit: Int
-    ): List<MemberSettingProjection> {
+    ): List<MemberSettingResult> {
 
         return jpql.findAll {
             select(
                 new(
-                    MemberSettingProjection::class,
+                    MemberSettingResult::class,
                     path(MemberLike::id),
                     path(Member::id),
                     path(Member::nickname),

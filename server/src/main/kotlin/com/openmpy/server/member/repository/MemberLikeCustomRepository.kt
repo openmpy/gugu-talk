@@ -1,6 +1,6 @@
 package com.openmpy.server.member.repository
 
-import com.openmpy.server.member.repository.projection.MemberSettingProjection
+import com.openmpy.server.member.repository.dto.MemberSettingResult
 
 interface MemberLikeCustomRepository {
 
@@ -8,5 +8,5 @@ interface MemberLikeCustomRepository {
         likerId: Long,
         cursorId: Long?,
         limit: Int
-    ): List<MemberSettingProjection>
+    ): List<MemberSettingResult>
 }

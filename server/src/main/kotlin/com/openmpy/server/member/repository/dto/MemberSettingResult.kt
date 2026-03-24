@@ -1,8 +1,8 @@
-package com.openmpy.server.member.repository.projection
+package com.openmpy.server.member.repository.dto
 
 import com.openmpy.server.member.domain.type.Gender
 
-data class MemberSettingProjection(
+data class MemberSettingResult(
 
     val id: Long,
     val memberId: Long,
