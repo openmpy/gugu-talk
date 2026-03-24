@@ -2,10 +2,14 @@ package com.openmpy.server.member.application
 
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.dto.request.MemberUpdateCommentRequest
+import com.openmpy.server.member.dto.request.MemberUpdateLocationRequest
 import com.openmpy.server.member.repository.MemberRepository
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+
 
 @Service
 class MemberCommandService(
@@ -27,5 +31,19 @@ class MemberCommandService(
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
         member.bumpComment()
+    }
+
+    @Transactional
+    fun updateLocation(memberId: Long, request: MemberUpdateLocationRequest) {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
+        val point = request.longitude?.let { longitude ->
+            request.latitude?.let { latitude ->
+                GeometryFactory().createPoint(Coordinate(longitude, latitude))
+            }
+        }
+
+        member.updateLocation(point)
     }
 }

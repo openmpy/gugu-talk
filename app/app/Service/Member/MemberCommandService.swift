@@ -30,4 +30,23 @@ final class MemberCommandService {
         )
         .validateWithErrorHandling()
     }
+
+    func updateLocation(
+        longitude: Double?,
+        latitude: Double?
+    ) async throws {
+        let url = "\(NetworkConfig.baseURL)/v1/members/location"
+        let request = MemberUpdateLocationRequest(
+            longitude: longitude,
+            latitude: latitude
+        )
+
+        try await session.request(
+            url,
+            method: .put,
+            parameters: request,
+            encoder: JSONParameterEncoder.default
+        )
+        .validateWithErrorHandling()
+    }
 }

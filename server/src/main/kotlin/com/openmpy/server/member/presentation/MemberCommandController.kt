@@ -3,6 +3,7 @@ package com.openmpy.server.member.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.member.application.MemberCommandService
 import com.openmpy.server.member.dto.request.MemberUpdateCommentRequest
+import com.openmpy.server.member.dto.request.MemberUpdateLocationRequest
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -28,6 +29,15 @@ class MemberCommandController(
     @PutMapping("/v1/members/comments/bump")
     fun bumpComment(@Login memberId: Long): ResponseEntity<Unit> {
         memberCommandService.bumpComment(memberId)
+        return ResponseEntity.noContent().build()
+    }
+
+    @PutMapping("/v1/members/location")
+    fun updateLocation(
+        @Login memberId: Long,
+        @RequestBody request: MemberUpdateLocationRequest
+    ): ResponseEntity<Unit> {
+        memberCommandService.updateLocation(memberId, request)
         return ResponseEntity.noContent().build()
     }
 }

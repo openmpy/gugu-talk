@@ -4,6 +4,7 @@ import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.domain.type.Gender
 import com.openmpy.server.member.domain.type.MemberStatus
 import jakarta.persistence.*
+import org.locationtech.jts.geom.Point
 import java.time.LocalDateTime
 import java.util.*
 
@@ -48,6 +49,9 @@ class Member(
     @Column
     var comment: String? = null,
 
+    @Column(columnDefinition = "geography(Point,4326)")
+    var location: Point? = null,
+
     @Column(nullable = false)
     var likes: Long = 0,
 
@@ -77,6 +81,11 @@ class Member(
         if (this.comment.isNullOrBlank()) {
             this.comment = DEFAULT_COMMENT
         }
+        this.updatedAt = LocalDateTime.now()
+    }
+
+    fun updateLocation(location: Point?) {
+        this.location = location
         this.updatedAt = LocalDateTime.now()
     }
 

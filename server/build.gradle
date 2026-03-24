@@ -35,6 +35,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.9.1'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'com.auth0:java-jwt:4.4.0'
+
+    // point
+    implementation 'org.hibernate.orm:hibernate-spatial:7.2.6.Final'
+    implementation 'org.locationtech.jts:jts-core:1.20.0'
 }
 
 kotlin {
