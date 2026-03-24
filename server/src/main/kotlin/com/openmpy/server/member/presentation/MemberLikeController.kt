@@ -1,8 +1,10 @@
 package com.openmpy.server.member.presentation
 
 import com.openmpy.server.auth.annotaion.Login
+import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.member.application.MemberLikeService
 import com.openmpy.server.member.dto.response.MemberLikeCountResponse
+import com.openmpy.server.member.dto.response.MemberSettingResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -28,6 +30,16 @@ class MemberLikeController(
         @PathVariable targetId: Long
     ): ResponseEntity<MemberLikeCountResponse> {
         val response = memberLikeService.cancel(likerId, targetId)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/members/likes")
+    fun gets(
+        @Login memberId: Long,
+        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "limit", defaultValue = "20") limit: Int
+    ): ResponseEntity<CursorResponse<MemberSettingResponse>> {
+        val response = memberLikeService.gets(memberId, cursorId, limit)
         return ResponseEntity.ok(response)
     }
 }

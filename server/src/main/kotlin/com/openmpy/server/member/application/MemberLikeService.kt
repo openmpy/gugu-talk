@@ -1,13 +1,16 @@
 package com.openmpy.server.member.application
 
+import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.domain.entity.MemberLike
 import com.openmpy.server.member.dto.response.MemberLikeCountResponse
+import com.openmpy.server.member.dto.response.MemberSettingResponse
 import com.openmpy.server.member.repository.MemberLikeRepository
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class MemberLikeService(
@@ -45,5 +48,33 @@ class MemberLikeService(
         target.decreaseLike()
 
         return MemberLikeCountResponse(target.likes)
+    }
+
+    @Transactional(readOnly = true)
+    fun gets(memberId: Long, cursorId: Long?, limit: Int): CursorResponse<MemberSettingResponse> {
+        val projections = memberLikeRepository.findByLikerIdWithCursor(
+            memberId,
+            cursorId,
+            limit + 1
+        )
+        val responses = projections.map {
+            MemberSettingResponse(
+                it.id,
+                it.memberId,
+                null,
+                it.nickname,
+                it.gender,
+                LocalDate.now().year - it.birthYear
+            )
+        }
+
+        val hasNext = projections.size > limit
+        val nextCursorId = if (hasNext) projections.last().id else null
+
+        return CursorResponse(
+            responses,
+            nextCursorId,
+            hasNext
+        )
     }
 }

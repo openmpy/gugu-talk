@@ -3,7 +3,7 @@ package com.openmpy.server.member.repository
 import com.openmpy.server.member.domain.entity.MemberLike
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface MemberLikeRepository : JpaRepository<MemberLike, Long> {
+interface MemberLikeRepository : JpaRepository<MemberLike, Long>, MemberLikeCustomRepository {
 
     fun findByLikerIdAndTargetId(likerId: Long, targetId: Long): MemberLike?
 
