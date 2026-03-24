@@ -107,6 +107,11 @@ struct LocationView: View {
                             )
                         }
                     }
+                    .onChange(of: selectGender) { _, newValue in
+                        Task {
+                            await vm.fetchLocations(gender: newValue)
+                        }
+                    }
                     .task {
                         await vm.fetchLocations(gender: selectGender)
                     }
