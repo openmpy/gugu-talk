@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct ProfileView: View {
 
@@ -12,14 +13,21 @@ struct ProfileView: View {
     @State private var showSheet: Bool = false
     @State private var showBlock: Bool = false
     @State private var message: String = ""
+    @State private var images: [URL] = [
+        URL(string: "https://picsum.photos/id/10/400/1000")!,
+        URL(string: "https://picsum.photos/id/20/100/200")!,
+        URL(string: "https://picsum.photos/id/30/400/300")!,
+        URL(string: "https://picsum.photos/id/40/800/200")!,
+        URL(string: "https://picsum.photos/id/50/50/50")!
+    ]
 
     var body: some View {
         NavigationStack {
             Group {
                 if let member = vm.member {
                     ScrollView(showsIndicators: false) {
-                        TabView() {
-                            ForEach(0..<5) { i in
+                        TabView {
+                            if images.isEmpty {
                                 Image(systemName: "person.fill")
                                     .resizable()
                                     .scaledToFit()
@@ -27,6 +35,24 @@ struct ProfileView: View {
                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                     .foregroundColor(Color(.systemGray6))
                                     .background(Color(.systemGray4))
+                            } else {
+                                ForEach(images.indices, id: \.self) { index in
+                                    NavigationLink {
+                                        ImageFullCoverSlideView(images: images, startIndex: index)
+                                    } label: {
+                                        KFImage(images[index])
+                                            .resizable()
+                                            .placeholder {
+                                                ProgressView()
+                                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                    .background(Color(.systemGray4))
+                                            }
+                                            .scaledToFill()
+                                            .clipped()
+                                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            .background(Color(.systemGray4))
+                                    }
+                                }
                             }
                         }
                         .tabViewStyle(PageTabViewStyle())

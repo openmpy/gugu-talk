@@ -10,6 +10,8 @@
 		9D9F14492F704AA200A9C891 /* ValidatedPropertyKit in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F14482F704AA200A9C891 /* ValidatedPropertyKit */; };
 		9D9F14AB2F712F9B00A9C891 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F14AA2F712F9B00A9C891 /* Alamofire */; };
 		9D9F14D22F71457300A9C891 /* SimpleToast in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F14D12F71457300A9C891 /* SimpleToast */; };
+		9D9F15192F72589B00A9C891 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F15182F72589B00A9C891 /* Kingfisher */; };
+		9D9F15202F72621200A9C891 /* Zoomable in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F151F2F72621200A9C891 /* Zoomable */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,9 +31,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D9F15192F72589B00A9C891 /* Kingfisher in Frameworks */,
 				9D9F14492F704AA200A9C891 /* ValidatedPropertyKit in Frameworks */,
 				9D9F14D22F71457300A9C891 /* SimpleToast in Frameworks */,
 				9D9F14AB2F712F9B00A9C891 /* Alamofire in Frameworks */,
+				9D9F15202F72621200A9C891 /* Zoomable in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +81,8 @@
 				9D9F14482F704AA200A9C891 /* ValidatedPropertyKit */,
 				9D9F14AA2F712F9B00A9C891 /* Alamofire */,
 				9D9F14D12F71457300A9C891 /* SimpleToast */,
+				9D9F15182F72589B00A9C891 /* Kingfisher */,
+				9D9F151F2F72621200A9C891 /* Zoomable */,
 			);
 			productName = app;
 			productReference = 9D9F14292F70283900A9C891 /* app.app */;
@@ -110,6 +116,8 @@
 				9D9F14472F704AA200A9C891 /* XCRemoteSwiftPackageReference "ValidatedPropertyKit" */,
 				9D9F14A92F712F9B00A9C891 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				9D9F14D02F71457300A9C891 /* XCRemoteSwiftPackageReference "SimpleToast" */,
+				9D9F15172F72589B00A9C891 /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D9F142A2F70283900A9C891 /* Products */;
@@ -396,6 +404,22 @@
 				minimumVersion = 0.12.0;
 			};
 		};
+		9D9F15172F72589B00A9C891 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.8.0;
+			};
+		};
+		9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ryohey/Zoomable.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -413,6 +437,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9D9F14D02F71457300A9C891 /* XCRemoteSwiftPackageReference "SimpleToast" */;
 			productName = SimpleToast;
+		};
+		9D9F15182F72589B00A9C891 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D9F15172F72589B00A9C891 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
+		9D9F151F2F72621200A9C891 /* Zoomable */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */;
+			productName = Zoomable;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
