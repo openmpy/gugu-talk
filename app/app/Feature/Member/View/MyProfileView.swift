@@ -77,7 +77,8 @@ struct MyProfileView: View {
                     .ignoresSafeArea(.keyboard, edges: .bottom)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button {
+                            NavigationLink {
+                                ImageOrderView()
                             } label: {
                                 Text("편집")
                             }
