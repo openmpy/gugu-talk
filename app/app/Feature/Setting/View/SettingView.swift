@@ -9,14 +9,30 @@ struct SettingView: View {
             ScrollView {
                 VStack(spacing: 15) {
                     VStack(spacing: 0) {
-                        SettingSection(title: "내 프로필", icon: "person.crop.circle.fill", color: .blue)
+                        NavigationLink {
+                            MyProfileView()
+                        } label : {
+                            SettingSection(title: "내 프로필", icon: "person.crop.circle.fill", color: .blue)
+                        }
                     }
                     .cornerRadius(12)
 
                     VStack(spacing: 0) {
-                        SettingSection(title: "좋아요 목록", icon: "heart.fill", color: .red)
-                        SettingSection(title: "비밀 사진 목록", icon: "photo.fill", color: .green)
-                        SettingSection(title: "차단 목록", icon: "nosign", color: .red)
+                        NavigationLink {
+                            LikeListView()
+                        } label : {
+                            SettingSection(title: "좋아요 목록", icon: "heart.fill", color: .red)
+                        }
+                        NavigationLink {
+                            PrivatePhotoListView()
+                        } label: {
+                            SettingSection(title: "비밀 사진 목록", icon: "photo.fill", color: .green)
+                        }
+                        NavigationLink {
+                            BlockListView()
+                        } label: {
+                            SettingSection(title: "차단 목록", icon: "nosign", color: .red)
+                        }
                     }
                     .cornerRadius(12)
 
