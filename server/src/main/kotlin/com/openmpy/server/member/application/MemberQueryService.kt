@@ -75,6 +75,10 @@ class MemberQueryService(
         val member = (memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
+        if (member.location == null) {
+            throw CustomException("잘못된 위치 값입니다.")
+        }
+
         val resolvedGender = if (gender != "MALE" && gender != "FEMALE") null else gender
         val locations = memberRepository.findAllLocations(
             memberId,

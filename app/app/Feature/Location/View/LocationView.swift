@@ -88,23 +88,8 @@ struct LocationView: View {
                     }
                     .refreshable {
                         Task {
+                            await updateLocation()
                             await vm.fetchLocations(gender: selectGender)
-                        }
-                    }
-                    .onChange(of: locationManager.currentLocation) { _, newLocation in
-                        Task {
-                            guard let location = newLocation else {
-                                await vm.updateLocation(
-                                    longitude: nil,
-                                    latitude: nil
-                                )
-                                return
-                            }
-
-                            await vm.updateLocation(
-                                longitude: location.coordinate.longitude,
-                                latitude: location.coordinate.latitude
-                            )
                         }
                     }
                     .onChange(of: selectGender) { _, newValue in
@@ -113,6 +98,7 @@ struct LocationView: View {
                         }
                     }
                     .task {
+                        await updateLocation()
                         await vm.fetchLocations(gender: selectGender)
                     }
                 } else {
@@ -170,5 +156,14 @@ struct LocationView: View {
         if UIApplication.shared.canOpenURL(url) {
             UIApplication.shared.open(url)
         }
+    }
+
+    private func updateLocation() async {
+        let location = locationManager.currentLocation
+
+        await vm.updateLocation(
+            longitude: location?.coordinate.longitude,
+            latitude: location?.coordinate.latitude
+        )
     }
 }

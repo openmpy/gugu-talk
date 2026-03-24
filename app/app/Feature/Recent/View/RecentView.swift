@@ -88,31 +88,16 @@ struct RecentView: View {
             }
             .refreshable {
                 Task {
-                    _ = await (vm.bumpComment(), vm.fetchComments(gender: selectGender))
+                    _ = await (updateLocation(), vm.bumpComment(), vm.fetchComments(gender: selectGender))
                 }
             }
             .task {
+                await updateLocation()
                 await vm.fetchComments(gender: selectGender)
             }
             .onChange(of: selectGender) { _, newValue in
                 Task {
                     await vm.fetchComments(gender: newValue)
-                }
-            }
-            .onChange(of: locationManager.currentLocation) { _, newLocation in
-                Task {
-                    guard let location = newLocation else {
-                        await vm.updateLocation(
-                            longitude: nil,
-                            latitude: nil
-                        )
-                        return
-                    }
-
-                    await vm.updateLocation(
-                        longitude: location.coordinate.longitude,
-                        latitude: location.coordinate.latitude
-                    )
                 }
             }
             .navigationTitle("최근")
@@ -145,6 +130,15 @@ struct RecentView: View {
                 Button("취소", role: .cancel) { }
             }
         }
+    }
+
+    private func updateLocation() async {
+        let location = locationManager.currentLocation
+
+        await vm.updateLocation(
+            longitude: location?.coordinate.longitude,
+            latitude: location?.coordinate.latitude
+        )
     }
 }
 
