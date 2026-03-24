@@ -85,7 +85,7 @@ struct ChatRoomView: View {
                             .frame(width: 44, height: 44)
                             .foregroundColor(.primary)
                             .clipShape(Circle())
-                            .glassEffect(.regular.tint(Color(.systemGray6)).interactive())
+                            .glassEffect(.regular.tint(Color(.clear)).interactive())
 
                         TextField("메시지 입력", text: $message, axis: .vertical)
                             .font(.system(size: 16))
@@ -112,7 +112,7 @@ struct ChatRoomView: View {
                                 }, alignment: .bottom
                             )
                             .glassEffect(
-                                .regular.tint(Color(.systemGray6)).interactive(),
+                                .regular.tint(.clear).interactive(),
                                 in: .rect(cornerRadius: 20)
                             )
                     }

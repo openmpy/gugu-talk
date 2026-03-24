@@ -39,10 +39,10 @@ struct MyProfileView: View {
                                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                                     .background(Color(.systemGray4))
                                             }
-                                            .scaledToFill()
-                                            .clipped()
+                                            .aspectRatio(contentMode: .fill)
                                             .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                            .background(Color(.systemGray4))
+                                            .background(.black)
+                                            .clipped()
                                     }
                                 }
                             }
