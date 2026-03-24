@@ -42,4 +42,16 @@ class ChatRoom(
 
     @Column
     var deletedAt: LocalDateTime? = null,
-)
+) {
+
+    fun updateLastMessage(content: String) {
+        this.lastMessage = content
+        this.lastMessageAt = LocalDateTime.now()
+    }
+
+    fun updateLastRead(memberId: Long, messageId: Long) {
+        if (this.member1Id == memberId) this.member1LastReadMessageId = messageId else {
+            this.member2LastReadMessageId = messageId
+        }
+    }
+}
