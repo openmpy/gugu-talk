@@ -1,12 +1,16 @@
 package com.openmpy.server.member.application
 
+import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.domain.entity.MemberBlock
+import com.openmpy.server.member.dto.response.MemberSettingResponse
 import com.openmpy.server.member.repository.MemberBlockRepository
 import com.openmpy.server.member.repository.MemberRepository
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class MemberBlockService(
@@ -45,5 +49,35 @@ class MemberBlockService(
             ?: throw CustomException("차단 내역이 존재하지 않습니다.")
 
         memberBlockRepository.delete(block)
+    }
+
+    @Transactional(readOnly = true)
+    fun gets(memberId: Long, cursorId: Long?, limit: Int): CursorResponse<MemberSettingResponse> {
+        val pageRequest = PageRequest.of(0, limit + 1)
+
+        val blocks = memberBlockRepository.findBlockedMembers(
+            memberId,
+            cursorId,
+            pageRequest
+        )
+        val responses = blocks.map {
+            MemberSettingResponse(
+                it.id,
+                it.blocked.id,
+                null,
+                it.blocked.nickname,
+                it.blocked.gender,
+                LocalDate.now().year - it.blocked.birthYear,
+            )
+        }
+
+        val hasNext = blocks.size > limit
+        val nextCursorId = if (hasNext) blocks.last().id else null
+
+        return CursorResponse(
+            responses,
+            nextCursorId,
+            hasNext
+        )
     }
 }
