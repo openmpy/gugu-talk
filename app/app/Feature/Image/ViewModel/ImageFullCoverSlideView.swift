@@ -26,7 +26,7 @@ struct ImageFullCoverSlideView: View {
                         .placeholder {
                             ProgressView()
                         }
-                        .scaledToFit()
+                        .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .zoomable()
                 }

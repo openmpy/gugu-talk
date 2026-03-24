@@ -17,7 +17,7 @@ struct ProfileView: View {
         URL(string: "https://picsum.photos/id/10/400/1000")!,
         URL(string: "https://picsum.photos/id/20/100/200")!,
         URL(string: "https://picsum.photos/id/30/400/300")!,
-        URL(string: "https://picsum.photos/id/40/800/200")!,
+        URL(string: "https://picsum.photos/id/40/1080/1080")!,
         URL(string: "https://picsum.photos/id/50/50/50")!
     ]
 
@@ -47,10 +47,10 @@ struct ProfileView: View {
                                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                                     .background(Color(.systemGray4))
                                             }
-                                            .scaledToFill()
-                                            .clipped()
+                                            .aspectRatio(contentMode: .fill)
                                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                                             .background(Color(.systemGray4))
+                                            .clipped()
                                     }
                                 }
                             }
