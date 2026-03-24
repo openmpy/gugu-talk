@@ -46,7 +46,7 @@ struct BlockListView: View {
                                     Image(systemName: "trash.fill")
                                         .font(.default)
                                         .frame(width: 40, height: 40)
-                                        .foregroundColor(Color(.systemGray6))
+                                        .foregroundColor(.white)
                                         .background(.red)
                                         .clipShape(Circle())
                                 }
