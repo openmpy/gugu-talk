@@ -1,14 +1,14 @@
 package com.openmpy.server.chat.domain.entity
 
 import com.openmpy.server.chat.domain.type.ChatRoomStatus
+import com.openmpy.server.common.exception.CustomException
 import jakarta.persistence.*
+import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDateTime
 
 @Entity
-@Table(
-    name = "chat_room",
-    uniqueConstraints = [UniqueConstraint(columnNames = ["member1_id", "member2_id"])]
-)
+@SQLRestriction("status = 'ACTIVE'")
+@Table(name = "chat_room")
 class ChatRoom(
 
     @Id
@@ -53,5 +53,14 @@ class ChatRoom(
         if (this.member1Id == memberId) this.member1LastReadMessageId = messageId else {
             this.member2LastReadMessageId = messageId
         }
+    }
+
+    fun delete() {
+        if (this.status == ChatRoomStatus.DELETED) {
+            throw CustomException("이미 삭제된 채팅방입니다.")
+        }
+
+        this.status = ChatRoomStatus.DELETED
+        this.deletedAt = LocalDateTime.now()
     }
 }
