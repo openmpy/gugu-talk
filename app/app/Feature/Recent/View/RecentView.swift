@@ -64,7 +64,7 @@ struct RecentView: View {
                                         Spacer()
 
                                         if let distance = it.distance {
-                                            Text("\(distance)km")
+                                            Text(String(format: "%.1f", distance) + "km")
                                                 .font(.caption)
                                                 .foregroundColor(Color(.systemGray))
                                         }

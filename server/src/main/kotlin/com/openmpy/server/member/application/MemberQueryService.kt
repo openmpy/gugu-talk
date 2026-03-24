@@ -29,9 +29,13 @@ class MemberQueryService(
         cursorId: Long?,
         limit: Int
     ): CursorResponse<MemberGetCommentResponse> {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
         val resolvedGender = if (gender != "MALE" && gender != "FEMALE") null else gender
         val comments = memberRepository.findAllComments(
             memberId,
+            member.location,
             resolvedGender,
             cursorId,
             limit + 1
@@ -45,7 +49,7 @@ class MemberQueryService(
                 it.gender,
                 LocalDate.now().year - it.birthYear,
                 it.likes,
-                null,
+                it.distance,
                 it.updatedAt
             )
         }

@@ -1,6 +1,8 @@
 package com.openmpy.server.member.repository
 
 import com.openmpy.server.member.domain.entity.Member
+import com.openmpy.server.member.repository.projection.MemberWithDistanceProjection
+import org.locationtech.jts.geom.Point
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
@@ -15,7 +17,18 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     @Query(
         value = """
-            SELECT m.*
+            SELECT 
+                m.id as id,
+                m.nickname as nickname,
+                m.comment as comment,
+                m.bio as bio,
+                m.gender as gender,
+                m.birth_year as birthYear,
+                m.likes as likes,
+                CASE WHEN CAST(:location AS geography) IS NOT NULL
+                     THEN ST_Distance(m.location::geography, CAST(:location AS geography)) / 1000
+                END AS distance,
+                m.updated_at AS updatedAt
             FROM member m 
             WHERE m.id <> :id
                 AND m.comment IS NOT NULL
@@ -28,10 +41,11 @@ interface MemberRepository : JpaRepository<Member, Long> {
     )
     fun findAllComments(
         @Param("id") id: Long,
+        @Param("location") location: Point?,
         @Param("gender") gender: String?,
         @Param("cursorId") cursorId: Long?,
         @Param("limit") limit: Int,
-    ): List<Member>
+    ): List<MemberWithDistanceProjection>
 
     @Query(
         value = """
