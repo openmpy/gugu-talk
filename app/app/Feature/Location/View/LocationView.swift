@@ -22,9 +22,9 @@ struct LocationView: View {
                 if locationManager.isLocationEnabled {
                     ScrollView(showsIndicators: false) {
                         LazyVStack(spacing: 10) {
-                            ForEach(0..<1000) { i in
+                            ForEach(vm.locations) { it in
                                 NavigationLink {
-                                    ProfileView(memberId: 1)
+                                    ProfileView(memberId: it.memberId)
                                 } label: {
                                     HStack(spacing: 12) {
                                         Image(systemName: "person.fill")
@@ -36,61 +36,79 @@ struct LocationView: View {
 
                                         VStack(alignment: .leading) {
                                             HStack {
-                                                Text("닉네임")
+                                                Text(it.nickname)
                                                     .font(.headline.bold())
-                                                    .foregroundColor(i % 2 == 0 ? .blue : .pink)
+                                                    .foregroundColor(it.gender == "MALE" ? .blue : .pink)
 
                                                 Spacer()
 
-                                                Text("방금 전")
+                                                Text(it.updatedAt.relativeTime)
                                                     .font(.caption)
                                                     .foregroundColor(Color(.systemGray))
                                             }
 
-                                            Text("자기소개")
+                                            Text(it.bio ?? "")
                                                 .lineLimit(1)
                                                 .font(.subheadline)
                                                 .foregroundColor(Color(.systemGray))
 
                                             HStack {
                                                 HStack {
-                                                    Text("남자")
+                                                    Text(it.gender == "MALE" ? "남자" : "여자")
                                                     Text("·")
-                                                    Text("20살")
+                                                    Text("\(it.age)살")
                                                     Text("·")
-                                                    Text("♥ 100")
+                                                    Text("♥ \(it.likes)")
                                                 }
                                                 .font(.footnote)
                                                 .foregroundColor(Color(.systemGray))
 
                                                 Spacer()
 
-                                                Text("12.3km")
-                                                    .font(.caption)
-                                                    .foregroundColor(Color(.systemGray))
+                                                if let distance = it.distance {
+                                                    Text(String(format: "%.1f", distance) + "km")
+                                                        .font(.caption)
+                                                        .foregroundColor(Color(.systemGray))
+                                                }
                                             }
                                         }
                                     }
                                     .padding(.horizontal)
                                     .padding(.vertical, 5)
                                 }
+                                .onAppear {
+                                    if it.id == vm.locations.last?.id {
+                                        Task {
+                                            await vm.loadMoreLocations(gender: selectGender)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
                     .refreshable {
-                        try? await Task.sleep(nanoseconds: 1_000_000_000)
+                        Task {
+                            await vm.fetchLocations(gender: selectGender)
+                        }
                     }
                     .onChange(of: locationManager.currentLocation) { _, newLocation in
-                        guard let location = newLocation else {
-                            return
-                        }
-
                         Task {
+                            guard let location = newLocation else {
+                                await vm.updateLocation(
+                                    longitude: nil,
+                                    latitude: nil
+                                )
+                                return
+                            }
+
                             await vm.updateLocation(
                                 longitude: location.coordinate.longitude,
                                 latitude: location.coordinate.latitude
                             )
                         }
+                    }
+                    .task {
+                        await vm.fetchLocations(gender: selectGender)
                     }
                 } else {
                     VStack {
@@ -119,12 +137,6 @@ struct LocationView: View {
                         }
 
                         Spacer()
-                    }
-                    .task {
-                        await vm.updateLocation(
-                            longitude: nil,
-                            latitude: nil
-                        )
                     }
                 }
             }

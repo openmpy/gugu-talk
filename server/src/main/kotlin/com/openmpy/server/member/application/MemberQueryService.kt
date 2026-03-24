@@ -3,6 +3,7 @@ package com.openmpy.server.member.application
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.dto.response.MemberGetCommentResponse
+import com.openmpy.server.member.dto.response.MemberGetLocationResponse
 import com.openmpy.server.member.dto.response.MemberGetResponse
 import com.openmpy.server.member.repository.MemberBlockRepository
 import com.openmpy.server.member.repository.MemberLikeRepository
@@ -56,6 +57,48 @@ class MemberQueryService(
 
         val hasNext = comments.size > limit
         val nextCursorId = if (hasNext) comments.last().id else null
+
+        return CursorResponse(
+            responses,
+            nextCursorId,
+            hasNext
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getLocations(
+        memberId: Long,
+        gender: String,
+        cursorId: Long?,
+        limit: Int
+    ): CursorResponse<MemberGetLocationResponse> {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
+        val resolvedGender = if (gender != "MALE" && gender != "FEMALE") null else gender
+        val locations = memberRepository.findAllLocations(
+            memberId,
+            member.location,
+            resolvedGender,
+            cursorId,
+            limit + 1
+        )
+        val responses = locations.map {
+            MemberGetLocationResponse(
+                it.id,
+                null,
+                it.nickname,
+                it.bio,
+                it.gender,
+                LocalDate.now().year - it.birthYear,
+                it.likes,
+                it.distance,
+                it.updatedAt
+            )
+        }
+
+        val hasNext = locations.size > limit
+        val nextCursorId = if (hasNext) locations.last().id else null
 
         return CursorResponse(
             responses,

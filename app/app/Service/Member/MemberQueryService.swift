@@ -28,6 +28,28 @@ final class MemberQueryService {
         .decodingWithErrorHandling(CursorResponse<MemberGetCommentResponse>.self)
     }
 
+    func getLocations(
+        gender: String,
+        cursorId: Int64?,
+        limit: Int
+    ) async throws -> CursorResponse<MemberGetLocationResponse> {
+        let url = "\(NetworkConfig.baseURL)/v1/members/locations"
+        var params: Parameters = [
+            "gender": gender,
+            "limit": 20
+        ]
+        if let cursorId = cursorId {
+            params["cursorId"] = cursorId
+        }
+
+        return try await session.request(
+            url,
+            method: .get,
+            parameters: params.compactMapValues { $0 }
+        )
+        .decodingWithErrorHandling(CursorResponse<MemberGetLocationResponse>.self)
+    }
+
     func get(
         targetId: Int64
     ) async throws -> MemberGetResponse {

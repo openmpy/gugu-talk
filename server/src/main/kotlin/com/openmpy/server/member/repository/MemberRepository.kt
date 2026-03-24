@@ -18,13 +18,13 @@ interface MemberRepository : JpaRepository<Member, Long> {
     @Query(
         value = """
             SELECT 
-                m.id as id,
-                m.nickname as nickname,
-                m.comment as comment,
-                m.bio as bio,
-                m.gender as gender,
-                m.birth_year as birthYear,
-                m.likes as likes,
+                m.id AS id,
+                m.nickname AS nickname,
+                m.comment AS comment,
+                m.bio AS bio,
+                m.gender AS gender,
+                m.birth_year AS birthYear,
+                m.likes AS likes,
                 CASE WHEN CAST(:location AS geography) IS NOT NULL
                      THEN ST_Distance(m.location::geography, CAST(:location AS geography)) / 1000
                 END AS distance,
@@ -40,6 +40,37 @@ interface MemberRepository : JpaRepository<Member, Long> {
         nativeQuery = true
     )
     fun findAllComments(
+        @Param("id") id: Long,
+        @Param("location") location: Point?,
+        @Param("gender") gender: String?,
+        @Param("cursorId") cursorId: Long?,
+        @Param("limit") limit: Int,
+    ): List<MemberWithDistanceProjection>
+
+    @Query(
+        value = """
+            SELECT 
+                m.id AS id,
+                m.nickname AS nickname,
+                m.comment AS comment,
+                m.bio AS bio,
+                m.gender AS gender,
+                m.birth_year AS birthYear,
+                m.likes AS likes,
+                ST_Distance(m.location::geography, CAST(:location AS geography)) / 1000 AS distance,
+                m.updated_at AS updatedAt
+            FROM member m 
+            WHERE m.id <> :id
+                AND m.location IS NOT NULL
+                AND :location IS NOT NULL
+                AND (:gender IS NULL OR m.gender = :gender)
+                AND (:cursorId IS NULL OR m.id < :cursorId)
+            ORDER BY distance, m.updated_at DESC
+            LIMIT :limit
+        """,
+        nativeQuery = true
+    )
+    fun findAllLocations(
         @Param("id") id: Long,
         @Param("location") location: Point?,
         @Param("gender") gender: String?,

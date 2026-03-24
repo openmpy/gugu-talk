@@ -4,6 +4,7 @@ import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.member.application.MemberQueryService
 import com.openmpy.server.member.dto.response.MemberGetCommentResponse
+import com.openmpy.server.member.dto.response.MemberGetLocationResponse
 import com.openmpy.server.member.dto.response.MemberGetResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -23,6 +24,17 @@ class MemberQueryController(
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
     ): ResponseEntity<CursorResponse<MemberGetCommentResponse>> {
         val response = memberQueryService.getComments(memberId, gender, cursorId, limit)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/members/locations")
+    fun getLocations(
+        @Login memberId: Long,
+        @RequestParam(value = "gender") gender: String,
+        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "limit", defaultValue = "20") limit: Int
+    ): ResponseEntity<CursorResponse<MemberGetLocationResponse>> {
+        val response = memberQueryService.getLocations(memberId, gender, cursorId, limit)
         return ResponseEntity.ok(response)
     }
 
