@@ -1,8 +1,10 @@
 import SwiftUI
+import CoreLocation
 
 struct RecentView: View {
 
     @StateObject private var vm = RecentViewModel()
+    @StateObject private var locationManager = LocationManager()
 
     @State private var selectGender: String = "ALL"
     @State private var showAlert: Bool = false
@@ -95,6 +97,22 @@ struct RecentView: View {
             .onChange(of: selectGender) { _, newValue in
                 Task {
                     await vm.fetchComments(gender: newValue)
+                }
+            }
+            .onChange(of: locationManager.currentLocation) { _, newLocation in
+                Task {
+                    guard let location = newLocation else {
+                        await vm.updateLocation(
+                            longitude: nil,
+                            latitude: nil
+                        )
+                        return
+                    }
+
+                    await vm.updateLocation(
+                        longitude: location.coordinate.longitude,
+                        latitude: location.coordinate.latitude
+                    )
                 }
             }
             .navigationTitle("최근")

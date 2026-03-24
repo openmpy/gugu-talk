@@ -65,4 +65,20 @@ interface MemberRepository : JpaRepository<Member, Long> {
         @Param("cursorId") cursorId: Long?,
         @Param("limit") limit: Int,
     ): List<Member>
+
+    @Query(
+        value = """
+            SELECT 
+                CASE WHEN CAST(:location AS geography) IS NOT NULL
+                     THEN ST_Distance(m.location::geography, CAST(:location AS geography)) / 1000
+                END AS distance
+            FROM member m 
+            WHERE m.id = :id
+        """,
+        nativeQuery = true
+    )
+    fun getDistanceByMember(
+        @Param("id") id: Long,
+        @Param("location") location: Point?,
+    ): Double?
 }

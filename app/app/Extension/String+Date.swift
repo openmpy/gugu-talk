@@ -22,6 +22,11 @@ extension String {
 
     var relativeTime: String {
         guard let date = toDate else { return "" }
+        
+        let seconds = Date().timeIntervalSince(date)
+        if abs(seconds) < 60 {
+            return "방금 전"
+        }
         return String.relativeFormatter.localizedString(for: date, relativeTo: Date())
     }
 }

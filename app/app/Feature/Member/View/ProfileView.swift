@@ -58,7 +58,7 @@ struct ProfileView: View {
                                 Spacer()
 
                                 if let distance = member.distance {
-                                    Text("\(distance)km")
+                                    Text(String(format: "%.1f", distance) + "km")
                                         .font(.callout)
                                         .foregroundColor(Color(.systemGray))
                                 }

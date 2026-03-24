@@ -77,7 +77,7 @@ class MemberQueryService(
             target.gender,
             LocalDate.now().year - target.birthYear,
             target.likes,
-            null,
+            memberRepository.getDistanceByMember(target.id, member.location),
             target.bio,
             target.updatedAt,
             memberLikeRepository.existsByLikerIdAndTargetId(member.id, target.id),
