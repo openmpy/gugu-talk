@@ -45,7 +45,7 @@ class ChatRoom(
 ) {
 
     fun updateLastMessage(content: String) {
-        this.lastMessage = content
+        this.lastMessage = if (content.length <= 70) content else content.substring(0, 67) + "..."
         this.lastMessageAt = LocalDateTime.now()
     }
 
