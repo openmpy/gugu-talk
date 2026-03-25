@@ -12,6 +12,13 @@ interface ChatRoomCustomRepository {
         limit: Int
     ): List<ChatRoomGetResult>
 
+    fun findUnreadChatRoomsByMemberId(
+        memberId: Long,
+        cursorId: Long?,
+        cursorDateAt: LocalDateTime?,
+        limit: Int
+    ): List<ChatRoomGetResult>
+
     fun findByMemberIdWithCursorAndNickname(
         memberId: Long,
         keyword: String,

@@ -5,13 +5,13 @@ struct ChatRoomView: View {
     @StateObject private var vm = ChatRoomViewModel()
     @StateObject private var stomp = StompManager.shared
 
-    @State private var selectStatus: String = "전체"
+    @State private var selectStatus: String = "ALL"
 
     var body: some View {
         NavigationStack {
-            Picker("전체", selection: $selectStatus) {
-                Text("전체").tag("전체")
-                Text("안읽음").tag("안읽음")
+            Picker("상태", selection: $selectStatus) {
+                Text("전체").tag("ALL")
+                Text("안읽음").tag("UNREAD")
             }
             .pickerStyle(.segmented)
             .padding(.horizontal)
@@ -75,7 +75,7 @@ struct ChatRoomView: View {
                         .onAppear {
                             if it.id == vm.chatRooms.last?.id {
                                 Task {
-                                    await vm.loadMoreChatRooms()
+                                    await vm.loadMoreChatRooms(status: selectStatus)
                                 }
                             }
                         }
@@ -108,8 +108,13 @@ struct ChatRoomView: View {
             .onDisappear {
                 stomp.unsubscribe(from: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")
             }
+            .onChange(of: selectStatus) { _, newValue in
+                Task {
+                    await vm.fetchChatRooms(status: newValue)
+                }
+            }
             .task {
-                await vm.fetchChatRooms()
+                await vm.fetchChatRooms(status: selectStatus)
             }
             .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)

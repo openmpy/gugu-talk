@@ -131,6 +131,48 @@ class ChatRoomService(
     }
 
     @Transactional(readOnly = true)
+    fun getsUnread(
+        memberId: Long,
+        cursorId: Long?,
+        cursorDateAt: LocalDateTime?,
+        limit: Int
+    ): CompositeCursorResponse<ChatRoomGetResponse> {
+        memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+
+        val results = chatRoomRepository.findUnreadChatRoomsByMemberId(
+            memberId,
+            cursorId,
+            cursorDateAt,
+            limit + 1
+        )
+
+        val hasNext = results.size > limit
+        val data = results.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+        val nextCursorDateAt = if (hasNext) data.last().lastMessageAt else null
+
+        val responses = data.map {
+            ChatRoomGetResponse(
+                it.id,
+                it.memberId,
+                null,
+                it.nickname,
+                it.lastMessage,
+                it.lastMessageAt,
+                it.unreadCount,
+            )
+        }
+
+        return CompositeCursorResponse(
+            responses,
+            nextCursorId,
+            nextCursorDateAt,
+            hasNext
+        )
+    }
+
+    @Transactional(readOnly = true)
     fun get(
         memberId: Long,
         chatRoomId: Long,

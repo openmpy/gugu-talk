@@ -64,22 +64,17 @@ final class ChatRoomViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func fetchChatRooms() async {
+    func fetchChatRooms(status: String) async {
         hasNext = true
-
-        guard !isLoading, hasNext else {
-            return
-        }
+        guard !isLoading, hasNext else { return }
 
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let response = try await service.gets(
-                cursorId: nil,
-                cursorDateAt: nil,
-                limit: 20
-            )
+            let response = try await status == "ALL"
+                ? service.gets(cursorId: nil, cursorDateAt: nil, limit: 20)
+                : service.getsUnread(cursorId: nil, cursorDateAt: nil, limit: 20)
 
             chatRooms = response.payload
             cursorId = response.nextId
@@ -91,21 +86,17 @@ final class ChatRoomViewModel: ObservableObject {
         }
     }
 
-    func loadMoreChatRooms() async {
-        guard !isLoading, hasNext else {
-            return
-        }
+    func loadMoreChatRooms(status: String) async {
+        guard !isLoading, hasNext else { return }
 
         isLoading = true
         defer { isLoading = false }
 
         do {
-            let response = try await service.gets(
-                cursorId: cursorId,
-                cursorDateAt: cursorDateAt,
-                limit: 20
-            )
-
+            let response = try await status == "ALL"
+                ? service.gets(cursorId: cursorId, cursorDateAt: cursorDateAt, limit: 20)
+                : service.getsUnread(cursorId: cursorId, cursorDateAt: cursorDateAt, limit: 20)
+            
             chatRooms.append(contentsOf: response.payload)
             cursorId = response.nextId
             cursorDateAt = response.nextDateAt
@@ -145,7 +136,7 @@ final class ChatRoomViewModel: ObservableObject {
 
         do {
             try await service.markAsRead(chatRoomId: chatRoomId)
-            
+
             if let index = chatRooms.firstIndex(where: { $0.chatRoomId == chatRoomId }) {
                 chatRooms[index].unreadCount = 0
             }

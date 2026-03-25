@@ -53,6 +53,28 @@ final class ChatRoomService {
         .decodingWithErrorHandling(CompositeCursorResponse<ChatRoomGetResponse>.self)
     }
 
+    func getsUnread(
+        cursorId: Int64?,
+        cursorDateAt: String?,
+        limit: Int
+    ) async throws -> CompositeCursorResponse<ChatRoomGetResponse> {
+        let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/unread"
+        var params: Parameters = [
+            "limit": 20
+        ]
+        if let cursorId = cursorId {
+            params["cursorId"] = cursorId
+            params["cursorDateAt"] = cursorDateAt
+        }
+
+        return try await session.request(
+            url,
+            method: .get,
+            parameters: params.compactMapValues { $0 }
+        )
+        .decodingWithErrorHandling(CompositeCursorResponse<ChatRoomGetResponse>.self)
+    }
+
     func get(
         chatRoomId: Int64,
         cursorId: Int64?,

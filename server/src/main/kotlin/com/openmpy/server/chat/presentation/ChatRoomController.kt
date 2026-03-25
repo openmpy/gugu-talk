@@ -71,6 +71,17 @@ class ChatRoomController(
         return ResponseEntity.ok(response)
     }
 
+    @GetMapping("/v1/chat-rooms/unread")
+    fun getsUnread(
+        @Login memberId: Long,
+        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "cursorDateAt") cursorDateAt: LocalDateTime?,
+        @RequestParam(value = "limit", defaultValue = "20") limit: Int
+    ): ResponseEntity<CompositeCursorResponse<ChatRoomGetResponse>> {
+        val response = chatRoomService.getsUnread(memberId, cursorId, cursorDateAt, limit)
+        return ResponseEntity.ok(response)
+    }
+
     @GetMapping("/v1/chat-rooms/{chatRoomId}")
     fun get(
         @Login memberId: Long,
