@@ -2,7 +2,7 @@ package com.openmpy.server.member.repository
 
 import com.openmpy.server.member.repository.dto.MemberSettingResult
 
-interface MemberLikeCustomRepository {
+fun interface MemberLikeCustomRepository {
 
     fun findByLikerIdWithCursor(
         likerId: Long,
