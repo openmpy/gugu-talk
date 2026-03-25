@@ -5,6 +5,7 @@ import com.openmpy.server.member.domain.entity.Member
 import com.openmpy.server.member.domain.entity.MemberLike
 import com.openmpy.server.member.repository.MemberLikeCustomRepository
 import com.openmpy.server.member.repository.dto.MemberSettingResult
+import org.springframework.data.domain.PageRequest
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -18,7 +19,7 @@ class MemberLikeCustomRepositoryImpl(
         limit: Int
     ): List<MemberSettingResult> {
 
-        return jpql.findAll {
+        return jpql.findAll(PageRequest.of(0, limit)) {
             select(
                 new(
                     MemberSettingResult::class,
