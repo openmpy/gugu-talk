@@ -7,6 +7,7 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
     static let shared = StompManager()
 
     let chatMessageSubject = PassthroughSubject<(chatRoomId: Int64, data: Data), Never>()
+    let chatRoomDeleteSubject = PassthroughSubject<Int64, Never>()
 
     var stomp: SwiftStomp!
 
@@ -40,10 +41,15 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
     ) {
         guard let text = message as? String,
               let data = text.data(using: .utf8) else { return }
-
-        if destination.hasPrefix("/sub/chat-rooms") {
+        
+        if destination.hasPrefix("/sub/chat-rooms/members") {
+            if let event = try? JSONDecoder().decode(ChatRoomEvent.self, from: data),
+               event.type == "CHAT_ROOM_DELETE" {
+                chatRoomDeleteSubject.send(event.chatRoomId)
+            }
+        } else if destination.hasPrefix("/sub/chat-rooms") {
             let chatRoomIdText = String(destination.split(separator: "/").last ?? "")
-            
+
             if let chatRoomId = Int64(chatRoomIdText) {
                 chatMessageSubject.send((chatRoomId: chatRoomId, data: data))
             }
@@ -85,6 +91,6 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
 
     func unsubscribe(from destination: String, headers: [String: String] = [:]) {
         stomp.unsubscribe(from: destination, headers: headers)
-        print("unsupervised from \(destination)")
+        print("unsubscribe from \(destination)")
     }
 }

@@ -3,6 +3,7 @@ import SwiftUI
 struct ChatRoomView: View {
 
     @StateObject private var vm = ChatRoomViewModel()
+    @StateObject private var stomp = StompManager.shared
 
     @State private var selectStatus: String = "전체"
 
@@ -76,11 +77,32 @@ struct ChatRoomView: View {
                                 }
                             }
                         }
+                        .contextMenu {
+                            Button(role: .confirm) {
+                            } label: {
+                                Label("읽음", systemImage: "eye")
+                            }
+                            Button(role: .destructive) {
+                                Task {
+                                    if await vm.deleteChatRoom(chatRoomId: it.chatRoomId) {
+                                        ToastManager.shared.show("채팅방을 삭제하셨습니다.")
+                                    }
+                                }
+                            } label: {
+                                Label("삭제", systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }
             .task {
                 await vm.fetchChatRooms()
+            }
+            .onAppear {
+                stomp.subscribe(to: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")
+            }
+            .onDisappear {
+                stomp.unsubscribe(from: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")
             }
             .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)

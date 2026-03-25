@@ -21,6 +21,16 @@ final class ChatRoomService {
         .validateWithErrorHandlingForEmptyResponse()
     }
 
+    func delete(chatRoomId: Int64) async throws {
+        let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/\(chatRoomId)"
+
+        try await session.request(
+            url,
+            method: .delete
+        )
+        .validateWithErrorHandlingForEmptyResponse()
+    }
+
     func gets(
         cursorId: Int64?,
         cursorDateAt: String?,

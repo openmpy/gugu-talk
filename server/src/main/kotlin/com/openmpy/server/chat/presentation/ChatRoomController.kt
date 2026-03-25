@@ -2,6 +2,7 @@ package com.openmpy.server.chat.presentation
 
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
+import com.openmpy.server.chat.dto.event.ChatRoomDeleteEvent
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
@@ -9,6 +10,7 @@ import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.dto.CursorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.messaging.simp.SimpMessagingTemplate
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 
@@ -16,6 +18,7 @@ import java.time.LocalDateTime
 @RestController
 class ChatRoomController(
 
+    private val messageTemplate: SimpMessagingTemplate,
     private val chatRoomService: ChatRoomService,
 ) {
 
@@ -34,7 +37,12 @@ class ChatRoomController(
         @Login memberId: Long,
         @PathVariable chatRoomId: Long
     ): ResponseEntity<Unit> {
-        chatRoomService.delete(memberId, chatRoomId)
+        val otherMemberId = chatRoomService.delete(memberId, chatRoomId)
+
+        messageTemplate.convertAndSend(
+            "/sub/chat-rooms/members/$otherMemberId",
+            ChatRoomDeleteEvent(chatRoomId = chatRoomId)
+        )
         return ResponseEntity.noContent().build()
     }
 

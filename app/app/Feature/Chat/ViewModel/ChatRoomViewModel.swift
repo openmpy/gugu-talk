@@ -5,6 +5,7 @@ import Combine
 final class ChatRoomViewModel: ObservableObject {
 
     private let service = ChatRoomService.shared
+    private let stomp = StompManager.shared
 
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
@@ -12,8 +13,18 @@ final class ChatRoomViewModel: ObservableObject {
 
     @Published var chatRooms: [ChatRoomGetResponse] = []
 
+    private var cancellables = Set<AnyCancellable>()
     private var cursorId: Int64?
     private var cursorDateAt: String?
+
+    init() {
+        stomp.chatRoomDeleteSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] chatRoomId in
+                self?.chatRooms.removeAll { $0.chatRoomId == chatRoomId }
+            }
+            .store(in: &cancellables)
+        }
 
     func fetchChatRooms() async {
         hasNext = true
@@ -64,6 +75,25 @@ final class ChatRoomViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
+
+    func deleteChatRoom(chatRoomId: Int64) async -> Bool {
+        guard !isLoading else {
+            return false
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            try await service.delete(chatRoomId: chatRoomId)
+            chatRooms.removeAll { $0.id == chatRoomId }
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+            return false
         }
     }
 }

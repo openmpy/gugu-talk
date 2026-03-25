@@ -60,7 +60,7 @@ class ChatRoomService(
     }
 
     @Transactional
-    fun delete(memberId: Long, chatRoomId: Long) {
+    fun delete(memberId: Long, chatRoomId: Long): Long {
         memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다.")
         val chatRoom = (chatRoomRepository.findByIdOrNull(chatRoomId)
@@ -70,7 +70,12 @@ class ChatRoomService(
             throw CustomException("참여하지 않은 채팅방입니다.")
         }
 
+        val otherMemberId = if (chatRoom.member1Id == memberId) {
+            chatRoom.member2Id
+        } else chatRoom.member1Id
+
         chatRoom.delete()
+        return otherMemberId
     }
 
     @Transactional(readOnly = true)
