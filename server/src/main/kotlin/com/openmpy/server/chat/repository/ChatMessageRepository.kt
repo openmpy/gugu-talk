@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param
 
 interface ChatMessageRepository : JpaRepository<ChatMessage, Long> {
 
+    fun findTopByChatRoomIdOrderByIdDesc(chatRoomId: Long): ChatMessage?
+
     @Query(
         value = """
         SELECT m 

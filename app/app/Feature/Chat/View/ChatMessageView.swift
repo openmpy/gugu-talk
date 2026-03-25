@@ -129,9 +129,15 @@ struct ChatMessageView: View {
                 hideKeyboard()
             }
             .onAppear {
+                Task {
+                    await vm.markAsRead(chatRoomId: chatRoomId)
+                }
                 stomp.subscribe(to: "/sub/chat-rooms/\(chatRoomId)")
             }
             .onDisappear {
+                Task {
+                    await vm.markAsRead(chatRoomId: chatRoomId)
+                }
                 stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
             }
             .rotationEffect(.degrees(180))

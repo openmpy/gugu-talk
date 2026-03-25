@@ -93,4 +93,13 @@ final class ChatMessageViewModel: ObservableObject {
         )
         return true
     }
+
+    func markAsRead(chatRoomId: Int64) async {
+        do {
+            try await service.markAsRead(chatRoomId: chatRoomId)
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
 }

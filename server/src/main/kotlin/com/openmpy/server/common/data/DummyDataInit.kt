@@ -1,7 +1,5 @@
 package com.openmpy.server.common.data
 
-import com.openmpy.server.chat.domain.entity.ChatMessage
-import com.openmpy.server.chat.domain.entity.ChatRoom
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
 import com.openmpy.server.member.domain.entity.Member
@@ -17,8 +15,6 @@ import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.Month
 import java.util.*
 
 @Component
@@ -94,38 +90,38 @@ class DummyDataInit {
             }
 
             // 채팅방
-            if (chatRoomRepository.count() == 0L) {
-                val chatRooms = (2 until 100).map { i ->
-                    ChatRoom(
-                        member1Id = 1,
-                        member2Id = i.toLong(),
-                        lastMessage = "안녕하세요$i",
-                        member1LastReadMessageId = i.toLong(),
-                        lastMessageAt = LocalDateTime.of(
-                            2025,
-                            Month.DECEMBER,
-                            21,
-                            22,
-                            0
-                        ).plusMinutes(i.toLong()),
-                    )
-                }
-                chatRoomRepository.saveAll(chatRooms)
-                println("채팅방 데이터가 생성되었습니다. ${chatRoomRepository.count()}")
-            }
+//            if (chatRoomRepository.count() == 0L) {
+//                val chatRooms = (2 until 100).map { i ->
+//                    ChatRoom(
+//                        member1Id = 1,
+//                        member2Id = i.toLong(),
+//                        lastMessage = "안녕하세요$i",
+//                        member1LastReadMessageId = i.toLong(),
+//                        lastMessageAt = LocalDateTime.of(
+//                            2025,
+//                            Month.DECEMBER,
+//                            21,
+//                            22,
+//                            0
+//                        ).plusMinutes(i.toLong()),
+//                    )
+//                }
+//                chatRoomRepository.saveAll(chatRooms)
+//                println("채팅방 데이터가 생성되었습니다. ${chatRoomRepository.count()}")
+//            }
 
             // 메시지
-            if (chatMessageRepository.count() == 0L) {
-                val chatMessages = (1 until 100).map { i ->
-                    ChatMessage(
-                        chatRoomId = 1L,
-                        senderId = 1L,
-                        content = "날씨가 맑아요 $i",
-                    )
-                }
-                chatMessageRepository.saveAll(chatMessages)
-                println("채팅 메시지 데이터가 생성되었습니다. ${chatMessageRepository.count()}")
-            }
+//            if (chatMessageRepository.count() == 0L) {
+//                val chatMessages = (1 until 100).map { i ->
+//                    ChatMessage(
+//                        chatRoomId = 1L,
+//                        senderId = 1L,
+//                        content = "날씨가 맑아요 $i",
+//                    )
+//                }
+//                chatMessageRepository.saveAll(chatMessages)
+//                println("채팅 메시지 데이터가 생성되었습니다. ${chatMessageRepository.count()}")
+//            }
         }
     }
 }

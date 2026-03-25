@@ -175,4 +175,21 @@ class ChatRoomService(
             hasNext
         )
     }
+
+    @Transactional
+    fun markAsRead(
+        memberId: Long,
+        chatRoomId: Long,
+    ) {
+        memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+        val chatRoom = chatRoomRepository.findByIdOrNull(chatRoomId)
+            ?: throw CustomException("존재하지 않는 채팅방입니다.")
+
+        val lastChatMessage = chatMessageRepository.findTopByChatRoomIdOrderByIdDesc(chatRoomId)
+
+        lastChatMessage?.let {
+            chatRoom.updateLastRead(memberId, lastChatMessage.id)
+        }
+    }
 }
