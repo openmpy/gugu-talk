@@ -9,6 +9,7 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
     let chatMessageSubject = PassthroughSubject<(chatRoomId: Int64, data: Data), Never>()
     let chatRoomDeleteSubject = PassthroughSubject<Int64, Never>()
     let chatRoomUpdateSubject = PassthroughSubject<ChatRoomEvent, Never>()
+    let chatRoomNewSubject = PassthroughSubject<ChatRoomEvent, Never>()
 
     var stomp: SwiftStomp!
 
@@ -52,6 +53,8 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
                     chatRoomDeleteSubject.send(event.chatRoomId)
                 case "CHAT_ROOM_UPDATE":
                     chatRoomUpdateSubject.send(event)
+                case "CHAT_ROOM_NEW":
+                    chatRoomNewSubject.send(event)
                 default: break
                 }
             }

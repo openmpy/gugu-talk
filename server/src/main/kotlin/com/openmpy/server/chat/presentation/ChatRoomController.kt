@@ -3,6 +3,7 @@ package com.openmpy.server.chat.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
 import com.openmpy.server.chat.dto.event.ChatRoomDeleteEvent
+import com.openmpy.server.chat.dto.event.ChatRoomNewEvent
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
@@ -28,7 +29,19 @@ class ChatRoomController(
         @RequestParam("targetId", required = true) targetId: Long,
         @RequestBody request: ChatRoomCreateRequest
     ): ResponseEntity<Unit> {
-        chatRoomService.create(memberId, targetId, request)
+        val response = chatRoomService.create(memberId, targetId, request)
+
+        messageTemplate.convertAndSend(
+            "/sub/chat-rooms/members/$targetId",
+            ChatRoomNewEvent(
+                chatRoomId = response.chatRoomId,
+                memberId = response.memberId,
+                thumbnail = null,
+                nickname = response.nickname,
+                lastMessage = response.lastMessage,
+                lastMessageAt = response.lastMessageAt,
+            )
+        )
         return ResponseEntity.status(HttpStatus.CREATED).build()
     }
 

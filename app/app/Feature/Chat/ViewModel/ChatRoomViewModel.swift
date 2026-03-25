@@ -38,6 +38,22 @@ final class ChatRoomViewModel: ObservableObject {
                 }
             }
             .store(in: &cancellables)
+
+        stomp.chatRoomNewSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self else { return }
+                let newRoom = ChatRoomGetResponse(
+                    chatRoomId: event.chatRoomId,
+                    memberId: event.memberId ?? 0,
+                    thumbnail: event.thumbnail,
+                    nickname: event.nickname ?? "",
+                    lastMessage: event.lastMessage ?? "",
+                    lastMessageAt: event.lastMessageAt ?? ""
+                )
+                chatRooms.insert(newRoom, at: 0)
+            }
+            .store(in: &cancellables)
     }
 
     func fetchChatRooms() async {

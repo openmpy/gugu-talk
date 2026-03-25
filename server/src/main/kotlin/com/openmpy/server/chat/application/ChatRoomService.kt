@@ -32,9 +32,9 @@ class ChatRoomService(
         memberId: Long,
         targetId: Long,
         request: ChatRoomCreateRequest
-    ) {
-        memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException("존재하지 않는 회원입니다.")
+    ): ChatRoomGetResponse {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
         memberRepository.findByIdOrNull(targetId)
             ?: throw CustomException("존재하지 않는 회원입니다.")
 
@@ -57,6 +57,15 @@ class ChatRoomService(
         chatMessageRepository.save(message)
         chatRoom.updateLastRead(memberId, message.id)
         chatRoom.updateLastMessage(message.content)
+
+        return ChatRoomGetResponse(
+            chatRoom.id,
+            member.id,
+            null,
+            member.nickname,
+            message.content,
+            message.createdAt
+        )
     }
 
     @Transactional

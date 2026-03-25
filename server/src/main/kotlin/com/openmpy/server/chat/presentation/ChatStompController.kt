@@ -27,7 +27,6 @@ class ChatStompController(
         val response = chatMessageService.save(memberId, chatRoomId, request)
 
         messageTemplate.convertAndSend("/sub/chat-rooms/$chatRoomId", response)
-
         messageTemplate.convertAndSend(
             "/sub/chat-rooms/members/${response.receiverId}",
             ChatRoomUpdateEvent(
