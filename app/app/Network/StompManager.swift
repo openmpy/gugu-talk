@@ -8,6 +8,7 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
 
     let chatMessageSubject = PassthroughSubject<(chatRoomId: Int64, data: Data), Never>()
     let chatRoomDeleteSubject = PassthroughSubject<Int64, Never>()
+    let chatRoomUpdateSubject = PassthroughSubject<ChatRoomEvent, Never>()
 
     var stomp: SwiftStomp!
 
@@ -41,11 +42,18 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
     ) {
         guard let text = message as? String,
               let data = text.data(using: .utf8) else { return }
-        
+
+        print("위치 \(destination) 메시지 \(text)")
+
         if destination.hasPrefix("/sub/chat-rooms/members") {
-            if let event = try? JSONDecoder().decode(ChatRoomEvent.self, from: data),
-               event.type == "CHAT_ROOM_DELETE" {
-                chatRoomDeleteSubject.send(event.chatRoomId)
+            if let event = try? JSONDecoder().decode(ChatRoomEvent.self, from: data) {
+                switch event.type {
+                case "CHAT_ROOM_DELETE":
+                    chatRoomDeleteSubject.send(event.chatRoomId)
+                case "CHAT_ROOM_UPDATE":
+                    chatRoomUpdateSubject.send(event)
+                default: break
+                }
             }
         } else if destination.hasPrefix("/sub/chat-rooms") {
             let chatRoomIdText = String(destination.split(separator: "/").last ?? "")

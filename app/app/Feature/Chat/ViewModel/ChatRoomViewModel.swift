@@ -24,7 +24,21 @@ final class ChatRoomViewModel: ObservableObject {
                 self?.chatRooms.removeAll { $0.chatRoomId == chatRoomId }
             }
             .store(in: &cancellables)
-        }
+
+        stomp.chatRoomUpdateSubject
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                guard let self else { return }
+                if let idx = chatRooms.firstIndex(where: { $0.chatRoomId == event.chatRoomId }) {
+                    var updated = chatRooms.remove(at: idx)
+                    
+                    updated.lastMessage = event.lastMessage ?? ""
+                    updated.lastMessageAt = event.lastMessageAt ?? ""
+                    chatRooms.insert(updated, at: 0)
+                }
+            }
+            .store(in: &cancellables)
+    }
 
     func fetchChatRooms() async {
         hasNext = true

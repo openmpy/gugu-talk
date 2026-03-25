@@ -7,6 +7,7 @@ data class ChatMessageGetResponse(
 
     val chatMessageId: Long,
     val senderId: Long,
+    val receiverId: Long,
     val content: String,
     val type: ChatMessageType,
     val createdAt: LocalDateTime,

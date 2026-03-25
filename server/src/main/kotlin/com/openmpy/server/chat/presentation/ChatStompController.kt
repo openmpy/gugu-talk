@@ -1,6 +1,7 @@
 package com.openmpy.server.chat.presentation
 
 import com.openmpy.server.chat.application.ChatMessageService
+import com.openmpy.server.chat.dto.event.ChatRoomUpdateEvent
 import com.openmpy.server.chat.dto.request.ChatMessageSendRequest
 import org.springframework.messaging.handler.annotation.DestinationVariable
 import org.springframework.messaging.handler.annotation.MessageMapping
@@ -26,5 +27,14 @@ class ChatStompController(
         val response = chatMessageService.save(memberId, chatRoomId, request)
 
         messageTemplate.convertAndSend("/sub/chat-rooms/$chatRoomId", response)
+
+        messageTemplate.convertAndSend(
+            "/sub/chat-rooms/members/${response.receiverId}",
+            ChatRoomUpdateEvent(
+                chatRoomId = chatRoomId,
+                lastMessage = response.content,
+                lastMessageAt = response.createdAt,
+            )
+        )
     }
 }

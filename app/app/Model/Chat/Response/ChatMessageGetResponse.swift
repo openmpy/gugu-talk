@@ -2,6 +2,7 @@ struct ChatMessageGetResponse: Codable, Identifiable {
 
     let chatMessageId: Int64
     let senderId: Int64
+    let receiverId: Int64
     let content: String
     let type: String
     let createdAt: String

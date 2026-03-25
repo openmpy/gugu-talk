@@ -43,9 +43,14 @@ class ChatMessageService(
         chatMessageRepository.save(chatMessage)
         chatRoom.updateLastMessage(request.content)
 
+        val receiverId = if (chatRoom.member1Id == memberId) {
+            chatRoom.member2Id
+        } else chatRoom.member1Id
+
         return ChatMessageGetResponse(
             chatMessage.id,
             chatMessage.senderId,
+            receiverId,
             chatMessage.content,
             chatMessage.type,
             chatMessage.createdAt

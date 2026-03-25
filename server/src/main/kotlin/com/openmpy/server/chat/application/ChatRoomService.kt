@@ -146,9 +146,14 @@ class ChatRoomService(
         val nextCursorId = if (hasNext) data.last().id else null
 
         val responses = data.map {
+            val receiverId = if (chatRoom.member1Id == it.senderId) {
+                chatRoom.member2Id
+            } else chatRoom.member1Id
+
             ChatMessageGetResponse(
                 it.id,
                 it.senderId,
+                receiverId,
                 it.content,
                 it.type,
                 it.createdAt,
