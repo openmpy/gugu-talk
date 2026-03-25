@@ -8,6 +8,7 @@ struct ChatMessageView: View {
     let thumbnail: String?
 
     @StateObject private var vm = ChatMessageViewModel()
+    @StateObject private var stomp = StompManager.shared
 
     @Namespace var namespace
 
@@ -87,6 +88,11 @@ struct ChatMessageView: View {
                                 HStack {
                                     Spacer()
                                     Button {
+                                        guard !message.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+
+                                        if vm.sendChatMessage(chatRoomId: chatRoomId, content: message, type: "TEXT") == true {
+                                            message = ""
+                                        }
                                     } label: {
                                         Image(systemName: "paperplane.fill")
                                             .foregroundColor(.white)
@@ -112,6 +118,12 @@ struct ChatMessageView: View {
             }
             .onTapGesture {
                 hideKeyboard()
+            }
+            .onAppear {
+                stomp.subscribe(to: "/sub/chat-rooms/\(chatRoomId)")
+            }
+            .onDisappear {
+                stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
             }
             .rotationEffect(.degrees(180))
             .navigationTitle(nickname)

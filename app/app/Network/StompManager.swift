@@ -20,11 +20,8 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
     }
 
     func onConnect(swiftStomp : SwiftStomp, connectType : StompConnectType) {
-        switch connectType {
-        case .toSocketEndpoint:
-            print("WebSocket 소켓 연결됨")
-        case .toStomp:
-            print("STOMP 연결 완료")
+        if connectType == .toStomp {
+            print("connected")
         }
     }
 
@@ -68,5 +65,15 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
             receiptId: receiptId,
             headers: headers
         )
+    }
+
+    func subscribe(to destination: String, headers: [String: String] = [:]) {
+        stomp.subscribe(to: destination, headers: headers)
+        print("subscribe to \(destination)")
+    }
+
+    func unsubscribe(from destination: String, headers: [String: String] = [:]) {
+        stomp.unsubscribe(from: destination, headers: headers)
+        print("unsupervised from \(destination)")
     }
 }

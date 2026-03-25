@@ -5,6 +5,7 @@ import Combine
 final class ChatMessageViewModel: ObservableObject {
 
     private let service = ChatRoomService.shared
+    private let stomp = StompManager.shared
 
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
@@ -62,5 +63,21 @@ final class ChatMessageViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
         }
+    }
+
+    func sendChatMessage(chatRoomId: Int64, content: String, type: String) -> Bool {
+        guard let data = try? JSONEncoder().encode(
+            ChatMessageSendRequest(
+                content: content,
+                type: type
+            )
+        ), let body = String(data: data, encoding: .utf8) else { return false }
+
+        stomp.send(
+            body: body,
+            to: "/pub/chat-rooms/\(chatRoomId)/message",
+            headers: ["content-type": "application/json"]
+        )
+        return true
     }
 }
