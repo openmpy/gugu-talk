@@ -134,4 +134,26 @@ final class ChatRoomViewModel: ObservableObject {
             return false
         }
     }
+
+    func markAsRead(chatRoomId: Int64) async -> Bool {
+        guard !isLoading else {
+            return false
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            try await service.markAsRead(chatRoomId: chatRoomId)
+            
+            if let index = chatRooms.firstIndex(where: { $0.chatRoomId == chatRoomId }) {
+                chatRooms[index].unreadCount = 0
+            }
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+            return false
+        }
+    }
 }

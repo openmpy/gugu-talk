@@ -49,7 +49,7 @@ struct ChatRoomView: View {
                                     }
 
                                     HStack(alignment: .center) {
-                                        Text(it.lastMessage)
+                                        Text(it.lastMessage.byCharWrapping)
                                             .lineLimit(2)
                                             .font(.subheadline)
                                             .foregroundColor(Color(.systemGray))
@@ -81,6 +81,11 @@ struct ChatRoomView: View {
                         }
                         .contextMenu {
                             Button(role: .confirm) {
+                                Task {
+                                    if await vm.markAsRead(chatRoomId: it.chatRoomId) {
+                                        ToastManager.shared.show("읽음 처리 되었습니다.")
+                                    }
+                                }
                             } label: {
                                 Label("읽음", systemImage: "eye")
                             }

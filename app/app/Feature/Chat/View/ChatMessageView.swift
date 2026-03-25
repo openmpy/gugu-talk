@@ -31,7 +31,7 @@ struct ChatMessageView: View {
                         VStack {
                             if (AuthStore.shared.memberId != it.senderId) {
                                 HStack(alignment: .bottom, spacing: 5) {
-                                    Text(it.content)
+                                    Text(it.content.byCharWrapping)
                                         .font(.subheadline)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 8)
@@ -52,7 +52,7 @@ struct ChatMessageView: View {
                                         .font(.caption2)
                                         .foregroundColor(.gray)
 
-                                    Text(it.content)
+                                    Text(it.content.byCharWrapping)
                                         .font(.subheadline)
                                         .padding(.horizontal, 10)
                                         .padding(.vertical, 8)
