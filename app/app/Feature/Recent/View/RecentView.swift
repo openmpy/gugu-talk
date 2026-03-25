@@ -88,7 +88,9 @@ struct RecentView: View {
             }
             .refreshable {
                 Task {
-                    _ = await (updateLocation(), vm.bumpComment(), vm.fetchComments(gender: selectGender))
+                    await updateLocation()
+                    await vm.bumpComment()
+                    await vm.fetchComments(gender: selectGender)
                 }
             }
             .task {

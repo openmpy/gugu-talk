@@ -2,6 +2,7 @@ package com.openmpy.server.member.application
 
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
+import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
 import com.openmpy.server.member.dto.response.MemberGetCommentResponse
 import com.openmpy.server.member.dto.response.MemberGetLocationResponse
 import com.openmpy.server.member.dto.response.MemberGetResponse
@@ -130,11 +131,20 @@ class MemberQueryService(
             target.likes,
             memberRepository.getDistanceByMember(target.id, member.location),
             target.bio,
+            target.isChatEnabled,
             target.updatedAt,
             memberLikeRepository.existsByLikerIdAndTargetId(member.id, target.id),
             memberPrivatePhotoRepository.existsByOwnerAndTarget(target, member),
             memberPrivatePhotoRepository.existsByOwnerAndTarget(member, target),
             memberBlockRepository.existsByBlockerAndBlocked(member, target)
         )
+    }
+
+    @Transactional(readOnly = true)
+    fun getChatEnabled(memberId: Long): MemberGetChatEnabledResponse {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
+        return MemberGetChatEnabledResponse(member.isChatEnabled)
     }
 }

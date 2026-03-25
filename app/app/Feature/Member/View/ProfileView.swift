@@ -126,10 +126,11 @@ struct ProfileView: View {
                                     Image(systemName: "message.fill")
                                         .frame(width: 60, height: 60)
                                         .font(.title)
-                                        .foregroundColor(.blue)
+                                        .foregroundColor(member.isChatEnabled ? .blue : .gray)
                                         .glassEffect(.regular.interactive())
                                         .glassEffectUnion(id: 1, namespace: namespace)
                                 }
+                                .disabled(!member.isChatEnabled)
 
                                 Button {
                                     print("클릭")

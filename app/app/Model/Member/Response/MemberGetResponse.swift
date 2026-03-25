@@ -8,6 +8,7 @@ struct MemberGetResponse: Codable, Identifiable {
     let distance: Double?
     let bio: String?
     let updatedAt: String
+    let isChatEnabled: Bool
     var isLike: Bool
     let isPrivatePhoto: Bool
     var isOpenPrivatePhoto: Bool

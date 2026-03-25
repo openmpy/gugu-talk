@@ -5,6 +5,8 @@ import Combine
 final class ChatRoomViewModel: ObservableObject {
 
     private let service = ChatRoomService.shared
+    private let memberQueryService = MemberQueryService.shared
+    private let memberCommandService = MemberCommandService.shared
     private let stomp = StompManager.shared
 
     @Published var errorMessage: String?
@@ -12,6 +14,7 @@ final class ChatRoomViewModel: ObservableObject {
     @Published var hasNext: Bool = true
 
     @Published var chatRooms: [ChatRoomGetResponse] = []
+    @Published var isChatEnabled: Bool = true
 
     private var cancellables = Set<AnyCancellable>()
     private var cursorId: Int64?
@@ -145,6 +148,42 @@ final class ChatRoomViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
             return false
+        }
+    }
+
+    func getChatEnabled() async {
+        guard !isLoading else {
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let response = try await memberQueryService.getChatEnabled(memberId: AuthStore.shared.memberId ?? 0)
+            isChatEnabled = response.isChatEnabled
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
+
+    func toggleChatEnabled() async {
+        guard !isLoading else {
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let response = try await memberCommandService.toogleChatEnabled(memberId: AuthStore.shared.memberId ?? 0)
+
+            isChatEnabled = response.isChatEnabled
+            ToastManager.shared.show(isChatEnabled ? "이제 쪽지를 받을 수 있습니다." : "더 이상 쪽지를 받지 않습니다.")
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
         }
     }
 }

@@ -61,4 +61,16 @@ final class MemberQueryService {
         )
         .decodingWithErrorHandling(MemberGetResponse.self)
     }
+
+    func getChatEnabled(
+        memberId: Int64
+    ) async throws -> MemberGetChatEnabledResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/members/chat-enabled"
+
+        return try await session.request(
+            url,
+            method: .get
+        )
+        .decodingWithErrorHandling(MemberGetChatEnabledResponse.self)
+    }
 }

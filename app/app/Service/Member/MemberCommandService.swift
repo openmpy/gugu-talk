@@ -49,4 +49,16 @@ final class MemberCommandService {
         )
         .validateWithErrorHandling()
     }
+
+    func toogleChatEnabled(
+        memberId: Int64
+    ) async throws -> MemberGetChatEnabledResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/members/chat-enabled"
+
+        return try await session.request(
+            url,
+            method: .put
+        )
+        .decodingWithErrorHandling(MemberGetChatEnabledResponse.self)
+    }
 }

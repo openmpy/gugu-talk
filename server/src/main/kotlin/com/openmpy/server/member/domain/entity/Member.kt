@@ -52,6 +52,9 @@ class Member(
     @Column(columnDefinition = "geography(Point,4326)")
     var location: Point? = null,
 
+    @Column
+    var isChatEnabled: Boolean = true,
+
     @Column(nullable = false)
     var likes: Long = 0,
 
@@ -87,6 +90,10 @@ class Member(
     fun updateLocation(location: Point?) {
         this.location = location
         this.updatedAt = LocalDateTime.now()
+    }
+
+    fun updateChatEnabled(enabled: Boolean) {
+        this.isChatEnabled = enabled
     }
 
     fun increaseLike() {

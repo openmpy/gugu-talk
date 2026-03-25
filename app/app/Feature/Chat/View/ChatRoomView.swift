@@ -115,6 +115,7 @@ struct ChatRoomView: View {
             }
             .task {
                 await vm.fetchChatRooms(status: selectStatus)
+                await vm.getChatEnabled()
             }
             .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)
@@ -129,9 +130,11 @@ struct ChatRoomView: View {
 
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        // 채팅 수신
+                        Task {
+                            await vm.toggleChatEnabled()
+                        }
                     } label: {
-                        Image(systemName: "bell")
+                        Image(systemName: vm.isChatEnabled ? "bell" : "bell.slash")
                     }
                 }
             }

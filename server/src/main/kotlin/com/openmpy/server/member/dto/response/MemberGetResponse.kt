@@ -12,6 +12,7 @@ data class MemberGetResponse(
     val likes: Long,
     val distance: Double?,
     val bio: String?,
+    val isChatEnabled: Boolean,
     val updatedAt: LocalDateTime,
     val isLike: Boolean,
     val isPrivatePhoto: Boolean,

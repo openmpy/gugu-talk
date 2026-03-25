@@ -3,6 +3,7 @@ package com.openmpy.server.member.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.member.application.MemberQueryService
+import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
 import com.openmpy.server.member.dto.response.MemberGetCommentResponse
 import com.openmpy.server.member.dto.response.MemberGetLocationResponse
 import com.openmpy.server.member.dto.response.MemberGetResponse
@@ -44,6 +45,14 @@ class MemberQueryController(
         @PathVariable targetId: Long
     ): ResponseEntity<MemberGetResponse> {
         val response = memberQueryService.get(memberId, targetId)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/members/chat-enabled")
+    fun getChatEnabled(
+        @Login memberId: Long,
+    ): ResponseEntity<MemberGetChatEnabledResponse> {
+        val response = memberQueryService.getChatEnabled(memberId)
         return ResponseEntity.ok(response)
     }
 }
