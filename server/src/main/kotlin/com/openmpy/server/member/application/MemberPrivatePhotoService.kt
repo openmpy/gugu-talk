@@ -60,7 +60,12 @@ class MemberPrivatePhotoService(
             cursorId,
             pageRequest
         )
-        val responses = privatePhotos.map {
+
+        val hasNext = privatePhotos.size > limit
+        val data = privatePhotos.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+
+        val responses = data.map {
             MemberSettingResponse(
                 it.id,
                 it.target.id,
@@ -70,9 +75,6 @@ class MemberPrivatePhotoService(
                 LocalDate.now().year - it.target.birthYear,
             )
         }
-
-        val hasNext = privatePhotos.size > limit
-        val nextCursorId = if (hasNext) privatePhotos.last().id else null
 
         return CursorResponse(
             responses,
