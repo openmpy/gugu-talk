@@ -2,149 +2,100 @@ import SwiftUI
 
 struct ChatRoomView: View {
 
-    @Namespace var namespace
+    @StateObject private var vm = ChatRoomViewModel()
 
-    @State private var message: String = ""
+    @State private var selectStatus: String = "전체"
 
     var body: some View {
         NavigationStack {
-            ScrollView(.vertical, showsIndicators: false) {
+            Picker("전체", selection: $selectStatus) {
+                Text("전체").tag("전체")
+                Text("안읽음").tag("안읽음")
+            }
+            .pickerStyle(.segmented)
+            .padding(.horizontal)
+
+            ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    ForEach(0..<10) { i in
-                        VStack {
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    ForEach(vm.chatRooms) { it in
+                        NavigationLink {
+                            ChatMessageView()
+                        } label: {
+                            HStack(spacing: 12) {
+                                Image(systemName: "person.fill")
+                                    .font(.title)
+                                    .frame(width: 55, height: 55)
+                                    .foregroundColor(Color(.systemGray6))
+                                    .background(Color(.systemGray4))
+                                    .clipShape(Circle())
 
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    HStack {
+                                        Text(it.nickname)
+                                            .font(.headline.bold())
+                                            .foregroundColor(.primary)
 
-                                Spacer()
+                                        Spacer()
+
+                                        Text(it.lastMessageAt.customFormattedTime)
+                                            .font(.caption)
+                                            .foregroundColor(Color(.systemGray))
+                                    }
+
+                                    HStack(alignment: .center) {
+                                        Text(it.lastMessage)
+                                            .lineLimit(2)
+                                            .font(.subheadline)
+                                            .foregroundColor(Color(.systemGray))
+                                            .multilineTextAlignment(.leading)
+
+                                        Spacer()
+
+                                        Text("99")
+                                            .font(.caption2)
+                                            .foregroundColor(Color(.systemBackground))
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 2)
+                                            .background(Color(.systemGray2))
+                                            .clipShape(Capsule())
+                                    }
+                                }
                             }
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-
-                                Spacer()
-                            }
-
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Spacer()
-
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .foregroundColor(.white)
-                                    .background(.blue)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                            }
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Spacer()
-
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .foregroundColor(.white)
-                                    .background(.blue)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .padding(.horizontal)
+                            .padding(.vertical, 5)
+                        }
+                        .onAppear {
+                            if it.id == vm.chatRooms.last?.id {
+                                Task {
+                                    await vm.loadMoreChatRooms()
+                                }
                             }
                         }
-                        .rotationEffect(.degrees(180))
                     }
                 }
-                .padding(.horizontal)
             }
-            .safeAreaInset(edge: .top) {
-                GlassEffectContainer(spacing: 5) {
-                    HStack(alignment: .bottom) {
-                        Image(systemName: "paperclip")
-                            .font(.title3)
-                            .frame(width: 44, height: 44)
-                            .foregroundColor(.primary)
-                            .clipShape(Circle())
-                            .glassEffect(.regular.tint(Color(.clear)).interactive())
-
-                        TextField("메시지 입력", text: $message, axis: .vertical)
-                            .font(.system(size: 16))
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .lineLimit(5)
-                            .padding(.leading)
-                            .padding(.trailing, 50)
-                            .padding(.vertical, 8)
-                            .frame(minHeight: 44)
-                            .overlay(
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                    } label: {
-                                        Image(systemName: "paperplane.fill")
-                                            .foregroundColor(.white)
-                                            .frame(width: 36, height: 36)
-                                            .background(Color.blue)
-                                            .clipShape(Circle())
-                                    }
-                                    .padding(.trailing, 4)
-                                    .padding(.bottom, 4)
-                                }, alignment: .bottom
-                            )
-                            .glassEffect(
-                                .regular.tint(.clear).interactive(),
-                                in: .rect(cornerRadius: 20)
-                            )
-                    }
-                }
-                .rotationEffect(.degrees(180))
-                .padding()
+            .task {
+                await vm.fetchChatRooms()
             }
-            .onTapGesture {
-                hideKeyboard()
-            }
-            .rotationEffect(.degrees(180))
-            .navigationTitle("홍길동")
+            .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
-                        ProfileView(memberId: 1)
+                        ChatSearchView()
                     } label: {
-                        Image(systemName: "person.fill")
-                            .font(.caption2)
-                            .frame(width: 27, height: 27)
-                            .foregroundColor(Color(.systemGray6))
-                            .background(Color(.systemGray4))
-                            .clipShape(Circle())
+                        Image(systemName: "magnifyingglass")
+                    }
+                }
+
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        // 채팅 수신
+                    } label: {
+                        Image(systemName: "bell")
                     }
                 }
             }
         }
     }
-}
-
-#Preview {
-    ChatRoomView()
 }

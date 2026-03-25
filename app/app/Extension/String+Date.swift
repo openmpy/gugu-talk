@@ -2,6 +2,45 @@ import Foundation
 
 extension String {
 
+    var toDate: Date? {
+        String.isoFormatter.date(from: self)
+    }
+
+    var relativeTime: String {
+        guard let date = toDate else { return "" }
+
+        let seconds = Date().timeIntervalSince(date)
+        if abs(seconds) < 60 {
+            return "방금 전"
+        }
+        return String.relativeFormatter.localizedString(for: date, relativeTo: Date())
+    }
+
+    var customFormattedTime: String {
+        guard let date = toDate else { return "" }
+
+        let now = Date()
+        let calendar = Calendar.current
+        let diff = now.timeIntervalSince(date)
+
+        if calendar.isDateInToday(date) {
+            return String.timeFormatter.string(from: date)
+        }
+
+        if calendar.isDateInYesterday(date) {
+            return "어제"
+        }
+
+        let nowYear = calendar.component(.year, from: now)
+        let targetYear = calendar.component(.year, from: date)
+
+        if nowYear == targetYear {
+            return String.monthDayFormatter.string(from: date)
+        }
+
+        return String.fullFormatter.string(from: date)
+    }
+
     private static let isoFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
@@ -16,17 +55,24 @@ extension String {
         return f
     }()
 
-    var toDate: Date? {
-        String.isoFormatter.date(from: self)
-    }
+    private static let timeFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "a hh:mm"
+        return f
+    }()
 
-    var relativeTime: String {
-        guard let date = toDate else { return "" }
-        
-        let seconds = Date().timeIntervalSince(date)
-        if abs(seconds) < 60 {
-            return "방금 전"
-        }
-        return String.relativeFormatter.localizedString(for: date, relativeTo: Date())
-    }
+    private static let monthDayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "MM월 dd일"
+        return f
+    }()
+
+    private static let fullFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "ko_KR")
+        f.dateFormat = "yyyy. MM. dd."
+        return f
+    }()
 }

@@ -13,7 +13,7 @@ struct ContentView: View {
             }
 
             Tab("채팅", systemImage: "bubble") {
-                ChatView()
+                ChatRoomView()
             }
 
             Tab("설정", systemImage: "gear") {

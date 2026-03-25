@@ -68,8 +68,6 @@ class ChatRoomService(
         cursorDateAt: LocalDateTime?,
         limit: Int
     ): CompositeCursorResponse<ChatRoomGetResponse> {
-        println(memberId)
-
         val results = chatRoomRepository.findByMemberIdWithCursor(
             memberId,
             cursorId,
