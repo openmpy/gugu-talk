@@ -8,5 +8,4 @@ struct ChatRoomEvent: Codable {
     let lastMessage: String?
     let lastMessageAt: String?
     let unreadCount: Int64?
-    let isNew: Bool?
 }

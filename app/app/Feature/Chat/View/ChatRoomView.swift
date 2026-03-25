@@ -57,13 +57,15 @@ struct ChatRoomView: View {
 
                                         Spacer()
 
-                                        Text(it.isNew == true ? "N" : "\(it.unreadCount)")
-                                            .font(.caption2)
-                                            .foregroundColor(Color(.systemBackground))
-                                            .padding(.horizontal, 6)
-                                            .padding(.vertical, 2)
-                                            .background(Color(.systemGray2))
-                                            .clipShape(Capsule())
+                                        if it.unreadCount > 0 {
+                                            Text(it.unreadCount > 99 ? "99+" : "\(it.unreadCount)")
+                                                .font(.caption2)
+                                                .foregroundColor(Color(.systemBackground))
+                                                .padding(.horizontal, 6)
+                                                .padding(.vertical, 2)
+                                                .background(Color(.systemGray2))
+                                                .clipShape(Capsule())
+                                        }
                                     }
                                 }
                             }
@@ -114,7 +116,7 @@ struct ChatRoomView: View {
                         Image(systemName: "magnifyingglass")
                     }
                 }
-                
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         // 채팅 수신
