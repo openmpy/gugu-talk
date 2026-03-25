@@ -54,13 +54,17 @@ class MemberBlockService(
     @Transactional(readOnly = true)
     fun gets(memberId: Long, cursorId: Long?, limit: Int): CursorResponse<MemberSettingResponse> {
         val pageRequest = PageRequest.of(0, limit + 1)
-
         val blocks = memberBlockRepository.findBlockedMembers(
             memberId,
             cursorId,
             pageRequest
         )
-        val responses = blocks.map {
+
+        val hasNext = blocks.size > limit
+        val data = blocks.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+
+        val responses = data.map {
             MemberSettingResponse(
                 it.id,
                 it.blocked.id,
@@ -70,9 +74,6 @@ class MemberBlockService(
                 LocalDate.now().year - it.blocked.birthYear,
             )
         }
-
-        val hasNext = blocks.size > limit
-        val nextCursorId = if (hasNext) blocks.last().id else null
 
         return CursorResponse(
             responses,
