@@ -1,5 +1,6 @@
 package com.openmpy.server.common.data
 
+import com.openmpy.server.chat.domain.entity.ChatMessage
 import com.openmpy.server.chat.domain.entity.ChatRoom
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
@@ -111,6 +112,19 @@ class DummyDataInit {
                 }
                 chatRoomRepository.saveAll(chatRooms)
                 println("채팅방 데이터가 생성되었습니다. ${chatRoomRepository.count()}")
+            }
+
+            // 메시지
+            if (chatMessageRepository.count() == 0L) {
+                val chatMessages = (1 until 100).map { i ->
+                    ChatMessage(
+                        chatRoomId = 1L,
+                        senderId = 1L,
+                        content = "날씨가 맑아요 $i",
+                    )
+                }
+                chatMessageRepository.saveAll(chatMessages)
+                println("채팅 메시지 데이터가 생성되었습니다. ${chatMessageRepository.count()}")
             }
         }
     }

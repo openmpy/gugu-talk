@@ -3,8 +3,10 @@ package com.openmpy.server.chat.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
+import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
 import com.openmpy.server.common.dto.CompositeCursorResponse
+import com.openmpy.server.common.dto.CursorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -44,6 +46,17 @@ class ChatRoomController(
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
     ): ResponseEntity<CompositeCursorResponse<ChatRoomGetResponse>> {
         val response = chatRoomService.gets(memberId, cursorId, cursorDateAt, limit)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/chat-rooms/{chatRoomId}")
+    fun get(
+        @Login memberId: Long,
+        @PathVariable chatRoomId: Long,
+        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "limit", defaultValue = "20") limit: Int
+    ): ResponseEntity<CursorResponse<ChatMessageGetResponse>> {
+        val response = chatRoomService.get(memberId, chatRoomId, cursorId, limit)
         return ResponseEntity.ok(response)
     }
 }

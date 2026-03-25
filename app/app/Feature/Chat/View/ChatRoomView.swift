@@ -19,7 +19,12 @@ struct ChatRoomView: View {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.chatRooms) { it in
                         NavigationLink {
-                            ChatMessageView()
+                            ChatMessageView(
+                                chatRoomId: it.chatRoomId,
+                                memberId: it.memberId,
+                                nickname: it.nickname,
+                                thumbnail: it.thumbnail
+                            )
                         } label: {
                             HStack(spacing: 12) {
                                 Image(systemName: "person.fill")

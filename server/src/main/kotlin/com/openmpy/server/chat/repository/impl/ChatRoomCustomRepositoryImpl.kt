@@ -23,6 +23,7 @@ class ChatRoomCustomRepositoryImpl(
                 """
                     SELECT new com.openmpy.server.chat.repository.dto.ChatRoomGetResult(
                         cr.id,
+                        CASE WHEN cr.member1Id = :memberId THEN m2.id ELSE m1.id END,
                         CASE WHEN cr.member1Id = :memberId THEN m2.nickname ELSE m1.nickname END,
                         cr.lastMessage,
                         cr.lastMessageAt

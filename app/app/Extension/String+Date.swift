@@ -40,6 +40,11 @@ extension String {
         return String.fullFormatter.string(from: date)
     }
 
+    var ampmTime: String {
+        guard let date = toDate else { return "" }
+        return String.timeFormatter.string(from: date)
+    }
+
     private static let isoFormatter: DateFormatter = {
         let f = DateFormatter()
         f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"

@@ -2,6 +2,13 @@ import SwiftUI
 
 struct ChatMessageView: View {
 
+    let chatRoomId: Int64
+    let memberId: Int64
+    let nickname: String
+    let thumbnail: String?
+
+    @StateObject private var vm = ChatMessageViewModel()
+
     @Namespace var namespace
 
     @State private var message: String = ""
@@ -10,69 +17,49 @@ struct ChatMessageView: View {
         NavigationStack {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    ForEach(0..<10) { i in
+                    ForEach(vm.chatMessages) { it in
                         VStack {
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                            if (AuthStore.shared.memberId != it.senderId) {
+                                HStack(alignment: .bottom, spacing: 5) {
+                                    Text(it.content)
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 8)
+                                        .background(Color(.systemGray6))
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
 
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
+                                    Text(it.createdAt.ampmTime)
+                                        .font(.caption2)
+                                        .foregroundColor(.gray)
 
-                                Spacer()
-                            }
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .background(Color(.systemGray6))
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    Spacer()
+                                }
+                            } else {
+                                HStack(alignment: .bottom, spacing: 5) {
+                                    Spacer()
 
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
+                                    Text(it.createdAt.ampmTime)
+                                        .font(.caption2)
+                                        .foregroundColor(.gray)
 
-                                Spacer()
-                            }
-
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Spacer()
-
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .foregroundColor(.white)
-                                    .background(.blue)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
-                            }
-                            HStack(alignment: .bottom, spacing: 5) {
-                                Spacer()
-
-                                Text("오전 1:23")
-                                    .font(.caption2)
-                                    .foregroundColor(.gray)
-
-                                Text("메시지")
-                                    .font(.subheadline)
-                                    .padding(.horizontal, 10)
-                                    .padding(.vertical, 8)
-                                    .foregroundColor(.white)
-                                    .background(.blue)
-                                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                                    Text(it.content)
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 8)
+                                        .foregroundColor(.white)
+                                        .background(.blue)
+                                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                                }
                             }
                         }
                         .rotationEffect(.degrees(180))
+                        .onAppear {
+                            if it.id == vm.chatMessages.last?.id {
+                                Task {
+                                    await vm.loadMoreChatMessages(chatRoomId: chatRoomId)
+                                }
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal)
@@ -120,17 +107,20 @@ struct ChatMessageView: View {
                 .rotationEffect(.degrees(180))
                 .padding()
             }
+            .task {
+                await vm.fetchChatMessages(chatRoomId: chatRoomId)
+            }
             .onTapGesture {
                 hideKeyboard()
             }
             .rotationEffect(.degrees(180))
-            .navigationTitle("홍길동")
+            .navigationTitle(nickname)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar(.hidden, for: .tabBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink {
-                        ProfileView(memberId: 1)
+                        ProfileView(memberId: memberId)
                     } label: {
                         Image(systemName: "person.fill")
                             .font(.caption2)
@@ -143,8 +133,4 @@ struct ChatMessageView: View {
             }
         }
     }
-}
-
-#Preview {
-    ChatRoomView()
 }
