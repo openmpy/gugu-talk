@@ -1,16 +1,13 @@
 package com.openmpy.server.member.repository.impl
 
-import com.linecorp.kotlinjdsl.support.spring.data.jpa.repository.KotlinJdslJpqlExecutor
-import com.openmpy.server.member.domain.entity.Member
-import com.openmpy.server.member.domain.entity.MemberLike
 import com.openmpy.server.member.repository.MemberLikeCustomRepository
 import com.openmpy.server.member.repository.dto.MemberSettingResult
-import org.springframework.data.domain.PageRequest
+import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Repository
 
 @Repository
 class MemberLikeCustomRepositoryImpl(
-    private val jpql: KotlinJdslJpqlExecutor
+    private val entityManager: EntityManager
 ) : MemberLikeCustomRepository {
 
     override fun findByLikerIdWithCursor(
@@ -18,26 +15,26 @@ class MemberLikeCustomRepositoryImpl(
         cursorId: Long?,
         limit: Int
     ): List<MemberSettingResult> {
-
-        return jpql.findAll(PageRequest.of(0, limit)) {
-            select(
-                new(
-                    MemberSettingResult::class,
-                    path(MemberLike::id),
-                    path(Member::id),
-                    path(Member::nickname),
-                    path(Member::gender),
-                    path(Member::birthYear),
+        val jpql = buildString {
+            append(
+                """
+                SELECT new com.openmpy.server.member.repository.dto.MemberSettingResult(
+                    ml.id, m.id, m.nickname, m.gender, m.birthYear
                 )
-            ).from(
-                entity(MemberLike::class),
-                join(Member::class).on(
-                    path(Member::id).eq(path(MemberLike::targetId))
-                )
-            ).whereAnd(
-                path(MemberLike::likerId).eq(likerId),
-                cursorId?.let { path(MemberLike::id).lt(it) }
-            ).orderBy(path(MemberLike::id).desc())
-        }.filterNotNull()
+                FROM MemberLike ml
+                JOIN Member m ON m.id = ml.targetId
+                WHERE ml.likerId = :likerId
+            """
+            )
+            if (cursorId != null) {
+                append(" AND ml.id < :cursorId")
+            }
+            append(" ORDER BY ml.id DESC")
+        }
+        return entityManager.createQuery(jpql, MemberSettingResult::class.java).apply {
+            setParameter("likerId", likerId)
+            cursorId?.let { setParameter("cursorId", it) }
+            maxResults = limit
+        }.resultList
     }
 }

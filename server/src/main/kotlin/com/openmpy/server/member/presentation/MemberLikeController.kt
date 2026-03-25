@@ -36,7 +36,7 @@ class MemberLikeController(
     @GetMapping("/v1/members/likes")
     fun gets(
         @Login memberId: Long,
-        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "cursorId", required = false) cursorId: Long?,
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
     ): ResponseEntity<CursorResponse<MemberSettingResponse>> {
         val response = memberLikeService.gets(memberId, cursorId, limit)

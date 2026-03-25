@@ -57,7 +57,12 @@ class MemberLikeService(
             cursorId,
             limit + 1
         )
-        val responses = projections.map {
+
+        val hasNext = projections.size > limit
+        val data = projections.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+
+        val responses = data.map {
             MemberSettingResponse(
                 it.id,
                 it.memberId,
@@ -67,9 +72,6 @@ class MemberLikeService(
                 LocalDate.now().year - it.birthYear
             )
         }
-
-        val hasNext = projections.size > limit
-        val nextCursorId = if (hasNext) projections.last().id else null
 
         return CursorResponse(
             responses,
