@@ -116,7 +116,7 @@ struct ChatRoomView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink {
-                        ChatSearchView()
+                        ChatRoomSearchView()
                     } label: {
                         Image(systemName: "magnifyingglass")
                     }
