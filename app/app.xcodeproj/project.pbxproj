@@ -12,6 +12,7 @@
 		9D9F14D22F71457300A9C891 /* SimpleToast in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F14D12F71457300A9C891 /* SimpleToast */; };
 		9D9F15192F72589B00A9C891 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F15182F72589B00A9C891 /* Kingfisher */; };
 		9D9F15202F72621200A9C891 /* Zoomable in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F151F2F72621200A9C891 /* Zoomable */; };
+		9D9F160A2F73C1E000A9C891 /* SwiftStomp in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F16092F73C1E000A9C891 /* SwiftStomp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9D9F160A2F73C1E000A9C891 /* SwiftStomp in Frameworks */,
 				9D9F15192F72589B00A9C891 /* Kingfisher in Frameworks */,
 				9D9F14492F704AA200A9C891 /* ValidatedPropertyKit in Frameworks */,
 				9D9F14D22F71457300A9C891 /* SimpleToast in Frameworks */,
@@ -83,6 +85,7 @@
 				9D9F14D12F71457300A9C891 /* SimpleToast */,
 				9D9F15182F72589B00A9C891 /* Kingfisher */,
 				9D9F151F2F72621200A9C891 /* Zoomable */,
+				9D9F16092F73C1E000A9C891 /* SwiftStomp */,
 			);
 			productName = app;
 			productReference = 9D9F14292F70283900A9C891 /* app.app */;
@@ -118,6 +121,7 @@
 				9D9F14D02F71457300A9C891 /* XCRemoteSwiftPackageReference "SimpleToast" */,
 				9D9F15172F72589B00A9C891 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */,
+				9D9F16082F73C1E000A9C891 /* XCRemoteSwiftPackageReference "SwiftStomp" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D9F142A2F70283900A9C891 /* Products */;
@@ -420,6 +424,14 @@
 				kind = branch;
 			};
 		};
+		9D9F16082F73C1E000A9C891 /* XCRemoteSwiftPackageReference "SwiftStomp" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Romixery/SwiftStomp.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -447,6 +459,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */;
 			productName = Zoomable;
+		};
+		9D9F16092F73C1E000A9C891 /* SwiftStomp */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D9F16082F73C1E000A9C891 /* XCRemoteSwiftPackageReference "SwiftStomp" */;
+			productName = SwiftStomp;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

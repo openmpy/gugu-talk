@@ -7,14 +7,18 @@ struct GuguApp: App {
     @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false
 
     @StateObject private var toast = ToastManager.shared
+    @ObservedObject private var stomp = StompManager.shared
 
     private let toastOptions = SimpleToastOptions(alignment: .top, hideAfter: 5)
-    
+
     var body: some Scene {
         WindowGroup {
             ZStack {
                 if isLoggedIn {
                     ContentView()
+                        .task {
+                            stomp.connect(accessToken: AuthStore.shared.accessToken ?? "")
+                        }
                 } else {
                     LoginView()
                 }
