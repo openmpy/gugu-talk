@@ -21,7 +21,6 @@ extension String {
 
         let now = Date()
         let calendar = Calendar.current
-        let diff = now.timeIntervalSince(date)
 
         if calendar.isDateInToday(date) {
             return String.timeFormatter.string(from: date)

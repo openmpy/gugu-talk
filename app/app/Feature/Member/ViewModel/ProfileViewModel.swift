@@ -8,6 +8,7 @@ final class ProfileViewModel: ObservableObject {
     private let likeService = MemberLikeService.shared
     private let privatePhotoService = MemberPrivatePhotoService.shared
     private let blockService = MemberBlockService.shared
+    private let chatRoomService = ChatRoomService.shared
 
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
@@ -153,6 +154,24 @@ final class ProfileViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
+
+    func sendMessage(targetId: Int64, content: String) async -> Bool {
+        guard !isLoading else {
+            return false
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            try await chatRoomService.create(targetId: targetId, content: content)
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+            return false
         }
     }
 }

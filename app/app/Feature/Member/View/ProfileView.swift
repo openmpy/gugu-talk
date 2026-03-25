@@ -5,6 +5,8 @@ struct ProfileView: View {
 
     let memberId: Int64
 
+    @AppStorage("comment") private var saveComment: String?
+
     @StateObject private var vm = ProfileViewModel()
 
     @Namespace var namespace
@@ -119,6 +121,7 @@ struct ProfileView: View {
 
                                 Button {
                                     showMessage = true
+                                    message = saveComment ?? ""
                                 } label: {
                                     Image(systemName: "message.fill")
                                         .frame(width: 60, height: 60)
@@ -181,7 +184,12 @@ struct ProfileView: View {
                         TextField("내용 입력", text: $message)
 
                         Button("전송", role: .confirm) {
-                            // 전송
+                            Task {
+                                if await vm.sendMessage(targetId: memberId, content: message) == true {
+                                    saveComment = message
+                                    ToastManager.shared.show("쪽지가 전송되었습니다.")
+                                }
+                            }
                         }
                         Button("취소", role: .cancel) {
                             // 취소

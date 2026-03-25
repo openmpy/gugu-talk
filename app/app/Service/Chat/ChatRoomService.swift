@@ -5,7 +5,22 @@ final class ChatRoomService {
     static let shared = ChatRoomService()
     
     let session = Session(interceptor: AuthInterceptor())
-    
+
+    func create(targetId: Int64, content: String) async throws {
+        let url = "\(NetworkConfig.baseURL)/v1/chat-rooms?targetId=\(targetId)"
+        let request = ChatRoomCreateRequest(
+            content: content
+        )
+
+        try await session.request(
+            url,
+            method: .post,
+            parameters: request,
+            encoder: JSONParameterEncoder.default
+        )
+        .validateWithErrorHandlingForEmptyResponse()
+    }
+
     func gets(
         cursorId: Int64?,
         cursorDateAt: String?,

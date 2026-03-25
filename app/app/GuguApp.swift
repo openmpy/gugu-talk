@@ -4,12 +4,12 @@ import SimpleToast
 @main
 struct GuguApp: App {
 
-    @AppStorage("isLoggedIn") private var isLoggedIn = false
+    @AppStorage("isLoggedIn") private var isLoggedIn: Bool = false
 
     @StateObject private var toast = ToastManager.shared
 
     private let toastOptions = SimpleToastOptions(alignment: .top, hideAfter: 5)
-
+    
     var body: some Scene {
         WindowGroup {
             ZStack {

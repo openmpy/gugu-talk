@@ -68,7 +68,7 @@ extension DataRequest {
     func validateWithErrorHandlingForEmptyResponse() async throws {
         let response = await self
             .validate()
-            .serializingData(emptyResponseCodes: [200])
+            .serializingData(emptyResponseCodes: [200, 201, 204])
             .response
 
         switch response.result {
