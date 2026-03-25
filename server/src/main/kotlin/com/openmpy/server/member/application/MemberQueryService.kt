@@ -41,7 +41,12 @@ class MemberQueryService(
             cursorId,
             limit + 1
         )
-        val responses = comments.map {
+
+        val hasNext = comments.size > limit
+        val data = comments.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+
+        val responses = data.map {
             MemberGetCommentResponse(
                 it.id,
                 null,
@@ -54,9 +59,6 @@ class MemberQueryService(
                 it.updatedAt
             )
         }
-
-        val hasNext = comments.size > limit
-        val nextCursorId = if (hasNext) comments.last().id else null
 
         return CursorResponse(
             responses,
@@ -87,7 +89,12 @@ class MemberQueryService(
             cursorId,
             limit + 1
         )
-        val responses = locations.map {
+
+        val hasNext = locations.size > limit
+        val data = locations.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+
+        val responses = data.map {
             MemberGetLocationResponse(
                 it.id,
                 null,
@@ -100,9 +107,6 @@ class MemberQueryService(
                 it.updatedAt
             )
         }
-
-        val hasNext = locations.size > limit
-        val nextCursorId = if (hasNext) locations.last().id else null
 
         return CursorResponse(
             responses,
