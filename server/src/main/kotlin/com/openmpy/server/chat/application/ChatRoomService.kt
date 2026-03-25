@@ -3,12 +3,15 @@ package com.openmpy.server.chat.application
 import com.openmpy.server.chat.domain.entity.ChatMessage
 import com.openmpy.server.chat.domain.entity.ChatRoom
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
+import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
+import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.exception.CustomException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import kotlin.math.max
 import kotlin.math.min
 
@@ -56,5 +59,44 @@ class ChatRoomService(
         }
 
         chatRoom.delete()
+    }
+
+    @Transactional(readOnly = true)
+    fun gets(
+        memberId: Long,
+        cursorId: Long?,
+        cursorDateAt: LocalDateTime?,
+        limit: Int
+    ): CompositeCursorResponse<ChatRoomGetResponse> {
+        println(memberId)
+
+        val results = chatRoomRepository.findByMemberIdWithCursor(
+            memberId,
+            cursorId,
+            cursorDateAt,
+            limit + 1
+        )
+
+        val hasNext = results.size > limit
+        val data = results.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+        val nextCursorDateAt = if (hasNext) data.last().lastMessageAt else null
+
+        val responses = data.map {
+            ChatRoomGetResponse(
+                it.id,
+                null,
+                it.nickname,
+                it.lastMessage,
+                it.lastMessageAt,
+            )
+        }
+
+        return CompositeCursorResponse(
+            responses,
+            nextCursorId,
+            nextCursorDateAt,
+            hasNext
+        )
     }
 }

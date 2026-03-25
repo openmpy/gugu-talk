@@ -3,9 +3,12 @@ package com.openmpy.server.chat.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
+import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
+import com.openmpy.server.common.dto.CompositeCursorResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RequestMapping("/api")
 @RestController
@@ -31,5 +34,16 @@ class ChatRoomController(
     ): ResponseEntity<Unit> {
         chatRoomService.delete(memberId, chatRoomId)
         return ResponseEntity.noContent().build()
+    }
+
+    @GetMapping("/v1/chat-rooms")
+    fun gets(
+        @Login memberId: Long,
+        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "cursorDateAt") cursorDateAt: LocalDateTime?,
+        @RequestParam(value = "limit", defaultValue = "20") limit: Int
+    ): ResponseEntity<CompositeCursorResponse<ChatRoomGetResponse>> {
+        val response = chatRoomService.gets(memberId, cursorId, cursorDateAt, limit)
+        return ResponseEntity.ok(response)
     }
 }
