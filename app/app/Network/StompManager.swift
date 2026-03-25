@@ -6,6 +6,8 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
 
     static let shared = StompManager()
 
+    let chatMessageSubject = PassthroughSubject<(chatRoomId: Int64, data: Data), Never>()
+
     var stomp: SwiftStomp!
 
     func connect(accessToken: String) {
@@ -36,7 +38,16 @@ class StompManager: NSObject, ObservableObject, SwiftStompDelegate {
         destination: String,
         headers : [String : String]
     ) {
+        guard let text = message as? String,
+              let data = text.data(using: .utf8) else { return }
 
+        if destination.hasPrefix("/sub/chat-rooms") {
+            let chatRoomIdText = String(destination.split(separator: "/").last ?? "")
+            
+            if let chatRoomId = Int64(chatRoomIdText) {
+                chatMessageSubject.send((chatRoomId: chatRoomId, data: data))
+            }
+        }
     }
 
     func onReceipt(swiftStomp : SwiftStomp, receiptId : String) {

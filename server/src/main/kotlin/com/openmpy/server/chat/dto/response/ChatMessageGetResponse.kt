@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 data class ChatMessageGetResponse(
 
-    val chatId: Long,
+    val chatMessageId: Long,
     val senderId: Long,
     val content: String,
     val type: ChatMessageType,

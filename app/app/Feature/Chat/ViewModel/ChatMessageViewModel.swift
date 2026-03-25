@@ -13,7 +13,20 @@ final class ChatMessageViewModel: ObservableObject {
 
     @Published var chatMessages: [ChatMessageGetResponse] = []
 
+    private var cancellables = Set<AnyCancellable>()
     private var cursorId: Int64?
+
+    init(chatRoomId: Int64) {
+        stomp.chatMessageSubject
+            .filter { $0.chatRoomId == chatRoomId }
+            .map { try? JSONDecoder().decode(ChatMessageGetResponse.self, from: $0.data) }
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] message in
+                self?.chatMessages.insert(message, at: 0)
+            }
+            .store(in: &cancellables)
+        }
 
     func fetchChatMessages(chatRoomId: Int64) async {
         hasNext = true

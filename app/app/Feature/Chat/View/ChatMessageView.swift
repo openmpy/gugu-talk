@@ -7,12 +7,21 @@ struct ChatMessageView: View {
     let nickname: String
     let thumbnail: String?
 
-    @StateObject private var vm = ChatMessageViewModel()
+    @StateObject private var vm: ChatMessageViewModel
     @StateObject private var stomp = StompManager.shared
 
     @Namespace var namespace
 
     @State private var message: String = ""
+
+    init(chatRoomId: Int64, memberId: Int64, nickname: String, thumbnail: String?) {
+        self.chatRoomId = chatRoomId
+        self.memberId = memberId
+        self.nickname = nickname
+        self.thumbnail = thumbnail
+
+        _vm = StateObject(wrappedValue: ChatMessageViewModel(chatRoomId: chatRoomId))
+    }
 
     var body: some View {
         NavigationStack {
