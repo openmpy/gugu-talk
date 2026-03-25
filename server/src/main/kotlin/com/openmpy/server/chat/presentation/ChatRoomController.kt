@@ -3,7 +3,7 @@ package com.openmpy.server.chat.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
 import com.openmpy.server.chat.dto.event.ChatRoomDeleteEvent
-import com.openmpy.server.chat.dto.event.ChatRoomNewEvent
+import com.openmpy.server.chat.dto.event.ChatRoomUpdateEvent
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
@@ -33,13 +33,14 @@ class ChatRoomController(
 
         messageTemplate.convertAndSend(
             "/sub/chat-rooms/members/$targetId",
-            ChatRoomNewEvent(
+            ChatRoomUpdateEvent(
                 chatRoomId = response.chatRoomId,
                 memberId = response.memberId,
-                thumbnail = null,
+                thumbnail = response.thumbnail,
                 nickname = response.nickname,
                 lastMessage = response.lastMessage,
                 lastMessageAt = response.lastMessageAt,
+                unreadCount = response.unreadCount,
             )
         )
         return ResponseEntity.status(HttpStatus.CREATED).build()

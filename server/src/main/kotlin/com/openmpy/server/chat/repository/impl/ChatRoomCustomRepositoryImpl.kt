@@ -26,7 +26,16 @@ class ChatRoomCustomRepositoryImpl(
                         CASE WHEN cr.member1Id = :memberId THEN m2.id ELSE m1.id END,
                         CASE WHEN cr.member1Id = :memberId THEN m2.nickname ELSE m1.nickname END,
                         cr.lastMessage,
-                        cr.lastMessageAt
+                        cr.lastMessageAt,
+                        (SELECT COUNT(cm.id) FROM ChatMessage cm
+                        WHERE cm.chatRoomId = cr.id
+                            AND cm.id > COALESCE(
+                                CASE WHEN cr.member1Id = :memberId 
+                                    THEN cr.member1LastReadMessageId 
+                                    ELSE cr.member2LastReadMessageId END,
+                                0L
+                            )
+                        )
                     )
                     FROM ChatRoom cr
                     JOIN Member m1 ON m1.id = cr.member1Id

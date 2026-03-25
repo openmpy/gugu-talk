@@ -29,29 +29,37 @@ final class ChatRoomViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] event in
                 guard let self else { return }
+
                 if let idx = chatRooms.firstIndex(where: { $0.chatRoomId == event.chatRoomId }) {
                     var updated = chatRooms.remove(at: idx)
-                    
+
                     updated.lastMessage = event.lastMessage ?? ""
                     updated.lastMessageAt = event.lastMessageAt ?? ""
+                    updated.unreadCount = updated.unreadCount + 1
                     chatRooms.insert(updated, at: 0)
+                } else {
+                    let newRoom = ChatRoomGetResponse(
+                        chatRoomId: event.chatRoomId,
+                        memberId: event.memberId ?? 0,
+                        thumbnail: event.thumbnail ?? "",
+                        nickname: event.nickname ?? "",
+                        lastMessage: event.lastMessage ?? "",
+                        lastMessageAt: event.lastMessageAt ?? "",
+                        unreadCount: event.unreadCount ?? 0
+                    )
+                    chatRooms.insert(newRoom, at: 0)
                 }
             }
             .store(in: &cancellables)
 
-        stomp.chatRoomNewSubject
+        NotificationCenter.default.publisher(for: .chatRoomMarkAsRead)
             .receive(on: DispatchQueue.main)
-            .sink { [weak self] event in
+            .compactMap { $0.object as? Int64 }
+            .sink { [weak self] chatRoomId in
                 guard let self else { return }
-                let newRoom = ChatRoomGetResponse(
-                    chatRoomId: event.chatRoomId,
-                    memberId: event.memberId ?? 0,
-                    thumbnail: event.thumbnail,
-                    nickname: event.nickname ?? "",
-                    lastMessage: event.lastMessage ?? "",
-                    lastMessageAt: event.lastMessageAt ?? ""
-                )
-                chatRooms.insert(newRoom, at: 0)
+                if let idx = chatRooms.firstIndex(where: { $0.chatRoomId == chatRoomId }) {
+                    chatRooms[idx].unreadCount = 0
+                }
             }
             .store(in: &cancellables)
     }
@@ -112,7 +120,7 @@ final class ChatRoomViewModel: ObservableObject {
         guard !isLoading else {
             return false
         }
-
+        
         isLoading = true
         defer { isLoading = false }
 

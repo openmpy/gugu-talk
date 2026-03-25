@@ -6,6 +6,8 @@ struct ChatRoomGetResponse: Codable, Identifiable {
     let nickname: String
     var lastMessage: String
     var lastMessageAt: String
+    var unreadCount: Int64
+    var isNew: Bool?
 
     var id: Int64 { chatRoomId }
 }

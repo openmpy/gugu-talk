@@ -9,4 +9,5 @@ data class ChatRoomGetResult(
     val nickname: String,
     val lastMessage: String,
     val lastMessageAt: LocalDateTime,
+    val unreadCount: Long,
 )

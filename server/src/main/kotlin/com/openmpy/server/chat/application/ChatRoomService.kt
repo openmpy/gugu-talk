@@ -64,7 +64,8 @@ class ChatRoomService(
             null,
             member.nickname,
             message.content,
-            message.createdAt
+            message.createdAt,
+            1
         )
     }
 
@@ -117,6 +118,7 @@ class ChatRoomService(
                 it.nickname,
                 it.lastMessage,
                 it.lastMessageAt,
+                it.unreadCount,
             )
         }
 

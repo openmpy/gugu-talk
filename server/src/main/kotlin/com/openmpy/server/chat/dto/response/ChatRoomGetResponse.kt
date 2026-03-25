@@ -13,4 +13,6 @@ data class ChatRoomGetResponse(
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
     val lastMessageAt: LocalDateTime,
+
+    val unreadCount: Long,
 )

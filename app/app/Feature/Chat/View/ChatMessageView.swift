@@ -122,9 +122,6 @@ struct ChatMessageView: View {
                 .rotationEffect(.degrees(180))
                 .padding()
             }
-            .task {
-                await vm.fetchChatMessages(chatRoomId: chatRoomId)
-            }
             .onTapGesture {
                 hideKeyboard()
             }
@@ -139,6 +136,9 @@ struct ChatMessageView: View {
                     await vm.markAsRead(chatRoomId: chatRoomId)
                 }
                 stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
+            }
+            .task {
+                await vm.fetchChatMessages(chatRoomId: chatRoomId)
             }
             .rotationEffect(.degrees(180))
             .navigationTitle(nickname)

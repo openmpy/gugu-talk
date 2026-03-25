@@ -57,7 +57,7 @@ struct ChatRoomView: View {
 
                                         Spacer()
 
-                                        Text("99")
+                                        Text(it.isNew == true ? "N" : "\(it.unreadCount)")
                                             .font(.caption2)
                                             .foregroundColor(Color(.systemBackground))
                                             .padding(.horizontal, 6)
@@ -95,14 +95,14 @@ struct ChatRoomView: View {
                     }
                 }
             }
-            .task {
-                await vm.fetchChatRooms()
-            }
             .onAppear {
                 stomp.subscribe(to: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")
             }
             .onDisappear {
                 stomp.unsubscribe(from: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")
+            }
+            .task {
+                await vm.fetchChatRooms()
             }
             .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)
@@ -114,7 +114,7 @@ struct ChatRoomView: View {
                         Image(systemName: "magnifyingglass")
                     }
                 }
-
+                
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         // 채팅 수신
