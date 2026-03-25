@@ -184,6 +184,11 @@ struct ProfileView: View {
                         TextField("내용 입력", text: $message)
 
                         Button("전송", role: .confirm) {
+                            if message.isEmpty {
+                                ToastManager.shared.show("내용을 입력해주세요.", type: .error)
+                                return
+                            }
+
                             Task {
                                 if await vm.sendMessage(targetId: memberId, content: message) == true {
                                     saveComment = message

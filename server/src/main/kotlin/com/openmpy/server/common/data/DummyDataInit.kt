@@ -36,6 +36,7 @@ class DummyDataInit {
                     Member(
                         uuid = UUID.randomUUID().toString(),
                         phone = "01000000%03d".format(i),
+                        nickname = "닉네임$i",
                         password = "1234",
                         status = MemberStatus.ACTIVE,
                         gender = if (i % 2 == 0) Gender.MALE else Gender.FEMALE,
