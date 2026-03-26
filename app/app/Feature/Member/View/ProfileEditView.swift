@@ -242,8 +242,9 @@ struct ProfileEditView: View {
                 Image(systemName: "xmark.circle.fill")
                     .font(.system(size: 20))
                     .foregroundStyle(.white, Color.red.opacity(0.8))
+                    .padding(10)
+                    .contentShape(Rectangle())
             }
-            .padding(6)
 
             if showBadge, let label = badgeLabel {
                 Text(label)
