@@ -2,10 +2,9 @@ package com.openmpy.server.member.application
 
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
-import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
-import com.openmpy.server.member.dto.response.MemberGetCommentResponse
-import com.openmpy.server.member.dto.response.MemberGetLocationResponse
-import com.openmpy.server.member.dto.response.MemberGetResponse
+import com.openmpy.server.image.domain.type.MemberImageType
+import com.openmpy.server.image.repository.MemberImageRepository
+import com.openmpy.server.member.dto.response.*
 import com.openmpy.server.member.repository.MemberBlockRepository
 import com.openmpy.server.member.repository.MemberLikeRepository
 import com.openmpy.server.member.repository.MemberPrivatePhotoRepository
@@ -22,6 +21,7 @@ class MemberQueryService(
     private val memberLikeRepository: MemberLikeRepository,
     private val memberPrivatePhotoRepository: MemberPrivatePhotoRepository,
     private val memberBlockRepository: MemberBlockRepository,
+    private val memberImageRepository: MemberImageRepository,
 ) {
 
     @Transactional(readOnly = true)
@@ -146,5 +146,31 @@ class MemberQueryService(
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
         return MemberGetChatEnabledResponse(member.isChatEnabled)
+    }
+
+    @Transactional(readOnly = true)
+    fun getMy(memberId: Long): MemberGetMyResponse {
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
+        val images = memberImageRepository.findAllByMemberId(member.id)
+
+        val publicImages = images
+            .filter { it.type == MemberImageType.PUBLIC }
+            .sortedBy { it.sortOrder }
+            .map { MemberGetImageResponse(it.id, it.url, it.key, it.type, it.sortOrder) }
+        val privateImages = images
+            .filter { it.type == MemberImageType.PRIVATE }
+            .sortedBy { it.sortOrder }
+            .map { MemberGetImageResponse(it.id, it.url, it.key, it.type, it.sortOrder) }
+
+        return MemberGetMyResponse(
+            member.id,
+            publicImages,
+            privateImages,
+            member.nickname,
+            member.birthYear,
+            member.bio
+        )
     }
 }

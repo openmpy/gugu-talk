@@ -4,8 +4,7 @@ import PhotosUI
 struct PhotoReorderSheet: View {
 
     let title: String
-    @Binding var images: [UIImage]
-    @Binding var items: [PhotosPickerItem]
+    @Binding var images: [EditableImage]
     let badgeLabel: String?
     let badgeColor: Color
     let onDismiss: () -> Void
@@ -18,9 +17,9 @@ struct PhotoReorderSheet: View {
 
             ScrollView {
                 VStack(spacing: 10) {
-                    ForEach(Array(images.enumerated()), id: \.offset) { index, image in
+                    ForEach(Array(images.enumerated()), id: \.element.id) { index, editableImage in
                         HStack {
-                            Image(uiImage: image)
+                            Image(uiImage: editableImage.uiImage)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 100, height: 100)
@@ -84,19 +83,11 @@ struct PhotoReorderSheet: View {
 
     private func moveUp(index: Int) {
         guard index > 0 else { return }
-
         images.swapAt(index, index - 1)
-        if index < items.count && index - 1 < items.count {
-            items.swapAt(index, index - 1)
-        }
     }
 
     private func moveDown(index: Int) {
         guard index < images.count - 1 else { return }
-
         images.swapAt(index, index + 1)
-        if index < items.count && index + 1 < items.count {
-            items.swapAt(index, index + 1)
-        }
     }
 }

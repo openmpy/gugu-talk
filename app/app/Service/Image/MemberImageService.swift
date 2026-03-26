@@ -8,7 +8,7 @@ final class MemberImageService {
 
     func getPresignedUrl(type: String) async throws -> PresignedUrlResponse {
         let url = "\(NetworkConfig.baseURL)/v1/members/images/presigned-url"
-        
+
         return try await session.request(
             url,
             method: .get,

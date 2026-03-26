@@ -3,10 +3,7 @@ package com.openmpy.server.member.presentation
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.member.application.MemberQueryService
-import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
-import com.openmpy.server.member.dto.response.MemberGetCommentResponse
-import com.openmpy.server.member.dto.response.MemberGetLocationResponse
-import com.openmpy.server.member.dto.response.MemberGetResponse
+import com.openmpy.server.member.dto.response.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -53,6 +50,14 @@ class MemberQueryController(
         @Login memberId: Long,
     ): ResponseEntity<MemberGetChatEnabledResponse> {
         val response = memberQueryService.getChatEnabled(memberId)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/members/my")
+    fun getMy(
+        @Login memberId: Long,
+    ): ResponseEntity<MemberGetMyResponse> {
+        val response = memberQueryService.getMy(memberId)
         return ResponseEntity.ok(response)
     }
 }

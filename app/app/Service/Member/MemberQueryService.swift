@@ -73,4 +73,14 @@ final class MemberQueryService {
         )
         .decodingWithErrorHandling(MemberGetChatEnabledResponse.self)
     }
+
+    func getMy() async throws -> MemberGetMyResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/members/my"
+
+        return try await session.request(
+            url,
+            method: .get
+        )
+        .decodingWithErrorHandling(MemberGetMyResponse.self)
+    }
 }
