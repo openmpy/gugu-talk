@@ -15,7 +15,7 @@ final class MemberQueryService {
         let url = "\(NetworkConfig.baseURL)/v1/members/comments"
         var params: Parameters = [
             "gender": gender,
-            "limit": 20
+            "limit": limit
         ]
         if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
@@ -32,24 +32,22 @@ final class MemberQueryService {
 
     func getLocations(
         gender: String,
-        cursorId: Int64?,
+        page: Int,
         limit: Int
-    ) async throws -> CursorResponse<MemberGetLocationResponse> {
+    ) async throws -> PageResponse<MemberGetLocationResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/members/locations"
         var params: Parameters = [
             "gender": gender,
-            "limit": 20
+            "page": page,
+            "limit": limit
         ]
-        if let cursorId = cursorId {
-            params["cursorId"] = cursorId
-        }
 
         return try await session.request(
             url,
             method: .get,
             parameters: params.compactMapValues { $0 }
         )
-        .decodingWithErrorHandling(CursorResponse<MemberGetLocationResponse>.self)
+        .decodingWithErrorHandling(PageResponse<MemberGetLocationResponse>.self)
     }
 
     func get(

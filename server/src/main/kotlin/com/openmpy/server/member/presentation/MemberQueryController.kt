@@ -2,7 +2,7 @@ package com.openmpy.server.member.presentation
 
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.common.dto.CompositeCursorResponse
-import com.openmpy.server.common.dto.CursorResponse
+import com.openmpy.server.common.dto.PageResponse
 import com.openmpy.server.member.application.MemberQueryService
 import com.openmpy.server.member.dto.response.*
 import org.springframework.http.ResponseEntity
@@ -38,10 +38,10 @@ class MemberQueryController(
     fun getLocations(
         @Login memberId: Long,
         @RequestParam(value = "gender") gender: String,
-        @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "page", defaultValue = "0") page: Int,
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
-    ): ResponseEntity<CursorResponse<MemberGetLocationResponse>> {
-        val response = memberQueryService.getLocations(memberId, gender, cursorId, limit)
+    ): ResponseEntity<PageResponse<MemberGetLocationResponse>> {
+        val response = memberQueryService.getLocations(memberId, gender, page, limit)
         return ResponseEntity.ok(response)
     }
 

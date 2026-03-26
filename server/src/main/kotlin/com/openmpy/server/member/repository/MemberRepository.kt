@@ -72,9 +72,9 @@ interface MemberRepository : JpaRepository<Member, Long> {
                 AND m.location IS NOT NULL
                 AND :location IS NOT NULL
                 AND (:gender IS NULL OR m.gender = :gender)
-                AND (:cursorId IS NULL OR m.id < :cursorId)
+                AND m.updated_at >= NOW() - INTERVAL '24 hours'
             ORDER BY distance, m.updated_at DESC
-            LIMIT :limit
+            LIMIT :limit OFFSET :offset
         """,
         nativeQuery = true
     )
@@ -82,8 +82,8 @@ interface MemberRepository : JpaRepository<Member, Long> {
         @Param("id") id: Long,
         @Param("location") location: Point?,
         @Param("gender") gender: String?,
-        @Param("cursorId") cursorId: Long?,
         @Param("limit") limit: Int,
+        @Param("offset") offset: Int,
     ): List<MemberWithDistanceProjection>
 
     @Query(

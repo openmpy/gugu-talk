@@ -9,6 +9,8 @@ import com.openmpy.server.member.repository.MemberBlockRepository
 import com.openmpy.server.member.repository.MemberLikeRepository
 import com.openmpy.server.member.repository.MemberPrivatePhotoRepository
 import com.openmpy.server.member.repository.MemberRepository
+import org.locationtech.jts.geom.Coordinate
+import org.locationtech.jts.geom.GeometryFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
@@ -29,7 +31,14 @@ class DummyDataInit {
         return CommandLineRunner {
             // 회원
             if (memberRepository.count() == 0L) {
+                val geometryFactory = GeometryFactory()
+
                 val members = (0 until 100).map { i ->
+                    val latitude = 37.5665 + (Math.random() - 0.5) * 0.1
+                    val longitude = 126.9780 + (Math.random() - 0.5) * 0.1
+                    val point = geometryFactory.createPoint(Coordinate(longitude, latitude))
+                    point.srid = 4326
+
                     Member(
                         uuid = UUID.randomUUID().toString(),
                         phone = "01000000%03d".format(i),
@@ -37,10 +46,11 @@ class DummyDataInit {
                         password = "1234",
                         status = MemberStatus.ACTIVE,
                         gender = if (i % 2 == 0) Gender.MALE else Gender.FEMALE,
-                        birthYear = 1920 + i,
+                        birthYear = 1920 + i / 2,
                         bio = "반갑습니다 $i",
                         comment = "감사합니다 $i",
-                        likes = i.toLong()
+                        likes = i.toLong(),
+                        location = point
                     )
                 }
                 memberRepository.saveAll(members)

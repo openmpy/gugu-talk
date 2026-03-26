@@ -1,7 +1,7 @@
 package com.openmpy.server.member.application
 
 import com.openmpy.server.common.dto.CompositeCursorResponse
-import com.openmpy.server.common.dto.CursorResponse
+import com.openmpy.server.common.dto.PageResponse
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.image.domain.type.MemberImageType
 import com.openmpy.server.image.repository.MemberImageRepository
@@ -78,9 +78,9 @@ class MemberQueryService(
     fun getLocations(
         memberId: Long,
         gender: String,
-        cursorId: Long?,
+        page: Int,
         limit: Int
-    ): CursorResponse<MemberGetLocationResponse> {
+    ): PageResponse<MemberGetLocationResponse> {
         val member = (memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
@@ -89,18 +89,16 @@ class MemberQueryService(
         }
 
         val resolvedGender = if (gender != "MALE" && gender != "FEMALE") null else gender
+        val offset = page * limit
         val locations = memberRepository.findAllLocations(
             memberId,
             member.location,
             resolvedGender,
-            cursorId,
-            limit + 1
+            limit + 1,
+            offset
         )
-
         val hasNext = locations.size > limit
         val data = locations.dropLast(if (hasNext) 1 else 0)
-        val nextCursorId = if (hasNext) data.last().id else null
-
         val responses = data.map {
             MemberGetLocationResponse(
                 it.id,
@@ -114,12 +112,7 @@ class MemberQueryService(
                 it.updatedAt
             )
         }
-
-        return CursorResponse(
-            responses,
-            nextCursorId,
-            hasNext
-        )
+        return PageResponse(responses, page, hasNext)
     }
 
     @Transactional(readOnly = true)

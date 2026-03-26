@@ -13,14 +13,13 @@ final class LocationViewModel: ObservableObject {
 
     @Published var locations: [MemberGetLocationResponse] = []
 
-    private var cursorId: Int64?
+    private var currentPage: Int = 0
 
     func fetchLocations(gender: String) async {
+        currentPage = 0
         hasNext = true
 
-        guard !isLoading, hasNext else {
-            return
-        }
+        guard !isLoading else { return }
 
         isLoading = true
         defer { isLoading = false }
@@ -28,12 +27,11 @@ final class LocationViewModel: ObservableObject {
         do {
             let response = try await queryService.getLocations(
                 gender: gender,
-                cursorId: nil,
+                page: 0,
                 limit: 20
             )
 
             locations = response.payload
-            cursorId = response.nextId
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription
@@ -42,22 +40,21 @@ final class LocationViewModel: ObservableObject {
     }
 
     func loadMoreLocations(gender: String) async {
-        guard !isLoading, hasNext else {
-            return
-        }
+        guard !isLoading, hasNext else { return }
 
         isLoading = true
         defer { isLoading = false }
 
         do {
+            currentPage += 1
+
             let response = try await queryService.getLocations(
                 gender: gender,
-                cursorId: cursorId,
+                page: currentPage,
                 limit: 20
             )
 
             locations.append(contentsOf: response.payload)
-            cursorId = response.nextId
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription
