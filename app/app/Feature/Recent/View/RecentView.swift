@@ -7,7 +7,7 @@ struct RecentView: View {
     @StateObject private var locationManager = LocationManager()
 
     @State private var selectGender: String = "ALL"
-    @State private var showAlert: Bool = false
+    @State private var writeCommentAlert: Bool = false
     @State private var comment: String = ""
 
     var body: some View {
@@ -20,55 +20,15 @@ struct RecentView: View {
                         NavigationLink {
                             ProfileView(memberId: it.memberId)
                         } label: {
-                            HStack(spacing: 12) {
-                                Image(systemName: "person.fill")
-                                    .font(.title)
-                                    .frame(width: 55, height: 55)
-                                    .foregroundColor(Color(.systemGray6))
-                                    .background(Color(.systemGray4))
-                                    .clipShape(Circle())
-
-                                VStack(alignment: .leading) {
-                                    HStack {
-                                        Text(it.nickname)
-                                            .font(.headline.bold())
-                                            .foregroundColor(it.gender == "MALE" ? .blue : .pink)
-
-                                        Spacer()
-
-                                        Text(it.updatedAt.relativeTime)
-                                            .font(.caption)
-                                            .foregroundColor(Color(.systemGray))
-                                    }
-
-                                    Text(it.comment)
-                                        .lineLimit(1)
-                                        .font(.subheadline)
-                                        .foregroundColor(Color(.systemGray))
-
-                                    HStack {
-                                        HStack {
-                                            Text(it.gender == "MALE" ? "남자" : "여자")
-                                            Text("·")
-                                            Text("\(it.age)살")
-                                            Text("·")
-                                            Text("♥ \(it.likes)")
-                                        }
-                                        .font(.footnote)
-                                        .foregroundColor(Color(.systemGray))
-
-                                        Spacer()
-
-                                        if let distance = it.distance {
-                                            Text(String(format: "%.1f", distance) + "km")
-                                                .font(.caption)
-                                                .foregroundColor(Color(.systemGray))
-                                        }
-                                    }
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 5)
+                            MemberRowView(
+                                nickname: it.nickname,
+                                gender: it.gender,
+                                updatedAt: it.updatedAt,
+                                content: it.comment,
+                                age: it.age,
+                                likes: it.likes,
+                                distance: it.distance
+                            )
                         }
                         .onAppear {
                             if it.id == vm.comments.last?.id {
@@ -106,16 +66,15 @@ struct RecentView: View {
                         Image(systemName: "magnifyingglass")
                     }
                 }
-
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
-                        showAlert = true
+                        writeCommentAlert = true
                     } label: {
                         Image(systemName: "square.and.pencil")
                     }
                 }
             }
-            .alert("코멘트", isPresented: $showAlert) {
+            .alert("코멘트", isPresented: $writeCommentAlert) {
                 TextField("내용 입력", text: $comment)
 
                 Button("작성", role: .confirm) {
@@ -136,8 +95,4 @@ struct RecentView: View {
             latitude: location?.coordinate.latitude
         )
     }
-}
-
-#Preview {
-    RecentView()
 }
