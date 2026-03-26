@@ -13,6 +13,7 @@ final class MemberSearchViewModel: ObservableObject {
     @Published var members: [MemberSearchNicknameResponse] = []
 
     private var cursorId: Int64?
+    private var cursorDateAt: String?
 
     func fetchMembers(nickname: String) async {
         hasNext = true
@@ -28,11 +29,13 @@ final class MemberSearchViewModel: ObservableObject {
             let response = try await service.searchMembers(
                 nickname: nickname,
                 cursorId: nil,
+                cursorDateAt: nil,
                 limit: 20
             )
 
             members = response.payload
             cursorId = response.nextId
+            cursorDateAt = response.nextDateAt
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription
@@ -52,11 +55,13 @@ final class MemberSearchViewModel: ObservableObject {
             let response = try await service.searchMembers(
                 nickname: nickname,
                 cursorId: cursorId,
+                cursorDateAt: cursorDateAt,
                 limit: 20
             )
 
             members.append(contentsOf: response.payload)
             cursorId = response.nextId
+            cursorDateAt = response.nextDateAt
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription

@@ -36,7 +36,7 @@ final class MemberQueryService {
         limit: Int
     ) async throws -> PageResponse<MemberGetLocationResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/members/locations"
-        var params: Parameters = [
+        let params: Parameters = [
             "gender": gender,
             "page": page,
             "limit": limit

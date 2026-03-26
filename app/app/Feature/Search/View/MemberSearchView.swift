@@ -4,60 +4,35 @@ struct MemberSearchView: View {
 
     @StateObject private var vm = MemberSearchViewModel()
 
-    @State private var searchNickname: String = ""
+    @State private var keyword: String = ""
 
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    if vm.members.isEmpty {
-                        Text("검색 결과가 없습니다")
-                            .foregroundColor(.secondary)
-                            .padding(.vertical)
-                    } else {
-                        ForEach(vm.members) { it in
-                            NavigationLink {
-                                ProfileView(memberId: it.memberId)
-                            } label: {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "person.fill")
-                                        .font(.title)
-                                        .frame(width: 55, height: 55)
-                                        .foregroundColor(Color(.systemGray6))
-                                        .background(Color(.systemGray4))
-                                        .clipShape(Circle())
-
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        HStack {
-                                            Text(it.nickname)
-                                                .font(.headline.bold())
-                                                .foregroundColor(it.gender == "MALE" ? .blue : .pink)
-
-                                            Spacer()
-
-                                            Text(it.updatedAt.relativeTime)
-                                                .font(.caption)
-                                                .foregroundColor(Color(.systemGray))
-                                        }
-
-                                        HStack {
-                                            Text(it.gender == "MALE" ? "남자" : "여자")
-                                            Text("·")
-                                            Text("\(it.age)살")
-                                            Text("·")
-                                            Text("♥ \(it.likes)")
-                                        }
-                                        .font(.footnote)
-                                        .foregroundColor(Color(.systemGray))
-                                    }
+                    Group {
+                        if vm.members.isEmpty {
+                            Text("검색 결과가 없습니다")
+                                .foregroundColor(.secondary)
+                                .padding(.vertical)
+                        } else {
+                            ForEach(vm.members) { it in
+                                NavigationLink {
+                                    ProfileView(memberId: it.memberId)
+                                } label: {
+                                    MemberSearchRowView(
+                                        nickname: it.nickname,
+                                        gender: it.gender,
+                                        updatedAt: it.updatedAt,
+                                        age: it.age,
+                                        likes: it.likes
+                                    )
                                 }
-                                .padding(.horizontal)
-                                .padding(.vertical, 5)
-                            }
-                            .onAppear {
-                                if it.id == vm.members.last?.id {
-                                    Task {
-                                        await vm.loadMoreMembers(nickname: searchNickname)
+                                .onAppear {
+                                    if it.id == vm.members.last?.id {
+                                        Task {
+                                            await vm.loadMoreMembers(nickname: keyword)
+                                        }
                                     }
                                 }
                             }
@@ -66,13 +41,13 @@ struct MemberSearchView: View {
                 }
             }
             .searchable(
-                text: $searchNickname,
+                text: $keyword,
                 placement: .navigationBarDrawer(displayMode: .always),
                 prompt: "닉네임 입력"
             )
             .onSubmit(of: .search) {
                 Task {
-                    await vm.fetchMembers(nickname: searchNickname)
+                    await vm.fetchMembers(nickname: keyword)
                 }
             }
             .scrollDismissesKeyboard(.interactively)

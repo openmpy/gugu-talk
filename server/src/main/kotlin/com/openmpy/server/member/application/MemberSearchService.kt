@@ -1,11 +1,12 @@
 package com.openmpy.server.member.application
 
-import com.openmpy.server.common.dto.CursorResponse
+import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.member.dto.response.MemberSearchNicknameResponse
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class MemberSearchService(
@@ -18,15 +19,23 @@ class MemberSearchService(
         memberId: Long,
         nickname: String,
         cursorId: Long?,
+        cursorDateAt: LocalDateTime?,
         limit: Int
-    ): CursorResponse<MemberSearchNicknameResponse> {
+    ): CompositeCursorResponse<MemberSearchNicknameResponse> {
         val members = memberRepository.findByNicknameStartsWith(
             memberId,
             nickname,
             cursorId,
-            limit + 1
+            cursorDateAt,
+            limit + 1,
         )
-        val responses = members.map {
+
+        val hasNext = members.size > limit
+        val data = members.dropLast(if (hasNext) 1 else 0)
+        val nextCursorId = if (hasNext) data.last().id else null
+        val nextCursorDateAt = if (hasNext) data.last().updatedAt else null
+
+        val responses = data.map {
             MemberSearchNicknameResponse(
                 it.id,
                 null,
@@ -38,12 +47,10 @@ class MemberSearchService(
             )
         }
 
-        val hasNext = members.size > limit
-        val nextCursorId = if (hasNext) members.last().id else null
-
-        return CursorResponse(
+        return CompositeCursorResponse(
             responses,
             nextCursorId,
+            nextCursorDateAt,
             hasNext
         )
     }

@@ -97,8 +97,10 @@ class MemberQueryService(
             limit + 1,
             offset
         )
+
         val hasNext = locations.size > limit
         val data = locations.dropLast(if (hasNext) 1 else 0)
+
         val responses = data.map {
             MemberGetLocationResponse(
                 it.id,

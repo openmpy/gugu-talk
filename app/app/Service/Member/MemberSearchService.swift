@@ -1,30 +1,32 @@
 import Alamofire
 
 final class MemberSearchService {
-
+    
     static let shared = MemberSearchService()
-
+    
     let session = Session(interceptor: AuthInterceptor())
-
+    
     func searchMembers(
         nickname: String,
         cursorId: Int64?,
+        cursorDateAt: String?,
         limit: Int
-    ) async throws -> CursorResponse<MemberSearchNicknameResponse> {
+    ) async throws -> CompositeCursorResponse<MemberSearchNicknameResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/members/search"
         var params: Parameters = [
             "nickname": nickname,
-            "limit": 20
+            "limit": limit
         ]
-        if let cursorId = cursorId {
+        if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
+            params["cursorDateAt"] = cursorDateAt
         }
-
+        
         return try await session.request(
             url,
             method: .get,
             parameters: params.compactMapValues { $0 }
         )
-        .decodingWithErrorHandling(CursorResponse<MemberSearchNicknameResponse>.self)
+        .decodingWithErrorHandling(CompositeCursorResponse<MemberSearchNicknameResponse>.self)
     }
 }

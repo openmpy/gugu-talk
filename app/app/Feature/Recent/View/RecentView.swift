@@ -49,6 +49,7 @@ struct RecentView: View {
     }
 
     // MARK: - Subview
+    
     private var commentListView: some View {
         ScrollView(showsIndicators: false) {
             LazyVStack(spacing: 10) {

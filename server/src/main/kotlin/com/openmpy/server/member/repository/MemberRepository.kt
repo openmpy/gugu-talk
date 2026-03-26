@@ -92,8 +92,12 @@ interface MemberRepository : JpaRepository<Member, Long> {
             FROM member m 
             WHERE m.id <> :id 
                 AND m.nickname LIKE CONCAT(:nickname, '%')
-                AND (:cursorId IS NULL OR m.id < :cursorId)
-            ORDER BY m.updated_at DESC
+                AND (
+                    CAST(:cursorDateAt AS timestamp) IS NULL
+                    OR m.updated_at < :cursorDateAt
+                    OR (m.updated_at = :cursorDateAt AND m.id < :cursorId)
+                )
+            ORDER BY m.updated_at DESC, m.id DESC
             LIMIT :limit
         """,
         nativeQuery = true
@@ -102,6 +106,7 @@ interface MemberRepository : JpaRepository<Member, Long> {
         @Param("id") id: Long,
         @Param("nickname") nickname: String,
         @Param("cursorId") cursorId: Long?,
+        @Param("cursorDateAt") cursorDateAt: LocalDateTime?,
         @Param("limit") limit: Int,
     ): List<Member>
 
