@@ -2,18 +2,23 @@ package com.openmpy.server.image.application
 
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.image.domain.entity.MemberImage
+import com.openmpy.server.image.domain.type.MemberImageType
 import com.openmpy.server.image.dto.request.MemberImageSaveRequest
 import com.openmpy.server.image.repository.MemberImageRepository
 import com.openmpy.server.member.repository.MemberRepository
+import com.openmpy.server.s3.application.S3Service
+import com.openmpy.server.s3.dto.response.PresignedUrlResponse
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.*
 
 @Service
 class MemberImageService(
 
     private val memberImageRepository: MemberImageRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val s3Service: S3Service,
 ) {
 
     @Transactional
@@ -48,5 +53,18 @@ class MemberImageService(
                 memberImage.updateSortOrder(it.sortOrder)
             }
         }
+    }
+
+    @Transactional
+    fun getProfilePresignedUrl(
+        memberId: Long,
+        type: String
+    ): PresignedUrlResponse {
+        memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+
+        val imageType = MemberImageType.from(type).name.lowercase()
+        val key = "members/$memberId/$imageType/${UUID.randomUUID()}.jpeg"
+        return s3Service.createPresignedUrl(key)
     }
 }

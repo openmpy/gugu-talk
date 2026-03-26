@@ -3,9 +3,6 @@ package com.openmpy.server.common.data
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
 import com.openmpy.server.member.domain.entity.Member
-import com.openmpy.server.member.domain.entity.MemberBlock
-import com.openmpy.server.member.domain.entity.MemberLike
-import com.openmpy.server.member.domain.entity.MemberPrivatePhoto
 import com.openmpy.server.member.domain.type.Gender
 import com.openmpy.server.member.domain.type.MemberStatus
 import com.openmpy.server.member.repository.MemberBlockRepository
@@ -51,44 +48,44 @@ class DummyDataInit {
             }
 
             // 회원 좋아요
-            if (memberLikeRepository.count() == 0L) {
-                val memberLikes = (2 until 100).map { i ->
-                    MemberLike(
-                        likerId = 1,
-                        targetId = i.toLong()
-                    )
-                }
-                memberLikeRepository.saveAll(memberLikes)
-                println("회원 좋아요 데이터가 생성되었습니다. ${memberLikeRepository.count()}")
-            }
+//            if (memberLikeRepository.count() == 0L) {
+//                val memberLikes = (2 until 100).map { i ->
+//                    MemberLike(
+//                        likerId = 1,
+//                        targetId = i.toLong()
+//                    )
+//                }
+//                memberLikeRepository.saveAll(memberLikes)
+//                println("회원 좋아요 데이터가 생성되었습니다. ${memberLikeRepository.count()}")
+//            }
 
             // 회원 비밀 사진
-            if (memberPrivatePhotoRepository.count() == 0L) {
-                val member = memberRepository.findById(1).get()
-
-                val memberPrivatePhoto = (2 until 100).map { i ->
-                    MemberPrivatePhoto(
-                        owner = member,
-                        target = memberRepository.findById(i.toLong()).get()
-                    )
-                }
-                memberPrivatePhotoRepository.saveAll(memberPrivatePhoto)
-                println("회원 비밀 사진 데이터가 생성되었습니다. ${memberLikeRepository.count()}")
-            }
+//            if (memberPrivatePhotoRepository.count() == 0L) {
+//                val member = memberRepository.findById(1).get()
+//
+//                val memberPrivatePhoto = (2 until 100).map { i ->
+//                    MemberPrivatePhoto(
+//                        owner = member,
+//                        target = memberRepository.findById(i.toLong()).get()
+//                    )
+//                }
+//                memberPrivatePhotoRepository.saveAll(memberPrivatePhoto)
+//                println("회원 비밀 사진 데이터가 생성되었습니다. ${memberLikeRepository.count()}")
+//            }
 
             // 회원 차단
-            if (memberBlockRepository.count() == 0L) {
-                val member = memberRepository.findById(1).get()
-
-                val memberBlock = (2 until 100).map { i ->
-                    MemberBlock(
-                        blocker = member,
-                        blocked = memberRepository.findById(i.toLong()).get()
-                    )
-                }
-                memberBlockRepository.saveAll(memberBlock)
-                println("회원 차단 데이터가 생성되었습니다. ${memberBlockRepository.count()}")
-            }
+//            if (memberBlockRepository.count() == 0L) {
+//                val member = memberRepository.findById(1).get()
+//
+//                val memberBlock = (2 until 100).map { i ->
+//                    MemberBlock(
+//                        blocker = member,
+//                        blocked = memberRepository.findById(i.toLong()).get()
+//                    )
+//                }
+//                memberBlockRepository.saveAll(memberBlock)
+//                println("회원 차단 데이터가 생성되었습니다. ${memberBlockRepository.count()}")
+//            }
 
             // 채팅방
 //            if (chatRoomRepository.count() == 0L) {

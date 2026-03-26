@@ -8,6 +8,7 @@ enum class Gender {
     FEMALE;
 
     companion object {
+
         @JsonCreator
         @JvmStatic
         fun from(value: String): Gender {
