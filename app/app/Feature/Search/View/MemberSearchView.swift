@@ -10,29 +10,27 @@ struct MemberSearchView: View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
-                    Group {
-                        if vm.members.isEmpty {
-                            Text("검색 결과가 없습니다")
-                                .foregroundColor(.secondary)
-                                .padding(.vertical)
-                        } else {
-                            ForEach(vm.members) { it in
-                                NavigationLink {
-                                    ProfileView(memberId: it.memberId)
-                                } label: {
-                                    MemberSearchRowView(
-                                        nickname: it.nickname,
-                                        gender: it.gender,
-                                        updatedAt: it.updatedAt,
-                                        age: it.age,
-                                        likes: it.likes
-                                    )
-                                }
-                                .onAppear {
-                                    if it.id == vm.members.last?.id {
-                                        Task {
-                                            await vm.loadMoreMembers(nickname: keyword)
-                                        }
+                    if vm.members.isEmpty {
+                        Text("검색 결과가 없습니다")
+                            .foregroundColor(.secondary)
+                            .padding(.vertical)
+                    } else {
+                        ForEach(vm.members) { it in
+                            NavigationLink {
+                                ProfileView(memberId: it.memberId)
+                            } label: {
+                                MemberSearchRowView(
+                                    nickname: it.nickname,
+                                    gender: it.gender,
+                                    updatedAt: it.updatedAt,
+                                    age: it.age,
+                                    likes: it.likes
+                                )
+                            }
+                            .onAppear {
+                                if it.id == vm.members.last?.id {
+                                    Task {
+                                        await vm.loadMoreMembers(nickname: keyword)
                                     }
                                 }
                             }

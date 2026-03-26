@@ -79,9 +79,7 @@ struct ProfileView: View {
                         }
                     }
                 }
-                Button("취소", role: .cancel) {
-                    // 취소
-                }
+                Button("취소", role: .cancel) { }
             }
             .alert(vm.member.isBlock ? "차단 해제" : "차단", isPresented: $showBlock) {
                 Button(vm.member.isBlock ? "차단 해제" : "차단", role: .destructive) {
