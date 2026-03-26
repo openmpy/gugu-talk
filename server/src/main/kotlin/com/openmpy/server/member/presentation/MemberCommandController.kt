@@ -4,6 +4,7 @@ import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.member.application.MemberCommandService
 import com.openmpy.server.member.dto.request.MemberUpdateCommentRequest
 import com.openmpy.server.member.dto.request.MemberUpdateLocationRequest
+import com.openmpy.server.member.dto.request.MemberUpdateProfileRequest
 import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PutMapping
@@ -46,5 +47,14 @@ class MemberCommandController(
     fun toggleChatEnabled(@Login memberId: Long): ResponseEntity<MemberGetChatEnabledResponse> {
         val response = memberCommandService.toggleChatEnabled(memberId)
         return ResponseEntity.ok(response)
+    }
+
+    @PutMapping("/v1/members")
+    fun updateProfile(
+        @Login memberId: Long,
+        @RequestBody request: MemberUpdateProfileRequest
+    ): ResponseEntity<Unit> {
+        memberCommandService.updateProfile(memberId, request)
+        return ResponseEntity.noContent().build()
     }
 }

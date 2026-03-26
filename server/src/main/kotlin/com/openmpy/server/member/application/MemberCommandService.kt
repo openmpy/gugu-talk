@@ -3,6 +3,7 @@ package com.openmpy.server.member.application
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.dto.request.MemberUpdateCommentRequest
 import com.openmpy.server.member.dto.request.MemberUpdateLocationRequest
+import com.openmpy.server.member.dto.request.MemberUpdateProfileRequest
 import com.openmpy.server.member.dto.response.MemberGetChatEnabledResponse
 import com.openmpy.server.member.repository.MemberRepository
 import org.locationtech.jts.geom.Coordinate
@@ -55,5 +56,17 @@ class MemberCommandService(
 
         member.isChatEnabled = !member.isChatEnabled
         return MemberGetChatEnabledResponse(member.isChatEnabled)
+    }
+
+    @Transactional
+    fun updateProfile(memberId: Long, request: MemberUpdateProfileRequest) {
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+
+        if (memberRepository.existsByNicknameAndIdNot(request.nickname, memberId)) {
+            throw CustomException("이미 사용중인 닉네임입니다.")
+        }
+
+        member.updateProfile(request.nickname, request.birthYear, request.bio)
     }
 }

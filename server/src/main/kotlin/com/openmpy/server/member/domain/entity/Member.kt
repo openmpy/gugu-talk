@@ -107,4 +107,10 @@ class Member(
 
         this.likes -= 1
     }
+
+    fun updateProfile(nickname: String, birthYear: Int, bio: String?) {
+        this.nickname = nickname
+        this.birthYear = birthYear
+        this.bio = bio
+    }
 }

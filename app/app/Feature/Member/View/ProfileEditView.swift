@@ -87,13 +87,18 @@ struct ProfileEditView: View {
                         let originalPublicIds = vm.member.publicImages.map(\.imageId)
                         let originalPrivateIds = vm.member.privateImages.map(\.imageId)
 
-                        let success = await vm.uploadImages(
+                        let updateSuccess = await vm.updateProfile(nickname: vm.member.nickname, birthYear: vm.member.birthYear, bio: vm.member.bio)
+
+                        guard updateSuccess else { return }
+                        
+                        let uploadSuccess = await vm.uploadImages(
                             publicImages: publicImages,
                             privateImages: privateImages,
                             originalPublicIds: originalPublicIds,
                             originalPrivateIds: originalPrivateIds
                         )
-                        if success {
+
+                        if (updateSuccess && uploadSuccess) {
                             ToastManager.shared.show("프로필이 편집되었습니다.")
                             dismiss()
                         }

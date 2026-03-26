@@ -61,4 +61,25 @@ final class MemberCommandService {
         )
         .decodingWithErrorHandling(MemberGetChatEnabledResponse.self)
     }
+
+    func updateProfile(
+        nickname: String,
+        birthYear: Int,
+        bio: String?
+    ) async throws {
+        let url = "\(NetworkConfig.baseURL)/v1/members"
+        let request = MemberUpdateProfileRequest(
+            nickname: nickname,
+            birthYear: birthYear,
+            bio: bio
+        )
+
+        try await session.request(
+            url,
+            method: .put,
+            parameters: request,
+            encoder: JSONParameterEncoder.default
+        )
+        .validateWithErrorHandling()
+    }
 }

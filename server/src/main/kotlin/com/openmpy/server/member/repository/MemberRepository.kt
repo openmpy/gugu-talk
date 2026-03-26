@@ -15,6 +15,8 @@ interface MemberRepository : JpaRepository<Member, Long> {
 
     fun existsByNickname(nickname: String): Boolean
 
+    fun existsByNicknameAndIdNot(nickname: String, id: Long): Boolean
+
     @Query(
         value = """
             SELECT 
