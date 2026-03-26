@@ -1,6 +1,7 @@
 struct MemberGetResponse: Codable, Identifiable {
 
     let memberId: Int64
+    let images: [MemberPublicImageResponse]
     let nickname: String
     let gender: String
     let age: Int
@@ -15,4 +16,9 @@ struct MemberGetResponse: Codable, Identifiable {
     var isBlock: Bool
 
     var id: Int64 { memberId }
+}
+
+struct MemberPublicImageResponse: Codable {
+
+    let url: String
 }

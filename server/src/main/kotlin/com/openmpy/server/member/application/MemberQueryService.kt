@@ -124,8 +124,14 @@ class MemberQueryService(
         val target = (memberRepository.findByIdOrNull(targetId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
+        val targetImages = memberImageRepository.findAllByMemberIdAndTypeOrderBySortOrder(
+            targetId,
+            MemberImageType.PUBLIC
+        ).map { MemberPublicImageResponse(it.url) }
+
         return MemberGetResponse(
             target.id,
+            targetImages,
             target.nickname,
             target.gender,
             LocalDate.now().year - target.birthYear,

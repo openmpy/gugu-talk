@@ -6,6 +6,7 @@ import java.time.LocalDateTime
 data class MemberGetResponse(
 
     val memberId: Long,
+    val images: List<MemberPublicImageResponse>,
     val nickname: String,
     val gender: Gender,
     val age: Int,
@@ -18,4 +19,9 @@ data class MemberGetResponse(
     val isPrivatePhoto: Boolean,
     val isOpenPrivatePhoto: Boolean,
     val isBlock: Boolean,
+)
+
+data class MemberPublicImageResponse(
+
+    val url: String,
 )

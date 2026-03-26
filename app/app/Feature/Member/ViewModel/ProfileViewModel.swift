@@ -13,7 +13,22 @@ final class ProfileViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
 
-    @Published var member: MemberGetResponse?
+    @Published var member: MemberGetResponse = MemberGetResponse(
+        memberId: 0,
+        images: [],
+        nickname: "",
+        gender: "",
+        age: 0,
+        likes: 0,
+        distance: nil,
+        bio: nil,
+        updatedAt: "",
+        isChatEnabled: false,
+        isLike: false,
+        isPrivatePhoto: false,
+        isOpenPrivatePhoto: false,
+        isBlock: false
+    )
 
     func get(targetId: Int64) async {
         guard !isLoading else {
@@ -42,10 +57,8 @@ final class ProfileViewModel: ObservableObject {
         do {
             let response = try await likeService.add(targetId: targetId)
 
-            if member != nil {
-                member?.likes = response.likes
-                member?.isLike = true
-            }
+            member.likes = response.likes
+            member.isLike = true
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
@@ -63,10 +76,8 @@ final class ProfileViewModel: ObservableObject {
         do {
             let response = try await likeService.cancel(targetId: targetId)
 
-            if member != nil {
-                member?.likes = response.likes
-                member?.isLike = false
-            }
+            member.likes = response.likes
+            member.isLike = false
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
@@ -84,9 +95,7 @@ final class ProfileViewModel: ObservableObject {
         do {
             try await privatePhotoService.open(targetId: targetId)
 
-            if member != nil {
-                member?.isOpenPrivatePhoto = true
-            }
+            member.isOpenPrivatePhoto = true
             ToastManager.shared.show("비밀 사진을 공개하셨습니다.")
         } catch {
             errorMessage = error.localizedDescription
@@ -105,9 +114,7 @@ final class ProfileViewModel: ObservableObject {
         do {
             try await privatePhotoService.close(targetId: targetId)
 
-            if member != nil {
-                member?.isOpenPrivatePhoto = false
-            }
+            member.isOpenPrivatePhoto = false
             ToastManager.shared.show("비밀 사진 공개를 닫으셨습니다.")
         } catch {
             errorMessage = error.localizedDescription
@@ -126,9 +133,7 @@ final class ProfileViewModel: ObservableObject {
         do {
             try await blockService.add(targetId: targetId)
 
-            if member != nil {
-                member?.isBlock = true
-            }
+            member.isBlock = true
             ToastManager.shared.show("차단하셨습니다.")
         } catch {
             errorMessage = error.localizedDescription
@@ -147,9 +152,7 @@ final class ProfileViewModel: ObservableObject {
         do {
             try await blockService.remove(targetId: targetId)
 
-            if member != nil {
-                member?.isBlock = false
-            }
+            member.isBlock = false
             ToastManager.shared.show("차단을 해제하셨습니다.")
         } catch {
             errorMessage = error.localizedDescription
