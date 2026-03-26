@@ -78,7 +78,7 @@ struct MyProfileView: View {
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             NavigationLink {
-                                ImageOrderView()
+                                ProfileEditView()
                             } label: {
                                 Text("편집")
                             }
