@@ -12,49 +12,10 @@ struct RecentView: View {
 
     var body: some View {
         NavigationStack {
-            GenderPickerView(selectGender: $selectGender)
+            VStack {
+                GenderPickerView(selectGender: $selectGender)
 
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 10) {
-                    ForEach(vm.comments) { it in
-                        NavigationLink {
-                            ProfileView(memberId: it.memberId)
-                        } label: {
-                            MemberRowView(
-                                nickname: it.nickname,
-                                gender: it.gender,
-                                updatedAt: it.updatedAt,
-                                content: it.comment,
-                                age: it.age,
-                                likes: it.likes,
-                                distance: it.distance
-                            )
-                        }
-                        .onAppear {
-                            if it.id == vm.comments.last?.id {
-                                Task {
-                                    await vm.loadMoreComments(gender: selectGender)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            .refreshable {
-                Task {
-                    await updateLocation()
-                    await vm.bumpComment()
-                    await vm.fetchComments(gender: selectGender)
-                }
-            }
-            .task {
-                await updateLocation()
-                await vm.fetchComments(gender: selectGender)
-            }
-            .onChange(of: selectGender) { _, newValue in
-                Task {
-                    await vm.fetchComments(gender: newValue)
-                }
+                commentListView
             }
             .navigationTitle("최근")
             .navigationBarTitleDisplayMode(.inline)
@@ -86,6 +47,54 @@ struct RecentView: View {
             }
         }
     }
+
+    // MARK: - Subview
+    private var commentListView: some View {
+        ScrollView(showsIndicators: false) {
+            LazyVStack(spacing: 10) {
+                ForEach(vm.comments) { it in
+                    NavigationLink {
+                        ProfileView(memberId: it.memberId)
+                    } label: {
+                        MemberRowView(
+                            nickname: it.nickname,
+                            gender: it.gender,
+                            updatedAt: it.updatedAt,
+                            content: it.comment,
+                            age: it.age,
+                            likes: it.likes,
+                            distance: it.distance
+                        )
+                    }
+                    .onAppear {
+                        if it.id == vm.comments.last?.id {
+                            Task {
+                                await vm.loadMoreComments(gender: selectGender)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .refreshable {
+            Task {
+                await updateLocation()
+                await vm.bumpComment()
+                await vm.fetchComments(gender: selectGender)
+            }
+        }
+        .task {
+            await updateLocation()
+            await vm.fetchComments(gender: selectGender)
+        }
+        .onChange(of: selectGender) { _, newValue in
+            Task {
+                await vm.fetchComments(gender: newValue)
+            }
+        }
+    }
+
+    // MARK: - Function
 
     private func updateLocation() async {
         let location = locationManager.currentLocation

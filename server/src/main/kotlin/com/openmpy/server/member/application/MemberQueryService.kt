@@ -1,5 +1,6 @@
 package com.openmpy.server.member.application
 
+import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.image.domain.type.MemberImageType
@@ -13,6 +14,7 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Service
 class MemberQueryService(
@@ -29,8 +31,9 @@ class MemberQueryService(
         memberId: Long,
         gender: String,
         cursorId: Long?,
-        limit: Int
-    ): CursorResponse<MemberGetCommentResponse> {
+        cursorDateAt: LocalDateTime?,
+        limit: Int,
+    ): CompositeCursorResponse<MemberGetCommentResponse> {
         val member = (memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
 
@@ -40,12 +43,14 @@ class MemberQueryService(
             member.location,
             resolvedGender,
             cursorId,
+            cursorDateAt,
             limit + 1
         )
 
         val hasNext = comments.size > limit
         val data = comments.dropLast(if (hasNext) 1 else 0)
         val nextCursorId = if (hasNext) data.last().id else null
+        val nextCursorDateAt = if (hasNext) data.last().updatedAt else null
 
         val responses = data.map {
             MemberGetCommentResponse(
@@ -61,9 +66,10 @@ class MemberQueryService(
             )
         }
 
-        return CursorResponse(
+        return CompositeCursorResponse(
             responses,
             nextCursorId,
+            nextCursorDateAt,
             hasNext
         )
     }

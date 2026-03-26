@@ -1,11 +1,13 @@
 package com.openmpy.server.member.presentation
 
 import com.openmpy.server.auth.annotaion.Login
+import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.member.application.MemberQueryService
 import com.openmpy.server.member.dto.response.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDateTime
 
 @RequestMapping("/api")
 @RestController
@@ -19,9 +21,16 @@ class MemberQueryController(
         @Login memberId: Long,
         @RequestParam(value = "gender") gender: String,
         @RequestParam(value = "cursorId") cursorId: Long?,
+        @RequestParam(value = "cursorDateAt") cursorDateAt: LocalDateTime?,
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
-    ): ResponseEntity<CursorResponse<MemberGetCommentResponse>> {
-        val response = memberQueryService.getComments(memberId, gender, cursorId, limit)
+    ): ResponseEntity<CompositeCursorResponse<MemberGetCommentResponse>> {
+        val response = memberQueryService.getComments(
+            memberId,
+            gender,
+            cursorId,
+            cursorDateAt,
+            limit
+        )
         return ResponseEntity.ok(response)
     }
 

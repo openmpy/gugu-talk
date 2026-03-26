@@ -6,6 +6,7 @@ import org.locationtech.jts.geom.Point
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import java.time.LocalDateTime
 
 interface MemberRepository : JpaRepository<Member, Long> {
 
@@ -35,8 +36,12 @@ interface MemberRepository : JpaRepository<Member, Long> {
             WHERE m.id <> :id
                 AND m.comment IS NOT NULL
                 AND (:gender IS NULL OR m.gender = :gender)
-                AND (:cursorId IS NULL OR m.id < :cursorId)
-            ORDER BY m.updated_at DESC
+                AND (
+                    CAST(:cursorDateAt AS timestamp) IS NULL
+                    OR m.updated_at < :cursorDateAt
+                    OR (m.updated_at = :cursorDateAt AND m.id < :cursorId)
+                )
+            ORDER BY m.updated_at DESC, m.id DESC
             LIMIT :limit
         """,
         nativeQuery = true
@@ -46,6 +51,7 @@ interface MemberRepository : JpaRepository<Member, Long> {
         @Param("location") location: Point?,
         @Param("gender") gender: String?,
         @Param("cursorId") cursorId: Long?,
+        @Param("cursorDateAt") cursorDateAt: LocalDateTime?,
         @Param("limit") limit: Int,
     ): List<MemberWithDistanceProjection>
 

@@ -14,7 +14,8 @@ final class RecentViewModel: ObservableObject {
     @Published var comments: [MemberGetCommentResponse] = []
     
     private var cursorId: Int64?
-    
+    private var cursorDateAt: String?
+
     func fetchComments(gender: String) async {
         hasNext = true
         
@@ -29,11 +30,13 @@ final class RecentViewModel: ObservableObject {
             let response = try await queryService.getComments(
                 gender: gender,
                 cursorId: nil,
+                cursorDateAt: nil,
                 limit: 20
             )
             
             comments = response.payload
             cursorId = response.nextId
+            cursorDateAt = response.nextDateAt
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription
@@ -53,11 +56,13 @@ final class RecentViewModel: ObservableObject {
             let response = try await queryService.getComments(
                 gender: gender,
                 cursorId: cursorId,
+                cursorDateAt: cursorDateAt,
                 limit: 20
             )
             
             comments.append(contentsOf: response.payload)
             cursorId = response.nextId
+            cursorDateAt = response.nextDateAt
             hasNext = response.hasNext
         } catch {
             errorMessage = error.localizedDescription

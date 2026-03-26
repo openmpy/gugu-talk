@@ -9,15 +9,17 @@ final class MemberQueryService {
     func getComments(
         gender: String,
         cursorId: Int64?,
+        cursorDateAt: String?,
         limit: Int
-    ) async throws -> CursorResponse<MemberGetCommentResponse> {
+    ) async throws -> CompositeCursorResponse<MemberGetCommentResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/members/comments"
         var params: Parameters = [
             "gender": gender,
             "limit": 20
         ]
-        if let cursorId = cursorId {
+        if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
+            params["cursorDateAt"] = cursorDateAt
         }
 
         return try await session.request(
@@ -25,7 +27,7 @@ final class MemberQueryService {
             method: .get,
             parameters: params.compactMapValues { $0 }
         )
-        .decodingWithErrorHandling(CursorResponse<MemberGetCommentResponse>.self)
+        .decodingWithErrorHandling(CompositeCursorResponse<MemberGetCommentResponse>.self)
     }
 
     func getLocations(
