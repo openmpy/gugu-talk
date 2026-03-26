@@ -336,9 +336,11 @@ struct ProfileEditView: View {
         case .profile:
             let remaining = maxPhotoCount - publicImages.count
             publicImages.append(contentsOf: loaded.prefix(remaining))
+            selectedPublicItems = []
         case .secret:
             let remaining = maxPhotoCount - privateImages.count
             privateImages.append(contentsOf: loaded.prefix(remaining))
+            selectedPrivateItems = []
         }
     }
 }
