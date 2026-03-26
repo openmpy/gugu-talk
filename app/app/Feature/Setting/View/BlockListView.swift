@@ -14,45 +14,13 @@ struct BlockListView: View {
                             .padding(.vertical)
                     } else {
                         ForEach(vm.blocks) { it in
-                            HStack(spacing: 12) {
-                                Image(systemName: "person.fill")
-                                    .font(.title)
-                                    .frame(width: 55, height: 55)
-                                    .foregroundColor(Color(.systemGray6))
-                                    .background(Color(.systemGray4))
-                                    .clipShape(Circle())
-
-                                VStack(alignment: .leading) {
-                                    Text(it.nickname)
-                                        .font(.headline.bold())
-                                        .foregroundColor(.primary)
-
-                                    HStack {
-                                        Text(it.gender == "MALE" ? "남자" : "여자")
-                                        Text("·")
-                                        Text("\(it.age)살")
-                                    }
-                                    .font(.footnote)
-                                    .foregroundColor(Color(.systemGray))
-                                }
-
-                                Spacer()
-
-                                Button {
-                                    Task {
-                                        await vm.removeBlock(targetId: it.memberId)
-                                    }
-                                } label: {
-                                    Image(systemName: "trash.fill")
-                                        .font(.default)
-                                        .frame(width: 40, height: 40)
-                                        .foregroundColor(.white)
-                                        .background(.red)
-                                        .clipShape(Circle())
-                                }
-                            }
-                            .padding(.horizontal)
-                            .padding(.vertical, 5)
+                            MemberSettingRowView(
+                                nickname: it.nickname,
+                                gender: it.gender,
+                                age: it.age,
+                                onDelete: {
+                                    await vm.removeBlock(targetId: it.memberId)
+                                })
                             .onAppear {
                                 if it.id == vm.blocks.last?.id {
                                     Task {

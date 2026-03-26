@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct SettingView: View {
-    
+
     @Environment(\.colorScheme) var colorScheme
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -16,7 +16,7 @@ struct SettingView: View {
                         }
                     }
                     .cornerRadius(12)
-                    
+
                     VStack(spacing: 0) {
                         NavigationLink {
                             LikeListView()
@@ -35,14 +35,14 @@ struct SettingView: View {
                         }
                     }
                     .cornerRadius(12)
-                    
+
                     VStack(spacing: 0) {
                         SettingSectionView(title: "포인트", icon: "star.circle.fill", color: .yellow)
                         SettingSectionView(title: "출석 체크", icon: "calendar.circle.fill", color: .orange)
                         SettingSectionView(title: "광고 보상", icon: "gift.fill", color: .pink)
                     }
                     .cornerRadius(12)
-                    
+
                     VStack(spacing: 0) {
                         SettingSectionView(title: "공지사항", icon: "megaphone.fill", color: .teal)
                         SettingSectionView(title: "문의사항", icon: "envelope.fill", color: .indigo)
