@@ -1,6 +1,7 @@
 package com.openmpy.server.image.application
 
 import com.openmpy.server.common.exception.CustomException
+import com.openmpy.server.common.properties.S3Properties
 import com.openmpy.server.image.domain.entity.MemberImage
 import com.openmpy.server.image.domain.type.MemberImageType
 import com.openmpy.server.image.dto.request.MemberImageSaveRequest
@@ -19,6 +20,7 @@ class MemberImageService(
     private val memberImageRepository: MemberImageRepository,
     private val memberRepository: MemberRepository,
     private val s3Service: S3Service,
+    private val s3Properties: S3Properties
 ) {
 
     @Transactional
@@ -37,7 +39,7 @@ class MemberImageService(
             if (it.id == null && it.key != null) { // 새 이미지 등록
                 val memberImage = MemberImage(
                     memberId = memberId,
-                    url = "s3-url",
+                    url = s3Properties.endpoint + it.key,
                     key = it.key,
                     type = it.type,
                     sortOrder = it.sortOrder
