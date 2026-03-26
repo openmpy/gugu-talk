@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct SettingSection: View {
+struct SettingSectionView: View {
 
     @Environment(\.colorScheme) var colorScheme
 
