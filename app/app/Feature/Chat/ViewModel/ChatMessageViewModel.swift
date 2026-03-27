@@ -97,7 +97,6 @@ final class ChatMessageViewModel: ObservableObject {
     func markAsRead(chatRoomId: Int64) async {
         do {
             try await service.markAsRead(chatRoomId: chatRoomId)
-            NotificationCenter.default.post(name: .chatRoomMarkAsRead, object: chatRoomId)
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)

@@ -60,6 +60,7 @@ final class ChatRoomViewModel: ObservableObject {
             .compactMap { $0.object as? Int64 }
             .sink { [weak self] chatRoomId in
                 guard let self else { return }
+                
                 if let idx = chatRooms.firstIndex(where: { $0.chatRoomId == chatRoomId }) {
                     chatRooms[idx].unreadCount = 0
                 }
