@@ -7,7 +7,7 @@ struct MemberSearchView: View {
     @State private var keyword: String = ""
 
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     if vm.members.isEmpty {
@@ -39,20 +39,20 @@ struct MemberSearchView: View {
                     }
                 }
             }
-            .searchable(
-                text: $keyword,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "닉네임 입력"
-            )
-            .onSubmit(of: .search) {
-                Task {
-                    await vm.fetchMembers(nickname: keyword)
-                }
-            }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("회원 검색")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
         }
+        .searchable(
+            text: $keyword,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: "닉네임 입력"
+        )
+        .onSubmit(of: .search) {
+            Task {
+                await vm.fetchMembers(nickname: keyword)
+            }
+        }
+        .navigationTitle("회원 검색")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 }

@@ -5,14 +5,14 @@ struct BlockListView: View {
     @StateObject private var vm = BlockListViewModel()
 
     var body: some View {
-        NavigationStack {
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 10) {
-                    if vm.blocks.isEmpty {
-                        Text("내역이 없습니다")
-                            .foregroundColor(.secondary)
-                            .padding(.vertical)
-                    } else {
+        VStack {
+            if vm.blocks.isEmpty {
+                Text("내역이 없습니다")
+                    .foregroundColor(.secondary)
+                    .padding(.vertical)
+            } else {
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 10) {
                         ForEach(vm.blocks) { it in
                             MemberSettingRowView(
                                 nickname: it.nickname,
@@ -32,12 +32,12 @@ struct BlockListView: View {
                     }
                 }
             }
-            .task {
-                await vm.fetchBlocks()
-            }
-            .navigationTitle("차단 목록")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
         }
+        .task {
+            await vm.fetchBlocks()
+        }
+        .navigationTitle("차단 목록")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 }

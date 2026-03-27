@@ -42,7 +42,7 @@ struct ReportView: View {
     var body: some View {
         NavigationStack {
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 15) {
+                VStack(spacing: 20) {
                     reportReasponSelector
 
                     attachmentSection
@@ -207,8 +207,4 @@ struct ReportView: View {
                 .disableAutocorrection(true)
         }
     }
-}
-
-#Preview {
-    ReportView(memberId: 1)
 }

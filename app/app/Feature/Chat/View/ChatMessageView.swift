@@ -25,7 +25,7 @@ struct ChatMessageView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.chatMessages) { it in
@@ -47,52 +47,52 @@ struct ChatMessageView: View {
                 }
                 .padding(.horizontal)
             }
-            .safeAreaInset(edge: .top) {
-                chatMessageInput
+        }
+        .safeAreaInset(edge: .top) {
+            chatMessageInput
+        }
+        .rotationEffect(.degrees(180))
+        .onTapGesture {
+            hideKeyboard()
+        }
+        .onAppear {
+            Task {
+                await vm.markAsRead(chatRoomId: chatRoomId)
             }
-            .onTapGesture {
-                hideKeyboard()
+            stomp.subscribe(to: "/sub/chat-rooms/\(chatRoomId)")
+        }
+        .onDisappear {
+            Task {
+                await vm.markAsRead(chatRoomId: chatRoomId)
             }
-            .onAppear {
-                Task {
-                    await vm.markAsRead(chatRoomId: chatRoomId)
-                }
-                stomp.subscribe(to: "/sub/chat-rooms/\(chatRoomId)")
-            }
-            .onDisappear {
-                Task {
-                    await vm.markAsRead(chatRoomId: chatRoomId)
-                }
-                stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
-            }
-            .task {
-                await vm.fetchChatMessages(chatRoomId: chatRoomId)
-            }
-            .rotationEffect(.degrees(180))
-            .navigationTitle(nickname)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        ProfileView(memberId: memberId)
-                    } label: {
-                        KFImage(URL(string: thumbnail ?? ""))
-                            .resizable()
-                            .placeholder {
-                                Image(systemName: "person.fill")
-                                    .font(.title)
-                                    .frame(width: 27, height: 27)
-                                    .foregroundColor(Color(.systemGray6))
-                                    .background(Color(.systemGray4))
-                                    .clipShape(Circle())
-                            }
-                            .font(.title)
-                            .frame(width: 27, height: 27)
-                            .foregroundColor(Color(.systemGray6))
-                            .background(Color(.systemGray4))
-                            .clipShape(Circle())
-                    }
+            stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
+        }
+        .task {
+            await vm.fetchChatMessages(chatRoomId: chatRoomId)
+        }
+        .navigationTitle(nickname)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    ProfileView(memberId: memberId)
+                } label: {
+                    KFImage(URL(string: thumbnail ?? ""))
+                        .resizable()
+                        .placeholder {
+                            Image(systemName: "person.fill")
+                                .font(.caption2)
+                                .frame(width: 27, height: 27)
+                                .foregroundColor(Color(.systemGray6))
+                                .background(Color(.systemGray4))
+                                .clipShape(Circle())
+                        }
+                        .font(.title)
+                        .frame(width: 27, height: 27)
+                        .foregroundColor(Color(.systemGray6))
+                        .background(Color(.systemGray4))
+                        .clipShape(Circle())
                 }
             }
         }

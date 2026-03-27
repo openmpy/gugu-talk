@@ -7,7 +7,7 @@ struct ChatRoomSearchView: View {
     @State private var keyword: String = ""
 
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView(showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     if vm.chatRooms.isEmpty {
@@ -43,25 +43,25 @@ struct ChatRoomSearchView: View {
                     }
                 }
             }
-            .searchable(
-                text: $keyword,
-                placement: .navigationBarDrawer(displayMode: .always),
-                prompt: "닉네임 입력"
-            )
-            .onSubmit(of: .search) {
-                Task {
-                    await vm.fetchChatRooms(nickname: keyword)
-                }
-            }
-            .task {
-                if !keyword.isEmpty {
-                    await vm.fetchChatRooms(nickname: keyword)
-                }
-            }
             .scrollDismissesKeyboard(.interactively)
-            .navigationTitle("채팅방 검색")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
         }
+        .searchable(
+            text: $keyword,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: "닉네임 입력"
+        )
+        .onSubmit(of: .search) {
+            Task {
+                await vm.fetchChatRooms(nickname: keyword)
+            }
+        }
+        .task {
+            if !keyword.isEmpty {
+                await vm.fetchChatRooms(nickname: keyword)
+            }
+        }
+        .navigationTitle("채팅방 검색")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 }

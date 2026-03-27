@@ -12,7 +12,17 @@ struct ChatRoomView: View {
             VStack {
                 ChatRoomStatusPickerView(selectStatus: $selectStatus)
 
-                chatRoomList
+                if vm.chatRooms.isEmpty {
+                    Spacer()
+
+                    Text("내역이 없습니다")
+                        .foregroundColor(.secondary)
+                        .padding(.vertical)
+
+                    Spacer()
+                } else {
+                    chatRoomList
+                }
             }
             .onAppear {
                 stomp.subscribe(to: "/sub/chat-rooms/members/\(AuthStore.shared.memberId ?? 0)")

@@ -5,14 +5,14 @@ struct PrivatePhotoListView: View {
     @StateObject private var vm = PrivatePhotoListViewModel()
 
     var body: some View {
-        NavigationStack {
-            ScrollView(showsIndicators: false) {
-                LazyVStack(spacing: 10) {
-                    if vm.photos.isEmpty {
-                        Text("내역이 없습니다")
-                            .foregroundColor(.secondary)
-                            .padding(.vertical)
-                    } else {
+        VStack {
+            if vm.photos.isEmpty {
+                Text("내역이 없습니다")
+                    .foregroundColor(.secondary)
+                    .padding(.vertical)
+            } else {
+                ScrollView(showsIndicators: false) {
+                    LazyVStack(spacing: 10) {
                         ForEach(vm.photos) { it in
                             MemberSettingRowView(
                                 nickname: it.nickname,
@@ -32,12 +32,12 @@ struct PrivatePhotoListView: View {
                     }
                 }
             }
-            .task {
-                await vm.fetchPhotos()
-            }
-            .navigationTitle("비밀 사진 목록")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
         }
+        .task {
+            await vm.fetchPhotos()
+        }
+        .navigationTitle("비밀 사진 목록")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 }
