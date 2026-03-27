@@ -34,8 +34,8 @@ struct MemberRowView: View {
                 HStack {
                     Text(nickname)
                         .font(.headline.bold())
-                        .foregroundColor(gender == "MALE" ? .blue : .pink)
-                    
+                        .foregroundStyle(gender == "MALE" ? LinearGradient.male : LinearGradient.female)
+
                     Spacer()
                     
                     Text(updatedAt.relativeTime)
