@@ -16,28 +16,18 @@ class MemberImageController(
 
     @PostMapping("/v1/members/images")
     fun save(
-        @Login memberId: Long,
-        @RequestBody request: MemberImageSaveRequest
+        @Login memberId: Long, @RequestBody request: MemberImageSaveRequest
     ): ResponseEntity<Unit> {
         memberImageService.save(memberId, request)
         return ResponseEntity.ok().build()
     }
 
     @GetMapping("/v1/members/images/presigned-url")
-    fun getProfilePresignedUrl(
+    fun getPresignedUrl(
         @Login memberId: Long,
         @RequestParam("type", required = true) type: String,
     ): ResponseEntity<PresignedUrlResponse> {
-        val response = memberImageService.getProfilePresignedUrl(memberId, type)
-        return ResponseEntity.ok(response)
-    }
-
-    @GetMapping("/v1/reports/{reportedId}/presigned-url")
-    fun getReportPresignedUrl(
-        @Login reporterId: Long,
-        @PathVariable reportedId: Long,
-    ): ResponseEntity<PresignedUrlResponse> {
-        val response = memberImageService.getReportPresignedUrl(reporterId, reportedId)
+        val response = memberImageService.getPresignedUrl(memberId, type)
         return ResponseEntity.ok(response)
     }
 }
