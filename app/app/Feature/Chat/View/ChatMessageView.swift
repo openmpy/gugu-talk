@@ -62,11 +62,7 @@ struct ChatMessageView: View {
             stomp.subscribe(to: "/sub/chat-rooms/\(chatRoomId)")
         }
         .onDisappear {
-            Task {
-                await vm.markAsRead(chatRoomId: chatRoomId)
-            }
             stomp.unsubscribe(from: "/sub/chat-rooms/\(chatRoomId)")
-            NotificationCenter.default.post(name: .chatRoomMarkAsRead, object: chatRoomId)
         }
         .task {
             await vm.fetchChatMessages(chatRoomId: chatRoomId)

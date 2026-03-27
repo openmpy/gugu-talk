@@ -16,19 +16,6 @@ final class ChatRoomSearchViewModel: ObservableObject {
     private var cursorId: Int64?
     private var cursorDateAt: String?
 
-    init() {
-        NotificationCenter.default.publisher(for: .chatRoomMarkAsRead)
-            .receive(on: DispatchQueue.main)
-            .compactMap { $0.object as? Int64 }
-            .sink { [weak self] chatRoomId in
-                guard let self else { return }
-                if let idx = chatRooms.firstIndex(where: { $0.chatRoomId == chatRoomId }) {
-                    chatRooms[idx].unreadCount = 0
-                }
-            }
-            .store(in: &cancellables)
-    }
-
     func fetchChatRooms(nickname: String) async {
         hasNext = true
 

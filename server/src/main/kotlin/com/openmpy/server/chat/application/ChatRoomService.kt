@@ -69,6 +69,7 @@ class ChatRoomService(
                 MemberImageType.PUBLIC
             )?.url,
             member.nickname,
+            message.id,
             message.content,
             message.createdAt,
             1
@@ -125,6 +126,7 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
+                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,
@@ -170,6 +172,7 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
+                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,
@@ -282,6 +285,7 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
+                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,

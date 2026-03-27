@@ -23,7 +23,21 @@ final class ChatMessageViewModel: ObservableObject {
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .sink { [weak self] message in
-                self?.chatMessages.insert(message, at: 0)
+                guard let self else { return }
+
+                self.chatMessages.insert(message, at: 0)
+            }
+            .store(in: &cancellables)
+
+        stomp.chatMessageSubject
+            .filter { $0.chatRoomId == chatRoomId }
+            .debounce(for: .seconds(0.5) , scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+
+                Task {
+                    await self.markAsRead(chatRoomId: chatRoomId)
+                }
             }
             .store(in: &cancellables)
     }
@@ -53,7 +67,7 @@ final class ChatMessageViewModel: ObservableObject {
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
         }
     }
-
+    
     func loadMoreChatMessages(chatRoomId: Int64) async {
         guard !isLoading, hasNext else {
             return

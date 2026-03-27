@@ -3,10 +3,12 @@ package com.openmpy.server.chat.domain.entity
 import com.openmpy.server.chat.domain.type.ChatRoomStatus
 import com.openmpy.server.common.exception.CustomException
 import jakarta.persistence.*
+import org.hibernate.annotations.DynamicUpdate
 import org.hibernate.annotations.SQLRestriction
 import java.time.LocalDateTime
 
 @Entity
+@DynamicUpdate
 @SQLRestriction("status = 'ACTIVE'")
 @Table(name = "chat_room")
 class ChatRoom(

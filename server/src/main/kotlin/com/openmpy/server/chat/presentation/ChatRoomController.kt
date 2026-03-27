@@ -2,6 +2,7 @@ package com.openmpy.server.chat.presentation
 
 import com.openmpy.server.auth.annotaion.Login
 import com.openmpy.server.chat.application.ChatRoomService
+import com.openmpy.server.chat.domain.type.ChatMessageType
 import com.openmpy.server.chat.dto.event.ChatRoomDeleteEvent
 import com.openmpy.server.chat.dto.event.ChatRoomUpdateEvent
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
@@ -31,6 +32,17 @@ class ChatRoomController(
     ): ResponseEntity<Unit> {
         val response = chatRoomService.create(memberId, targetId, request)
 
+        messageTemplate.convertAndSend(
+            "/sub/chat-rooms/$targetId",
+            ChatMessageGetResponse(
+                chatMessageId = response.lastMessageId!!,
+                senderId = memberId,
+                receiverId = targetId,
+                content = request.content,
+                type = ChatMessageType.TEXT,
+                createdAt = response.lastMessageAt,
+            )
+        )
         messageTemplate.convertAndSend(
             "/sub/chat-rooms/members/$targetId",
             ChatRoomUpdateEvent(
