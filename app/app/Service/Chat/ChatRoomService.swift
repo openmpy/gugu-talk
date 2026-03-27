@@ -119,7 +119,7 @@ final class ChatRoomService {
             "keyword": keyword,
             "limit": limit
         ]
-        if let cursorId = cursorId {
+        if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
             params["cursorDateAt"] = cursorDateAt
         }
