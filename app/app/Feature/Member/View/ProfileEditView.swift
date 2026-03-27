@@ -137,15 +137,13 @@ struct ProfileEditView: View {
         }
         .sheet(item: $reorderSheetTarget) { target in
             let isProfile = target == .profile
-            PhotoReorderSheet(
+            PhotoReorderSheetView(
                 title: isProfile ? "프로필 사진" : "비밀 사진",
                 images: isProfile ? $publicImages : $privateImages,
                 badgeLabel: isProfile ? "대표" : nil,
                 badgeColor: isProfile ? .blue : .clear,
-                onDismiss: { reorderSheetTarget = nil }
             )
             .presentationDetents([.medium, .large])
-            .presentationDragIndicator(.hidden)
         }
     }
 

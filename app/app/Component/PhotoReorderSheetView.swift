@@ -1,20 +1,15 @@
 import SwiftUI
 import PhotosUI
 
-struct PhotoReorderSheet: View {
+struct PhotoReorderSheetView: View {
 
     let title: String
     @Binding var images: [EditableImage]
     let badgeLabel: String?
     let badgeColor: Color
-    let onDismiss: () -> Void
 
     var body: some View {
-        VStack {
-            Text("\(title) 순서 변경")
-                .font(.headline)
-                .padding(.vertical)
-
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 10) {
                     ForEach(Array(images.enumerated()), id: \.element.id) { index, editableImage in
@@ -66,18 +61,9 @@ struct PhotoReorderSheet: View {
                     }
                 }
                 .padding()
-
-                Button {
-                    onDismiss()
-                } label: {
-                    Text("닫기")
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical)
-                        .foregroundStyle(.white)
-                        .glassEffect(.regular.tint(.blue).interactive())
-                        .padding()
-                }
             }
+            .navigationTitle("\(title)")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
 

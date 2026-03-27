@@ -67,6 +67,7 @@ struct ProfileView: View {
             }
             .sheet(isPresented: $showReport) {
                 ReportView(memberId: memberId)
+                    .presentationDetents([.medium, .large])
             }
             .alert("쪽지", isPresented: $showMessage) {
                 TextField("내용 입력", text: $message)
