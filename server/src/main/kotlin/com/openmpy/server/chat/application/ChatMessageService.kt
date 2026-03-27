@@ -2,7 +2,7 @@ package com.openmpy.server.chat.application
 
 import com.openmpy.server.chat.domain.entity.ChatMessage
 import com.openmpy.server.chat.dto.request.ChatMessageSendRequest
-import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
+import com.openmpy.server.chat.dto.response.ChatMessageSaveResponse
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
 import com.openmpy.server.common.exception.CustomException
@@ -27,7 +27,7 @@ class ChatMessageService(
         memberId: Long,
         chatRoomId: Long,
         request: ChatMessageSendRequest
-    ): ChatMessageGetResponse {
+    ): ChatMessageSaveResponse {
         val member = (memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
         val chatRoom = chatRoomRepository.findByIdOrNull(chatRoomId)
@@ -50,8 +50,11 @@ class ChatMessageService(
             chatRoom.member2Id
         } else chatRoom.member1Id
 
-        return ChatMessageGetResponse(
+        return ChatMessageSaveResponse(
             chatMessage.id,
+            chatMessage.content,
+            chatMessage.type,
+            chatMessage.createdAt,
             chatMessage.senderId,
             memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
                 memberId,
@@ -59,9 +62,6 @@ class ChatMessageService(
             )?.url,
             member.nickname,
             receiverId,
-            chatMessage.content,
-            chatMessage.type,
-            chatMessage.createdAt
         )
     }
 }

@@ -4,6 +4,7 @@ import com.openmpy.server.chat.domain.entity.ChatMessage
 import com.openmpy.server.chat.domain.entity.ChatRoom
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
+import com.openmpy.server.chat.dto.response.ChatRoomCreateResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
@@ -35,7 +36,7 @@ class ChatRoomService(
         memberId: Long,
         targetId: Long,
         request: ChatRoomCreateRequest
-    ): ChatRoomGetResponse {
+    ): ChatRoomCreateResponse {
         val member = (memberRepository.findByIdOrNull(memberId)
             ?: throw CustomException("존재하지 않는 회원입니다."))
         memberRepository.findByIdOrNull(targetId)
@@ -61,18 +62,19 @@ class ChatRoomService(
         chatRoom.updateLastRead(memberId, message.id)
         chatRoom.updateLastMessage(message.content)
 
-        return ChatRoomGetResponse(
-            chatRoom.id,
-            member.id,
-            memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
-                member.id,
+        return ChatRoomCreateResponse(
+            chatRoomId = chatRoom.id,
+            unreadCount = 1,
+            senderId = memberId,
+            thumbnail = memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                memberId,
                 MemberImageType.PUBLIC
             )?.url,
-            member.nickname,
-            message.id,
-            message.content,
-            message.createdAt,
-            1
+            nickname = member.nickname,
+            receiverId = targetId,
+            chatMessageId = message.id,
+            lastMessage = message.content,
+            lastMessageAt = message.createdAt,
         )
     }
 
@@ -126,7 +128,6 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
-                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,
@@ -172,7 +173,6 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
-                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,
@@ -221,8 +221,6 @@ class ChatRoomService(
             ChatMessageGetResponse(
                 it.id,
                 it.senderId,
-                null,
-                null,
                 receiverId,
                 it.content,
                 it.type,
@@ -287,7 +285,6 @@ class ChatRoomService(
                     MemberImageType.PUBLIC
                 )?.url,
                 it.nickname,
-                null,
                 it.lastMessage,
                 it.lastMessageAt,
                 it.unreadCount,

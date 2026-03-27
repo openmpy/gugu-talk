@@ -26,12 +26,15 @@ class ChatStompController(
         val memberId = principal.name.toLong()
         val response = chatMessageService.save(memberId, chatRoomId, request)
 
+        // 채팅방에 전송 될 이벤트
         messageTemplate.convertAndSend("/sub/chat-rooms/$chatRoomId", response)
+
+        // 받는 사람에게 전송 될 이벤트
         messageTemplate.convertAndSend(
             "/sub/chat-rooms/members/${response.receiverId}",
             ChatRoomUpdateEvent(
                 chatRoomId = chatRoomId,
-                memberId = memberId,
+                memberId = response.senderId,
                 thumbnail = response.thumbnail,
                 nickname = response.nickname,
                 lastMessage = response.content,

@@ -9,7 +9,6 @@ data class ChatRoomGetResponse(
     val memberId: Long,
     val thumbnail: String?,
     val nickname: String,
-    val lastMessageId: Long?,
     val lastMessage: String,
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
