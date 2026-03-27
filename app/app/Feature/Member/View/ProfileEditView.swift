@@ -90,7 +90,7 @@ struct ProfileEditView: View {
                         let updateSuccess = await vm.updateProfile(nickname: vm.member.nickname, birthYear: vm.member.birthYear, bio: vm.member.bio)
 
                         guard updateSuccess else { return }
-                        
+
                         let uploadSuccess = await vm.uploadImages(
                             publicImages: publicImages,
                             privateImages: privateImages,
@@ -349,8 +349,4 @@ struct ProfileEditView: View {
             selectedPrivateItems = []
         }
     }
-}
-
-#Preview {
-    ProfileEditView()
 }
