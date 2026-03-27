@@ -55,7 +55,10 @@ class MemberQueryService(
         val responses = data.map {
             MemberGetCommentResponse(
                 it.id,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.id,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.comment!!,
                 it.gender,
@@ -104,7 +107,10 @@ class MemberQueryService(
         val responses = data.map {
             MemberGetLocationResponse(
                 it.id,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.id,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.bio,
                 it.gender,

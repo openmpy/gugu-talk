@@ -58,6 +58,7 @@ struct RecentView: View {
                         ProfileView(memberId: it.memberId)
                     } label: {
                         MemberRowView(
+                            thumbnail: it.thumbnail,
                             nickname: it.nickname,
                             gender: it.gender,
                             updatedAt: it.updatedAt,

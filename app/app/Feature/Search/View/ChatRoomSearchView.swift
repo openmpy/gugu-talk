@@ -25,6 +25,7 @@ struct ChatRoomSearchView: View {
                                 )
                             } label: {
                                 ChatRoomRowView(
+                                    thumbnail: it.thumbnail,
                                     nickname: it.nickname,
                                     lastMessageAt: it.lastMessageAt,
                                     lastMessage: it.lastMessage,

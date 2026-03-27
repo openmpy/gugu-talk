@@ -10,6 +10,11 @@ interface MemberImageRepository : JpaRepository<MemberImage, Long> {
 
     fun findAllByMemberId(memberId: Long): List<MemberImage>
 
+    fun findFirstByMemberIdAndTypeOrderBySortOrder(
+        memberId: Long,
+        type: MemberImageType
+    ): MemberImage?
+
     fun findAllByMemberIdAndTypeOrderBySortOrder(
         memberId: Long,
         type: MemberImageType

@@ -1,6 +1,8 @@
 package com.openmpy.server.member.application
 
 import com.openmpy.server.common.dto.CompositeCursorResponse
+import com.openmpy.server.image.domain.type.MemberImageType
+import com.openmpy.server.image.repository.MemberImageRepository
 import com.openmpy.server.member.dto.response.MemberSearchNicknameResponse
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.stereotype.Service
@@ -12,6 +14,7 @@ import java.time.LocalDateTime
 class MemberSearchService(
 
     private val memberRepository: MemberRepository,
+    private val memberImageRepository: MemberImageRepository,
 ) {
 
     @Transactional(readOnly = true)
@@ -38,7 +41,10 @@ class MemberSearchService(
         val responses = data.map {
             MemberSearchNicknameResponse(
                 it.id,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.id,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.gender,
                 LocalDate.now().year - it.birthYear,

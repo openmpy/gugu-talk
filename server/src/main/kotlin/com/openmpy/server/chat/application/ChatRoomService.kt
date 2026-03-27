@@ -10,6 +10,8 @@ import com.openmpy.server.chat.repository.ChatRoomRepository
 import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.dto.CursorResponse
 import com.openmpy.server.common.exception.CustomException
+import com.openmpy.server.image.domain.type.MemberImageType
+import com.openmpy.server.image.repository.MemberImageRepository
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
@@ -24,7 +26,8 @@ class ChatRoomService(
 
     private val chatRoomRepository: ChatRoomRepository,
     private val chatMessageRepository: ChatMessageRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val memberImageRepository: MemberImageRepository,
 ) {
 
     @Transactional
@@ -61,7 +64,10 @@ class ChatRoomService(
         return ChatRoomGetResponse(
             chatRoom.id,
             member.id,
-            null,
+            memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                member.id,
+                MemberImageType.PUBLIC
+            )?.url,
             member.nickname,
             message.content,
             message.createdAt,
@@ -114,7 +120,10 @@ class ChatRoomService(
             ChatRoomGetResponse(
                 it.id,
                 it.memberId,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.memberId,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.lastMessage,
                 it.lastMessageAt,
@@ -156,7 +165,10 @@ class ChatRoomService(
             ChatRoomGetResponse(
                 it.id,
                 it.memberId,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.memberId,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.lastMessage,
                 it.lastMessageAt,
@@ -265,7 +277,10 @@ class ChatRoomService(
             ChatRoomGetResponse(
                 it.id,
                 it.memberId,
-                null,
+                memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                    it.memberId,
+                    MemberImageType.PUBLIC
+                )?.url,
                 it.nickname,
                 it.lastMessage,
                 it.lastMessageAt,

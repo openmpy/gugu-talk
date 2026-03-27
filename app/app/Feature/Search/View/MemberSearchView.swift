@@ -20,6 +20,7 @@ struct MemberSearchView: View {
                                 ProfileView(memberId: it.memberId)
                             } label: {
                                 MemberSearchRowView(
+                                    thumbnail: it.thumbnail,
                                     nickname: it.nickname,
                                     gender: it.gender,
                                     updatedAt: it.updatedAt,

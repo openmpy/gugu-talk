@@ -1,7 +1,9 @@
 import SwiftUI
+import Kingfisher
 
 struct MemberSearchRowView: View {
 
+    let thumbnail: String?
     let nickname: String
     let gender: String
     let updatedAt: String
@@ -10,7 +12,16 @@ struct MemberSearchRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: "person.fill")
+            KFImage(URL(string: thumbnail ?? ""))
+                .resizable()
+                .placeholder {
+                    Image(systemName: "person.fill")
+                        .font(.title)
+                        .frame(width: 55, height: 55)
+                        .foregroundColor(Color(.systemGray6))
+                        .background(Color(.systemGray4))
+                        .clipShape(Circle())
+                }
                 .font(.title)
                 .frame(width: 55, height: 55)
                 .foregroundColor(Color(.systemGray6))
@@ -22,7 +33,7 @@ struct MemberSearchRowView: View {
                     Text(nickname)
                         .font(.headline.bold())
                         .foregroundColor(gender == "MALE" ? .blue : .pink)
-
+                    
                     Spacer()
 
                     Text(updatedAt.relativeTime)

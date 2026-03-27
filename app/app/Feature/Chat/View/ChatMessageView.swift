@@ -1,4 +1,5 @@
 import SwiftUI
+import Kingfisher
 
 struct ChatMessageView: View {
 
@@ -76,8 +77,17 @@ struct ChatMessageView: View {
                     NavigationLink {
                         ProfileView(memberId: memberId)
                     } label: {
-                        Image(systemName: "person.fill")
-                            .font(.caption2)
+                        KFImage(URL(string: thumbnail ?? ""))
+                            .resizable()
+                            .placeholder {
+                                Image(systemName: "person.fill")
+                                    .font(.title)
+                                    .frame(width: 27, height: 27)
+                                    .foregroundColor(Color(.systemGray6))
+                                    .background(Color(.systemGray4))
+                                    .clipShape(Circle())
+                            }
+                            .font(.title)
                             .frame(width: 27, height: 27)
                             .foregroundColor(Color(.systemGray6))
                             .background(Color(.systemGray4))
