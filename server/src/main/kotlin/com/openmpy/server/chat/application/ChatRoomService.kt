@@ -5,6 +5,7 @@ import com.openmpy.server.chat.domain.entity.ChatRoom
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.dto.response.ChatRoomCreateResponse
+import com.openmpy.server.chat.dto.response.ChatRoomGetMemberResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
@@ -296,6 +297,23 @@ class ChatRoomService(
             nextCursorId,
             nextCursorDateAt,
             hasNext
+        )
+    }
+
+    @Transactional(readOnly = true)
+    fun getMember(memberId: Long, targetId: Long): ChatRoomGetMemberResponse {
+        memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+        val target = (memberRepository.findByIdOrNull(targetId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
+
+        return ChatRoomGetMemberResponse(
+            target.id,
+            target.nickname,
+            memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                target.id,
+                MemberImageType.PUBLIC
+            )?.url
         )
     }
 }

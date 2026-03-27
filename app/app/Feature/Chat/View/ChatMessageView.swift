@@ -5,8 +5,6 @@ struct ChatMessageView: View {
 
     let chatRoomId: Int64
     let memberId: Int64
-    let nickname: String
-    let thumbnail: String?
 
     @StateObject private var vm: ChatMessageViewModel
     @StateObject private var stomp = StompManager.shared
@@ -15,11 +13,9 @@ struct ChatMessageView: View {
 
     @State private var message: String = ""
 
-    init(chatRoomId: Int64, memberId: Int64, nickname: String, thumbnail: String?) {
+    init(chatRoomId: Int64, memberId: Int64) {
         self.chatRoomId = chatRoomId
         self.memberId = memberId
-        self.nickname = nickname
-        self.thumbnail = thumbnail
 
         _vm = StateObject(wrappedValue: ChatMessageViewModel(chatRoomId: chatRoomId))
     }
@@ -66,8 +62,9 @@ struct ChatMessageView: View {
         }
         .task {
             await vm.fetchChatMessages(chatRoomId: chatRoomId)
+            await vm.getMember(targetId: memberId)
         }
-        .navigationTitle(nickname)
+        .navigationTitle(vm.target.nickname)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
         .toolbar {
@@ -75,7 +72,7 @@ struct ChatMessageView: View {
                 NavigationLink {
                     ProfileView(memberId: memberId)
                 } label: {
-                    KFImage(URL(string: thumbnail ?? ""))
+                    KFImage(URL(string: vm.target.thumbnail ?? ""))
                         .resizable()
                         .placeholder {
                             Image(systemName: "person.fill")

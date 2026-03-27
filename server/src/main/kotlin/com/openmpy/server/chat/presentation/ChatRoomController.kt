@@ -8,6 +8,7 @@ import com.openmpy.server.chat.dto.event.ChatRoomDeleteEvent
 import com.openmpy.server.chat.dto.event.ChatRoomUpdateEvent
 import com.openmpy.server.chat.dto.request.ChatRoomCreateRequest
 import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
+import com.openmpy.server.chat.dto.response.ChatRoomGetMemberResponse
 import com.openmpy.server.chat.dto.response.ChatRoomGetResponse
 import com.openmpy.server.common.dto.CompositeCursorResponse
 import com.openmpy.server.common.dto.CursorResponse
@@ -124,6 +125,15 @@ class ChatRoomController(
         @RequestParam(value = "limit", defaultValue = "20") limit: Int
     ): ResponseEntity<CompositeCursorResponse<ChatRoomGetResponse>> {
         val response = chatRoomService.search(memberId, keyword, cursorId, cursorDateAt, limit)
+        return ResponseEntity.ok(response)
+    }
+
+    @GetMapping("/v1/chat-rooms/members/{targetId}")
+    fun getMember(
+        @Login memberId: Long,
+        @PathVariable targetId: Long,
+    ): ResponseEntity<ChatRoomGetMemberResponse> {
+        val response = chatRoomService.getMember(memberId, targetId)
         return ResponseEntity.ok(response)
     }
 }

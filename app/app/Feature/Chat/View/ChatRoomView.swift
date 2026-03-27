@@ -72,9 +72,7 @@ struct ChatRoomView: View {
                     NavigationLink {
                         ChatMessageView(
                             chatRoomId: it.chatRoomId,
-                            memberId: it.memberId,
-                            nickname: it.nickname,
-                            thumbnail: it.thumbnail
+                            memberId: it.memberId
                         )
                     } label: {
                         ChatRoomRowView(

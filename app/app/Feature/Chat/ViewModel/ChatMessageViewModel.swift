@@ -12,6 +12,11 @@ final class ChatMessageViewModel: ObservableObject {
     @Published var hasNext: Bool = true
 
     @Published var chatMessages: [ChatMessageGetResponse] = []
+    @Published var target: ChatRoomGetMemberResponse = ChatRoomGetMemberResponse(
+        memberId: 0,
+        nickname: "",
+        thumbnail: nil
+    )
 
     private var cancellables = Set<AnyCancellable>()
     private var cursorId: Int64?
@@ -67,7 +72,7 @@ final class ChatMessageViewModel: ObservableObject {
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
         }
     }
-    
+
     func loadMoreChatMessages(chatRoomId: Int64) async {
         guard !isLoading, hasNext else {
             return
@@ -111,6 +116,22 @@ final class ChatMessageViewModel: ObservableObject {
     func markAsRead(chatRoomId: Int64) async {
         do {
             try await service.markAsRead(chatRoomId: chatRoomId)
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+        }
+    }
+
+    func getMember(targetId: Int64) async {
+        guard !isLoading else {
+            return
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            target = try await service.getMember(targetId: targetId)
         } catch {
             errorMessage = error.localizedDescription
             ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)

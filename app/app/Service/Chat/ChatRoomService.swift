@@ -131,4 +131,16 @@ final class ChatRoomService {
         )
         .decodingWithErrorHandling(CompositeCursorResponse<ChatRoomGetResponse>.self)
     }
+
+    func getMember(
+        targetId: Int64
+    ) async throws -> ChatRoomGetMemberResponse {
+        let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/members/\(targetId)"
+
+        return try await session.request(
+            url,
+            method: .get
+        )
+        .decodingWithErrorHandling(ChatRoomGetMemberResponse.self)
+    }
 }
