@@ -13,6 +13,7 @@ struct ProfileView: View {
     @State private var showMessage: Bool = false
     @State private var showSheet: Bool = false
     @State private var showBlock: Bool = false
+    @State private var showReport: Bool = false
     @State private var message: String = ""
 
     var body: some View {
@@ -58,10 +59,14 @@ struct ProfileView: View {
                             }
                         }
                         Button("신고하기", role: .destructive) {
+                            showReport = true
                         }
                         Button("취소", role: .cancel) {}
                     }
                 }
+            }
+            .sheet(isPresented: $showReport) {
+                ReportView(memberId: memberId)
             }
             .alert("쪽지", isPresented: $showMessage) {
                 TextField("내용 입력", text: $message)
