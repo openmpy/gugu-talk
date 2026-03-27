@@ -6,6 +6,8 @@ import com.openmpy.server.chat.dto.response.ChatMessageGetResponse
 import com.openmpy.server.chat.repository.ChatMessageRepository
 import com.openmpy.server.chat.repository.ChatRoomRepository
 import com.openmpy.server.common.exception.CustomException
+import com.openmpy.server.image.domain.type.MemberImageType
+import com.openmpy.server.image.repository.MemberImageRepository
 import com.openmpy.server.member.repository.MemberRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -16,7 +18,8 @@ class ChatMessageService(
 
     private val chatMessageRepository: ChatMessageRepository,
     private val chatRoomRepository: ChatRoomRepository,
-    private val memberRepository: MemberRepository
+    private val memberRepository: MemberRepository,
+    private val memberImageRepository: MemberImageRepository,
 ) {
 
     @Transactional
@@ -25,8 +28,8 @@ class ChatMessageService(
         chatRoomId: Long,
         request: ChatMessageSendRequest
     ): ChatMessageGetResponse {
-        memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException("존재하지 않는 회원입니다.")
+        val member = (memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다."))
         val chatRoom = chatRoomRepository.findByIdOrNull(chatRoomId)
             ?: throw CustomException("존재하지 않는 채팅방입니다.")
 
@@ -50,6 +53,11 @@ class ChatMessageService(
         return ChatMessageGetResponse(
             chatMessage.id,
             chatMessage.senderId,
+            memberImageRepository.findFirstByMemberIdAndTypeOrderBySortOrder(
+                memberId,
+                MemberImageType.PUBLIC
+            )?.url,
+            member.nickname,
             receiverId,
             chatMessage.content,
             chatMessage.type,

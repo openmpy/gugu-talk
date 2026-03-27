@@ -31,8 +31,12 @@ class ChatStompController(
             "/sub/chat-rooms/members/${response.receiverId}",
             ChatRoomUpdateEvent(
                 chatRoomId = chatRoomId,
+                memberId = memberId,
+                thumbnail = response.thumbnail,
+                nickname = response.nickname,
                 lastMessage = response.content,
                 lastMessageAt = response.createdAt,
+                unreadCount = 1,
             )
         )
     }

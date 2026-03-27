@@ -7,6 +7,8 @@ data class ChatMessageGetResponse(
 
     val chatMessageId: Long,
     val senderId: Long,
+    val thumbnail: String? = null,
+    val nickname: String? = null,
     val receiverId: Long,
     val content: String,
     val type: ChatMessageType,

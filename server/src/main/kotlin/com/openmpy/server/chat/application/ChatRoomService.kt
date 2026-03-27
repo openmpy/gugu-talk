@@ -221,6 +221,8 @@ class ChatRoomService(
             ChatMessageGetResponse(
                 it.id,
                 it.senderId,
+                null,
+                null,
                 receiverId,
                 it.content,
                 it.type,
