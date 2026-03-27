@@ -132,9 +132,10 @@ struct ChatMessageView: View {
                                 Image(systemName: "paperplane.fill")
                                     .foregroundColor(.white)
                                     .frame(width: 36, height: 36)
-                                    .background(Color.blue)
+                                    .background(message.isEmpty ? .gray : .blue)
                                     .clipShape(Circle())
                             }
+                            .disabled(message.isEmpty)
                             .padding(.trailing, 4)
                             .padding(.bottom, 4)
                         }, alignment: .bottom

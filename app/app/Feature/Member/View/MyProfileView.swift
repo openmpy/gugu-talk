@@ -12,11 +12,11 @@ struct MyProfileView: View {
                 MemberProfileInfoView(
                     nickname: vm.member.nickname,
                     gender: vm.member.gender,
-                    updatedAt: vm.member.updatedAt,
+                    updatedAt: nil,
                     bio: vm.member.bio,
                     age: vm.member.age,
                     likes: vm.member.likes,
-                    distance: vm.member.distance
+                    distance: nil
                 )
             }
             .task {

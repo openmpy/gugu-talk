@@ -9,7 +9,7 @@ struct GuguApp: App {
     @StateObject private var toast = ToastManager.shared
     @StateObject private var stomp = StompManager.shared
 
-    private let toastOptions = SimpleToastOptions(alignment: .top, hideAfter: 5)
+    private let toastOptions = SimpleToastOptions(alignment: .bottom, hideAfter: 5)
 
     var body: some Scene {
         WindowGroup {
@@ -32,8 +32,8 @@ struct GuguApp: App {
                     .padding()
                     .background(data.type == .error ? Color.red.opacity(0.8) : Color.blue.opacity(0.8))
                     .foregroundColor(Color.white)
-                    .cornerRadius(12)
-                    .padding(.top, 60)
+                    .cornerRadius(20)
+                    .padding(.bottom, 90)
                 }
             }
         }

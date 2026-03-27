@@ -51,6 +51,9 @@ struct ReportView: View {
                 }
                 .padding()
             }
+            .onTapGesture {
+                hideKeyboard()
+            }
             .safeAreaInset(edge: .bottom) {
                 Button {
                     Task {
@@ -103,7 +106,7 @@ struct ReportView: View {
                             .foregroundColor(selectType == type ? .red : .gray)
                     }
                     .padding()
-                    .background(Color(.systemGray6))
+                    .background(Color(.systemGray5))
                     .cornerRadius(20)
                 }
             }
@@ -193,7 +196,7 @@ struct ReportView: View {
                 .padding(.horizontal, 11)
                 .padding(.vertical, 8)
                 .frame(height: 150)
-                .background(Color(.systemGray6))
+                .background(Color(.systemGray5))
                 .clipShape(RoundedRectangle(cornerRadius: 20))
                 .scrollContentBackground(.hidden)
                 .textInputAutocapitalization(.never)

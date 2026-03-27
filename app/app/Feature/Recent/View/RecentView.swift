@@ -39,6 +39,11 @@ struct RecentView: View {
                 TextField("내용 입력", text: $comment)
 
                 Button("작성", role: .confirm) {
+                    if comment.isEmpty {
+                        ToastManager.shared.show("내용을 입력해주세요.", type: .error)
+                        return
+                    }
+
                     Task {
                         await vm.updateComment(comment: comment)
                     }

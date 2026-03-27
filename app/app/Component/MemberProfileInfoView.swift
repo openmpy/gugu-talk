@@ -4,7 +4,7 @@ struct MemberProfileInfoView: View {
 
     let nickname: String
     let gender: String
-    let updatedAt: String
+    let updatedAt: String?
     let bio: String?
     let age: Int
     let likes: Int64
@@ -18,9 +18,11 @@ struct MemberProfileInfoView: View {
 
                 Spacer()
 
-                Text(updatedAt.relativeTime)
-                    .font(.callout)
-                    .foregroundColor(Color(.systemGray))
+                if let updatedAt = updatedAt {
+                    Text(updatedAt.relativeTime)
+                        .font(.callout)
+                        .foregroundColor(Color(.systemGray))
+                }
             }
             HStack(alignment: .center) {
                 HStack {

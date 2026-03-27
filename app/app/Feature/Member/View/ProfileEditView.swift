@@ -114,7 +114,7 @@ struct ProfileEditView: View {
                             : .regular.tint(Color(.systemGray2)).interactive()
                         )
                 }
-                .disabled(!isSubmit)
+                .disabled(!isSubmit || vm.isLoading)
                 .padding()
             }
             .onTapGesture {
