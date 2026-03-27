@@ -43,7 +43,7 @@ struct MemberProfileInfoView: View {
                         .foregroundColor(Color(.systemGray))
                 }
             }
-            Text(bio ?? "")
+            Text(bio?.byCharWrapping ?? "")
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .background(Color(.systemGray6))

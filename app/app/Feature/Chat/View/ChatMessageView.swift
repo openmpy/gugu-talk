@@ -135,7 +135,6 @@ struct ChatMessageView: View {
                                     .background(message.isEmpty ? .gray : .blue)
                                     .clipShape(Circle())
                             }
-                            .disabled(message.isEmpty)
                             .padding(.trailing, 4)
                             .padding(.bottom, 4)
                         }, alignment: .bottom
