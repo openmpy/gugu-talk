@@ -1,35 +1,37 @@
 import SwiftUI
 
 struct ProfileView: View {
-
+    
     let memberId: Int64
-
+    
     @AppStorage("comment") private var saveComment: String?
-
+    
     @StateObject private var vm = ProfileViewModel()
-
+    
     @Namespace var namespace
-
+    
     @State private var showMessage: Bool = false
     @State private var showSheet: Bool = false
     @State private var showBlock: Bool = false
     @State private var showReport: Bool = false
     @State private var message: String = ""
     @State private var goPrivatePhoto: Bool = false
-
+    
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            MemberProfileImageView(images: vm.member.images)
-
-            MemberProfileInfoView(
-                nickname: vm.member.nickname,
-                gender: vm.member.gender,
-                updatedAt: vm.member.updatedAt,
-                bio: vm.member.bio,
-                age: vm.member.age,
-                likes: vm.member.likes,
-                distance: vm.member.distance
-            )
+        VStack {
+            ScrollView(showsIndicators: false) {
+                MemberProfileImageView(images: vm.member.images)
+                
+                MemberProfileInfoView(
+                    nickname: vm.member.nickname,
+                    gender: vm.member.gender,
+                    updatedAt: vm.member.updatedAt,
+                    bio: vm.member.bio,
+                    age: vm.member.age,
+                    likes: vm.member.likes,
+                    distance: vm.member.distance
+                )
+            }
         }
         .safeAreaInset(edge: .bottom) {
             profileActionView
@@ -76,13 +78,13 @@ struct ProfileView: View {
         }
         .alert("쪽지", isPresented: $showMessage) {
             TextField("내용 입력", text: $message)
-
+            
             Button("전송", role: .confirm) {
                 if message.isEmpty {
                     ToastManager.shared.show("내용을 입력해주세요.", type: .error)
                     return
                 }
-
+                
                 Task {
                     if await vm.sendMessage(targetId: memberId, content: message) == true {
                         saveComment = message
@@ -110,9 +112,9 @@ struct ProfileView: View {
             )
         }
     }
-
+    
     // MARK: - Subview
-
+    
     private var profileActionView: some View {
         GlassEffectContainer {
             HStack(spacing: 25) {
@@ -132,7 +134,7 @@ struct ProfileView: View {
                         .glassEffect(.regular.interactive())
                         .glassEffectUnion(id: 1, namespace: namespace)
                 }
-
+                
                 Button {
                     showMessage = true
                     message = saveComment ?? ""
@@ -145,7 +147,7 @@ struct ProfileView: View {
                         .glassEffectUnion(id: 1, namespace: namespace)
                 }
                 .disabled(!vm.member.isChatEnabled)
-
+                
                 Button {
                     Task {
                         goPrivatePhoto = await vm.getPrivateImages(targetId: memberId)
@@ -159,7 +161,7 @@ struct ProfileView: View {
                         .glassEffectUnion(id: 1, namespace: namespace)
                 }
                 .disabled(!vm.member.isPrivatePhoto)
-
+                
                 Button {
                     showBlock = true
                 } label: {

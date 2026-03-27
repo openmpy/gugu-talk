@@ -5,7 +5,7 @@ struct MyProfileView: View {
     @StateObject private var vm = ProfileViewModel()
     
     var body: some View {
-        NavigationStack {
+        VStack {
             ScrollView(showsIndicators: false) {
                 MemberProfileImageView(images: vm.member.images)
                 
@@ -19,19 +19,19 @@ struct MyProfileView: View {
                     distance: nil
                 )
             }
-            .task {
-                await vm.get(targetId: AuthStore.shared.memberId ?? 0)
-            }
-            .navigationTitle("내 프로필")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(.hidden, for: .tabBar)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        ProfileEditView()
-                    } label: {
-                        Text("편집")
-                    }
+        }
+        .task {
+            await vm.get(targetId: AuthStore.shared.memberId ?? 0)
+        }
+        .navigationTitle("내 프로필")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                NavigationLink {
+                    ProfileEditView()
+                } label: {
+                    Text("편집")
                 }
             }
         }
