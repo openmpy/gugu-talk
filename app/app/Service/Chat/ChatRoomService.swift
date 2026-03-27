@@ -38,9 +38,9 @@ final class ChatRoomService {
     ) async throws -> CompositeCursorResponse<ChatRoomGetResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/chat-rooms"
         var params: Parameters = [
-            "limit": 20
+            "limit": limit
         ]
-        if let cursorId = cursorId {
+        if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
             params["cursorDateAt"] = cursorDateAt
         }
@@ -60,9 +60,9 @@ final class ChatRoomService {
     ) async throws -> CompositeCursorResponse<ChatRoomGetResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/unread"
         var params: Parameters = [
-            "limit": 20
+            "limit": limit
         ]
-        if let cursorId = cursorId {
+        if cursorId != nil && cursorDateAt != nil {
             params["cursorId"] = cursorId
             params["cursorDateAt"] = cursorDateAt
         }
