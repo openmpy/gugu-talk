@@ -11,6 +11,5 @@ data class ReportSaveRequest(
 
 data class ReportImageItemRequest(
 
-    val id: Long,
     val key: String,
 )

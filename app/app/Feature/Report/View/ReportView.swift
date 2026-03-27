@@ -3,19 +3,34 @@ import PhotosUI
 
 enum ReportType: String, CaseIterable, Identifiable, Codable {
 
-    case abuse = "욕설 / 비방"
-    case spam = "스팸 / 광고"
-    case minor = "미성년자"
-    case sexual = "음란물"
-    case fake = "도용"
-    case etc = "기타"
+    case abuse
+    case spam
+    case minor
+    case sexual
+    case fake
+    case etc
 
     var id: Self { self }
+
+    var title: String {
+        switch self {
+        case .abuse: return "욕설 / 비방"
+        case .spam: return "스팸 / 광고"
+        case .minor: return "미성년자"
+        case .sexual: return "음란물"
+        case .fake: return "도용"
+        case .etc: return "기타"
+        }
+    }
 }
 
 struct ReportView: View {
 
     let memberId: Int64
+
+    @Environment(\.dismiss) private var dismiss
+
+    @StateObject private var vm = ReportViewModel()
 
     @State private var selectType: ReportType? = nil
     @State private var reason: String = ""
@@ -38,6 +53,16 @@ struct ReportView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
+                    Task {
+                        guard let type = selectType else { return }
+
+                        await vm.submit(
+                            reportedId: memberId,
+                            type: type,
+                            images: attachedImages,
+                            reason: reason
+                        )
+                    }
                 } label: {
                     Text("접수하기")
                         .frame(maxWidth: .infinity)
@@ -49,7 +74,12 @@ struct ReportView: View {
                             : .regular.tint(Color(.systemGray2)).interactive()
                         )
                 }
-                .disabled(selectType == nil)
+                .disabled(selectType == nil || vm.isLoading)
+                .onChange(of: vm.isSubmitted) { _, submitted in
+                    if submitted {
+                        dismiss()
+                    }
+                }
                 .padding()
             }
             .navigationTitle("신고하기")
@@ -66,7 +96,7 @@ struct ReportView: View {
                     selectType = type
                 } label: {
                     HStack {
-                        Text(type.rawValue)
+                        Text(type.title)
                             .foregroundColor(.primary)
                         Spacer()
                         Image(systemName: selectType == type ? "checkmark.circle.fill" : "circle")
