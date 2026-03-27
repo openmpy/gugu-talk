@@ -82,7 +82,7 @@ final class ChatRoomService {
     ) async throws -> CursorResponse<ChatMessageGetResponse> {
         let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/\(chatRoomId)"
         var params: Parameters = [
-            "limit": 20
+            "limit": limit
         ]
         if let cursorId = cursorId {
             params["cursorId"] = cursorId
@@ -117,7 +117,7 @@ final class ChatRoomService {
         let url = "\(NetworkConfig.baseURL)/v1/chat-rooms/search"
         var params: Parameters = [
             "keyword": keyword,
-            "limit": 20
+            "limit": limit
         ]
         if let cursorId = cursorId {
             params["cursorId"] = cursorId

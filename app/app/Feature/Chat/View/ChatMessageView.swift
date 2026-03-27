@@ -28,40 +28,12 @@ struct ChatMessageView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 10) {
                     ForEach(vm.chatMessages) { it in
-                        VStack {
-                            if (AuthStore.shared.memberId != it.senderId) {
-                                HStack(alignment: .bottom, spacing: 5) {
-                                    Text(it.content.byCharWrapping)
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 8)
-                                        .background(Color(.systemGray6))
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-
-                                    Text(it.createdAt.ampmTime)
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-
-                                    Spacer()
-                                }
-                            } else {
-                                HStack(alignment: .bottom, spacing: 5) {
-                                    Spacer()
-
-                                    Text(it.createdAt.ampmTime)
-                                        .font(.caption2)
-                                        .foregroundColor(.gray)
-
-                                    Text(it.content.byCharWrapping)
-                                        .font(.subheadline)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 8)
-                                        .foregroundColor(.white)
-                                        .background(.blue)
-                                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                                }
-                            }
-                        }
+                        ChatMessageRowView(
+                            memberId: AuthStore.shared.memberId ?? 0,
+                            targetId: it.senderId,
+                            content: it.content,
+                            createdAt: it.createdAt
+                        )
                         .rotationEffect(.degrees(180))
                         .onAppear {
                             if it.id == vm.chatMessages.last?.id {
@@ -75,52 +47,7 @@ struct ChatMessageView: View {
                 .padding(.horizontal)
             }
             .safeAreaInset(edge: .top) {
-                GlassEffectContainer(spacing: 5) {
-                    HStack(alignment: .bottom) {
-                        Image(systemName: "paperclip")
-                            .font(.title3)
-                            .frame(width: 44, height: 44)
-                            .foregroundColor(.primary)
-                            .clipShape(Circle())
-                            .glassEffect(.regular.tint(Color(.clear)).interactive())
-
-                        TextField("메시지 입력", text: $message, axis: .vertical)
-                            .font(.system(size: 16))
-                            .autocorrectionDisabled(true)
-                            .textInputAutocapitalization(.never)
-                            .lineLimit(5)
-                            .padding(.leading)
-                            .padding(.trailing, 50)
-                            .padding(.vertical, 8)
-                            .frame(minHeight: 44)
-                            .overlay(
-                                HStack {
-                                    Spacer()
-                                    Button {
-                                        guard !message.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-
-                                        if vm.sendChatMessage(chatRoomId: chatRoomId, content: message, type: "TEXT") == true {
-                                            message = ""
-                                        }
-                                    } label: {
-                                        Image(systemName: "paperplane.fill")
-                                            .foregroundColor(.white)
-                                            .frame(width: 36, height: 36)
-                                            .background(Color.blue)
-                                            .clipShape(Circle())
-                                    }
-                                    .padding(.trailing, 4)
-                                    .padding(.bottom, 4)
-                                }, alignment: .bottom
-                            )
-                            .glassEffect(
-                                .regular.tint(.clear).interactive(),
-                                in: .rect(cornerRadius: 20)
-                            )
-                    }
-                }
-                .rotationEffect(.degrees(180))
-                .padding()
+                chatMessageInput
             }
             .onTapGesture {
                 hideKeyboard()
@@ -159,5 +86,56 @@ struct ChatMessageView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Subview
+
+    private var chatMessageInput: some View {
+        GlassEffectContainer(spacing: 5) {
+            HStack(alignment: .bottom) {
+                Image(systemName: "paperclip")
+                    .font(.title3)
+                    .frame(width: 44, height: 44)
+                    .foregroundColor(.primary)
+                    .clipShape(Circle())
+                    .glassEffect(.regular.tint(Color(.clear)).interactive())
+
+                TextField("메시지 입력", text: $message, axis: .vertical)
+                    .font(.system(size: 16))
+                    .autocorrectionDisabled(true)
+                    .textInputAutocapitalization(.never)
+                    .lineLimit(5)
+                    .padding(.leading)
+                    .padding(.trailing, 50)
+                    .padding(.vertical, 8)
+                    .frame(minHeight: 44)
+                    .overlay(
+                        HStack {
+                            Spacer()
+                            Button {
+                                guard !message.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+
+                                if vm.sendChatMessage(chatRoomId: chatRoomId, content: message, type: "TEXT") == true {
+                                    message = ""
+                                }
+                            } label: {
+                                Image(systemName: "paperplane.fill")
+                                    .foregroundColor(.white)
+                                    .frame(width: 36, height: 36)
+                                    .background(Color.blue)
+                                    .clipShape(Circle())
+                            }
+                            .padding(.trailing, 4)
+                            .padding(.bottom, 4)
+                        }, alignment: .bottom
+                    )
+                    .glassEffect(
+                        .regular.tint(.clear).interactive(),
+                        in: .rect(cornerRadius: 20)
+                    )
+            }
+        }
+        .rotationEffect(.degrees(180))
+        .padding()
     }
 }
