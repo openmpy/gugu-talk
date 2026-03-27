@@ -119,7 +119,9 @@ struct ReportView: View {
         return VStack(alignment: .leading) {
             HStack(alignment: .center) {
                 Text("첨부 자료")
-                    .font(.headline)
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
 
                 Text("\(attachedImages.count)/\(maxPhotoCount)")
                     .font(.caption)
@@ -159,7 +161,7 @@ struct ReportView: View {
                                 .font(.system(size: 24, weight: .medium))
                                 .foregroundStyle(Color(.systemGray2))
                                 .frame(width: 100, height: 100)
-                                .background(Color(.systemGray6))
+                                .background(Color(.systemGray5))
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 16)
@@ -190,7 +192,9 @@ struct ReportView: View {
     private var reportReasonInput: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("추가 설명 (선택)")
-                .font(.headline)
+                .font(.subheadline)
+                .fontWeight(.semibold)
+                .foregroundStyle(.primary)
 
             TextEditor(text: $reason)
                 .padding(.horizontal, 11)
