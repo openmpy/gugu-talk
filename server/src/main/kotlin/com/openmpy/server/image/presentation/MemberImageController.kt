@@ -31,4 +31,13 @@ class MemberImageController(
         val response = memberImageService.getProfilePresignedUrl(memberId, type)
         return ResponseEntity.ok(response)
     }
+
+    @GetMapping("/v1/reports/{reportedId}/presigned-url")
+    fun getReportPresignedUrl(
+        @Login reporterId: Long,
+        @PathVariable reportedId: Long,
+    ): ResponseEntity<PresignedUrlResponse> {
+        val response = memberImageService.getReportPresignedUrl(reporterId, reportedId)
+        return ResponseEntity.ok(response)
+    }
 }

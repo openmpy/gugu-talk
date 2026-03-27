@@ -69,4 +69,18 @@ class MemberImageService(
         val key = "members/$memberId/$imageType/${UUID.randomUUID()}.jpeg"
         return s3Service.createPresignedUrl(key)
     }
+
+    @Transactional
+    fun getReportPresignedUrl(
+        reporterId: Long,
+        reportedId: Long,
+    ): PresignedUrlResponse {
+        memberRepository.findByIdOrNull(reporterId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+        memberRepository.findByIdOrNull(reportedId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
+
+        val key = "reports/$reporterId/$reportedId/${UUID.randomUUID()}.jpeg"
+        return s3Service.createPresignedUrl(key)
+    }
 }
