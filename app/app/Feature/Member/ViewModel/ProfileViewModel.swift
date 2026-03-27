@@ -9,6 +9,7 @@ final class ProfileViewModel: ObservableObject {
     private let privatePhotoService = MemberPrivatePhotoService.shared
     private let blockService = MemberBlockService.shared
     private let chatRoomService = ChatRoomService.shared
+    private let imageService = MemberImageService.shared
 
     @Published var errorMessage: String?
     @Published var isLoading: Bool = false
@@ -29,6 +30,7 @@ final class ProfileViewModel: ObservableObject {
         isOpenPrivatePhoto: false,
         isBlock: false
     )
+    @Published var privateImages: [MemberPrivateImageResponse] = []
 
     func get(targetId: Int64) async {
         guard !isLoading else {
@@ -170,6 +172,23 @@ final class ProfileViewModel: ObservableObject {
 
         do {
             try await chatRoomService.create(targetId: targetId, content: content)
+            return true
+        } catch {
+            errorMessage = error.localizedDescription
+            ToastManager.shared.show(errorMessage ?? "알 수 없는 오류가 발생했습니다.", type: .error)
+            return false
+        }
+    }
+
+    func getPrivateImages(targetId: Int64) async -> Bool {
+        guard !isLoading else { return false }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            let response = try await imageService.getPrivateImages(targetId: targetId)
+            privateImages = response.images
             return true
         } catch {
             errorMessage = error.localizedDescription
