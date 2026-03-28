@@ -9,6 +9,8 @@ import com.openmpy.server.member.repository.MemberBlockRepository
 import com.openmpy.server.member.repository.MemberLikeRepository
 import com.openmpy.server.member.repository.MemberPrivatePhotoRepository
 import com.openmpy.server.member.repository.MemberRepository
+import com.openmpy.server.point.domain.entity.Point
+import com.openmpy.server.point.repository.PointRepository
 import org.locationtech.jts.geom.Coordinate
 import org.locationtech.jts.geom.GeometryFactory
 import org.springframework.boot.CommandLineRunner
@@ -27,19 +29,20 @@ class DummyDataInit {
         memberBlockRepository: MemberBlockRepository,
         chatRoomRepository: ChatRoomRepository,
         chatMessageRepository: ChatMessageRepository,
+        pointRepository: PointRepository,
     ): CommandLineRunner {
         return CommandLineRunner {
             // 회원
             if (memberRepository.count() == 0L) {
                 val geometryFactory = GeometryFactory()
 
-                val members = (0 until 100).map { i ->
+                (0 until 100).forEach { i ->
                     val latitude = 37.5665 + (Math.random() - 0.5) * 0.1
                     val longitude = 126.9780 + (Math.random() - 0.5) * 0.1
                     val point = geometryFactory.createPoint(Coordinate(longitude, latitude))
                     point.srid = 4326
 
-                    Member(
+                    val member = Member(
                         uuid = UUID.randomUUID().toString(),
                         phone = "01000000%03d".format(i),
                         nickname = "닉네임$i",
@@ -52,8 +55,9 @@ class DummyDataInit {
                         likes = i.toLong(),
                         location = point
                     )
+                    memberRepository.save(member)
+                    pointRepository.save(Point(memberId = member.id))
                 }
-                memberRepository.saveAll(members)
                 println("회원 데이터가 생성되었습니다. (${memberRepository.count()}개)")
             }
 

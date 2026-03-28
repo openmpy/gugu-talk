@@ -10,6 +10,8 @@ import com.openmpy.server.member.dto.request.MemberSignupRequest
 import com.openmpy.server.member.dto.response.MemberLoginResponse
 import com.openmpy.server.member.dto.response.MemberSignupResponse
 import com.openmpy.server.member.repository.MemberRepository
+import com.openmpy.server.point.domain.entity.Point
+import com.openmpy.server.point.repository.PointRepository
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -23,6 +25,7 @@ private const val REFRESH_TOKEN_KEY = "auth:refresh_token:"
 class MemberAuthService(
 
     private val memberRepository: MemberRepository,
+    private val pointRepository: PointRepository,
     private val redisTemplate: StringRedisTemplate,
     private val jwtService: JwtService,
     private val jwtProperties: JwtProperties,
@@ -66,6 +69,9 @@ class MemberAuthService(
 
         memberRepository.save(member)
         redisTemplate.delete(verificationKey)
+
+        val point = Point(memberId = member.id)
+        pointRepository.save(point)
 
         return MemberSignupResponse(
             member.id,
