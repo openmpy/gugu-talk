@@ -4,6 +4,8 @@ struct SettingView: View {
 
     @Environment(\.colorScheme) var colorScheme
 
+    @StateObject private var vm = SettingViewModel()
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -37,9 +39,25 @@ struct SettingView: View {
                     .cornerRadius(12)
 
                     VStack(spacing: 0) {
-                        SettingSectionView(title: "포인트", icon: "star.circle.fill", color: .yellow)
-                        SettingSectionView(title: "출석 체크", icon: "calendar.circle.fill", color: .orange)
-                        SettingSectionView(title: "광고 보상", icon: "gift.fill", color: .pink)
+                        NavigationLink {
+                            PointView()
+                        } label: {
+                            SettingSectionView(title: "포인트", icon: "star.circle.fill", color: .yellow)
+                        }
+                        Button {
+                            Task {
+                                await vm.earnByAttendance()
+                            }
+                        } label: {
+                            SettingSectionView(title: "출석 체크", icon: "calendar.circle.fill", color: .orange)
+                        }
+                        Button {
+                            Task {
+                                await vm.earnByAdReward()
+                            }
+                        } label: {
+                            SettingSectionView(title: "광고 보상", icon: "gift.fill", color: .pink)
+                        }
                     }
                     .cornerRadius(12)
 
