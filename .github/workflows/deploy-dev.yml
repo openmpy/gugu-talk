@@ -2,7 +2,7 @@ name: Deploy to Dev EC2
 
 on:
   push:
-    branches: [main]
+    branches: [deploy/dev]
   workflow_dispatch:
 
 env:
