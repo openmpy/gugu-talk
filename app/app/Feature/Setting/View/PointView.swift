@@ -11,7 +11,7 @@ struct PointView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
 
-                Text("\(vm.point) P")
+                Text(String(format: "%@ P", vm.point.formatted()))
                     .font(.largeTitle.bold())
             }
             .frame(maxWidth: .infinity)
@@ -20,10 +20,14 @@ struct PointView: View {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.yellow.opacity(0.5))
             )
-            .padding()
+            .padding(.bottom)
+
+            BannerAdView(adUnitID: "ca-app-pub-3940256099942544/2934735716")
+                .frame(height: 250)
 
             Spacer()
         }
+        .padding()
         .task {
             await vm.get()
         }
