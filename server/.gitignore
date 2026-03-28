@@ -40,4 +40,4 @@ out/
 .kotlin
 
 ### Other ###
-application-*.yaml
+application-local.yaml
