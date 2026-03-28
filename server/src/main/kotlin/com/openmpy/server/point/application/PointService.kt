@@ -1,5 +1,6 @@
 package com.openmpy.server.point.application
 
+import com.openmpy.server.common.constants.AppConstants.Point
 import com.openmpy.server.common.exception.CustomException
 import com.openmpy.server.member.repository.MemberRepository
 import com.openmpy.server.point.domain.entity.PointTransaction
@@ -18,11 +19,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 private const val ATTENDANCE_KEY = "point:attendance:member:"
-private const val ATTENDANCE_POINT: Long = 30
-
 private const val AD_REWARD_KEY = "point:ad-reward:member:"
-private const val AD_REWARD_POINT: Long = 10
-private const val AD_REWARD_COOLDOWN_HOURS: Long = 3
 
 @Service
 class PointService(
@@ -47,13 +44,13 @@ class PointService(
             throw CustomException("오늘 이미 출석 체크를 완료했습니다.")
         }
 
-        point.earn(ATTENDANCE_POINT)
+        point.earn(Point.ATTENDANCE)
 
         val pointTransaction = PointTransaction(
             memberId = memberId,
             type = TransactionType.EARN,
             source = PointSource.ATTENDANCE,
-            amount = ATTENDANCE_POINT,
+            amount = Point.ATTENDANCE,
             balanceSnapshot = point.balance,
             description = "출석 체크"
         )
@@ -74,16 +71,16 @@ class PointService(
 
         val adRewardKey = AD_REWARD_KEY + memberId
         if (redisTemplate.opsForValue().get(adRewardKey) != null) {
-            throw CustomException("광고 보상은 ${AD_REWARD_COOLDOWN_HOURS}시간마다 받을 수 있습니다.")
+            throw CustomException("광고 보상은 ${Point.AD_REWARD_COOLDOWN_HOURS}시간마다 받을 수 있습니다.")
         }
 
-        point.earn(AD_REWARD_POINT)
+        point.earn(Point.AD_REWARD)
 
         val pointTransaction = PointTransaction(
             memberId = memberId,
             type = TransactionType.EARN,
             source = PointSource.AD_REWARD,
-            amount = AD_REWARD_POINT,
+            amount = Point.AD_REWARD,
             balanceSnapshot = point.balance,
             description = "광고 보상"
         )
@@ -92,7 +89,7 @@ class PointService(
         redisTemplate.opsForValue().set(
             adRewardKey,
             "1",
-            Duration.ofHours(AD_REWARD_COOLDOWN_HOURS)
+            Duration.ofHours(Point.AD_REWARD_COOLDOWN_HOURS)
         )
     }
 
