@@ -15,7 +15,7 @@ final class MemberImageService {
             parameters: request,
             encoder: JSONParameterEncoder.default
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func getPresignedUrl(type: String) async throws -> PresignedUrlResponse {

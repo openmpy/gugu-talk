@@ -12,6 +12,6 @@ final class ImageService {
             headers: ["Content-Type": "image/jpeg"],
             requestModifier: { $0.httpBody = imageData }
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 }

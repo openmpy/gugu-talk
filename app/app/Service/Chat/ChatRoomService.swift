@@ -18,7 +18,7 @@ final class ChatRoomService {
             parameters: request,
             encoder: JSONParameterEncoder.default
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func delete(chatRoomId: Int64) async throws {
@@ -28,7 +28,7 @@ final class ChatRoomService {
             url,
             method: .delete
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func gets(
@@ -105,7 +105,7 @@ final class ChatRoomService {
             url,
             method: .patch
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func search(

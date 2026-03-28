@@ -13,7 +13,7 @@ final class PointService {
             url,
             method: .post
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func earnByAdReward() async throws {
@@ -23,7 +23,7 @@ final class PointService {
             url,
             method: .post
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 
     func get() async throws -> PointGetResponse {

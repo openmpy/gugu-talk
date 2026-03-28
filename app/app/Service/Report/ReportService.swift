@@ -15,6 +15,6 @@ final class ReportService {
             parameters: request,
             encoder: JSONParameterEncoder.default
         )
-        .validateWithErrorHandlingForEmptyResponse()
+        .validateWithErrorHandling()
     }
 }
