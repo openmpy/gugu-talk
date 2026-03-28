@@ -24,6 +24,7 @@ struct LocationView: View {
             .task {
                 locationManager.requestPermission()
             }
+            .loading(vm.isLoading)
             .navigationTitle("위치")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

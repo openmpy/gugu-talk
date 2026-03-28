@@ -36,6 +36,7 @@ struct PrivatePhotoListView: View {
         .task {
             await vm.fetchPhotos()
         }
+        .loading(vm.isLoading)
         .navigationTitle("비밀 사진 목록")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

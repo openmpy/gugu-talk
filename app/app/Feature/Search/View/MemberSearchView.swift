@@ -51,6 +51,7 @@ struct MemberSearchView: View {
                 await vm.fetchMembers(nickname: keyword)
             }
         }
+        .loading(vm.isLoading)
         .navigationTitle("회원 검색")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

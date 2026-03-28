@@ -143,6 +143,7 @@ struct ProfileEditView: View {
             )
             .presentationDetents([.medium, .large])
         }
+        .loading(vm.isLoading)
         .navigationTitle("프로필 편집")
         .navigationBarTitleDisplayMode(.inline)
     }

@@ -40,6 +40,7 @@ struct ProfileView: View {
         .task {
             await vm.get(targetId: memberId)
         }
+        .loading(vm.isLoading)
         .navigationTitle("프로필")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

@@ -36,6 +36,7 @@ struct LikeListView: View {
         .task {
             await vm.fetchLikes()
         }
+        .loading(vm.isLoading)
         .navigationTitle("좋아요 목록")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

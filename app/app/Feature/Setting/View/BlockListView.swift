@@ -36,6 +36,7 @@ struct BlockListView: View {
         .task {
             await vm.fetchBlocks()
         }
+        .loading(vm.isLoading)
         .navigationTitle("차단 목록")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

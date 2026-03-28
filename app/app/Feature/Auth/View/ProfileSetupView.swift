@@ -102,6 +102,7 @@ struct ProfileSetupView: View {
                 }
                 .disabled(!isSubmit)
             }
+            .loading(vm.isLoading)
             .navigationTitle("프로필")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)

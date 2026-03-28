@@ -87,6 +87,7 @@ struct LoginView: View {
                     .disabled(!isSubmit)
                 }
             }
+            .loading(vm.isLoading)
             .navigationTitle("로그인")
             .navigationBarTitleDisplayMode(.inline)
             .padding()

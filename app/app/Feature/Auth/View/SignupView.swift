@@ -176,6 +176,7 @@ struct SignupView: View {
         .navigationDestination(isPresented: $goProfileSetup) {
             ProfileSetupView()
         }
+        .loading(vm.isLoading)
         .navigationTitle("회원가입")
         .navigationBarTitleDisplayMode(.inline)
         .padding()

@@ -31,6 +31,7 @@ struct PointView: View {
         .task {
             await vm.get()
         }
+        .loading(vm.isLoading)
         .navigationTitle("포인트")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

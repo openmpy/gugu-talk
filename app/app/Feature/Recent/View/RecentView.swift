@@ -17,6 +17,7 @@ struct RecentView: View {
 
                 commentListView
             }
+            .loading(vm.isLoading)
             .navigationTitle("최근")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

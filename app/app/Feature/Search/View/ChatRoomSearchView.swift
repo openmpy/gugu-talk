@@ -58,6 +58,7 @@ struct ChatRoomSearchView: View {
                 await vm.fetchChatRooms(nickname: keyword)
             }
         }
+        .loading(vm.isLoading)
         .navigationTitle("채팅방 검색")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)

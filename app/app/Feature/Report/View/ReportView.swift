@@ -85,6 +85,7 @@ struct ReportView: View {
                 }
                 .padding()
             }
+            .loading(vm.isLoading)
             .navigationTitle("신고하기")
             .navigationBarTitleDisplayMode(.inline)
         }

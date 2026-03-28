@@ -35,3 +35,7 @@ Temporary Items
 *.icloud
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
+
+# iOS 앱 시크릿 설정 파일 (Secrets.xcconfig.example 을 복사해서 로컬에서 사용)
+**/Secrets.xcconfig
+!**/Secrets.xcconfig.example

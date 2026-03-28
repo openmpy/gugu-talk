@@ -80,6 +80,7 @@ struct SettingView: View {
                 ? Color(uiColor: .systemGray6)
                 : Color(uiColor: .systemBackground)
             )
+            .loading(vm.isLoading)
             .navigationTitle("설정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

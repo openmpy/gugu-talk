@@ -39,6 +39,7 @@ struct ChatRoomView: View {
                 await vm.fetchChatRooms(status: selectStatus)
                 await vm.getChatEnabled()
             }
+            .loading(vm.isLoading)
             .navigationTitle("채팅")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
