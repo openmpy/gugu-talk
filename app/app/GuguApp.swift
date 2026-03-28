@@ -1,5 +1,6 @@
 import SwiftUI
 import SimpleToast
+import GoogleMobileAds
 
 @main
 struct GuguApp: App {
@@ -10,6 +11,10 @@ struct GuguApp: App {
     @StateObject private var stomp = StompManager.shared
 
     private let toastOptions = SimpleToastOptions(alignment: .bottom, hideAfter: 5)
+
+    init() {
+        MobileAds.shared.start()
+    }
 
     var body: some Scene {
         WindowGroup {

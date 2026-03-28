@@ -5,6 +5,7 @@ struct SettingView: View {
     @Environment(\.colorScheme) var colorScheme
 
     @StateObject private var vm = SettingViewModel()
+    @StateObject private var ad = InterstitialViewModel()
 
     var body: some View {
         NavigationStack {
@@ -52,9 +53,7 @@ struct SettingView: View {
                             SettingSectionView(title: "출석 체크", icon: "calendar.circle.fill", color: .orange)
                         }
                         Button {
-                            Task {
-                                await vm.earnByAdReward()
-                            }
+                            ad.showAd()
                         } label: {
                             SettingSectionView(title: "광고 보상", icon: "gift.fill", color: .pink)
                         }
@@ -70,6 +69,11 @@ struct SettingView: View {
                     .cornerRadius(12)
                 }
                 .padding()
+            }
+            .onAppear {
+                Task {
+                    await ad.loadAd()
+                }
             }
             .background(
                 colorScheme == .light

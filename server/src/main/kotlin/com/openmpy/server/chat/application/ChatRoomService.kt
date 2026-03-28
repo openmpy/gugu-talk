@@ -38,8 +38,8 @@ class ChatRoomService(
         targetId: Long,
         request: ChatRoomCreateRequest
     ): ChatRoomCreateResponse {
-        val member = (memberRepository.findByIdOrNull(memberId)
-            ?: throw CustomException("존재하지 않는 회원입니다."))
+        val member = memberRepository.findByIdOrNull(memberId)
+            ?: throw CustomException("존재하지 않는 회원입니다.")
         memberRepository.findByIdOrNull(targetId)
             ?: throw CustomException("존재하지 않는 회원입니다.")
 

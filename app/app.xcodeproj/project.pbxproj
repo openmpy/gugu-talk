@@ -13,15 +13,29 @@
 		9D9F15192F72589B00A9C891 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F15182F72589B00A9C891 /* Kingfisher */; };
 		9D9F15202F72621200A9C891 /* Zoomable in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F151F2F72621200A9C891 /* Zoomable */; };
 		9D9F160A2F73C1E000A9C891 /* SwiftStomp in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F16092F73C1E000A9C891 /* SwiftStomp */; };
+		9D9F16932F77A16D00A9C891 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 9D9F16922F77A16D00A9C891 /* GoogleMobileAds */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		9D9F14292F70283900A9C891 /* app.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = app.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9D9F16952F77A21200A9C891 /* Exceptions for "app" folder in "app" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9D9F14282F70283900A9C891 /* app */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9D9F142B2F70283900A9C891 /* app */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9D9F16952F77A21200A9C891 /* Exceptions for "app" folder in "app" target */,
+			);
 			path = app;
 			sourceTree = "<group>";
 		};
@@ -38,6 +52,7 @@
 				9D9F14D22F71457300A9C891 /* SimpleToast in Frameworks */,
 				9D9F14AB2F712F9B00A9C891 /* Alamofire in Frameworks */,
 				9D9F15202F72621200A9C891 /* Zoomable in Frameworks */,
+				9D9F16932F77A16D00A9C891 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,6 +101,7 @@
 				9D9F15182F72589B00A9C891 /* Kingfisher */,
 				9D9F151F2F72621200A9C891 /* Zoomable */,
 				9D9F16092F73C1E000A9C891 /* SwiftStomp */,
+				9D9F16922F77A16D00A9C891 /* GoogleMobileAds */,
 			);
 			productName = app;
 			productReference = 9D9F14292F70283900A9C891 /* app.app */;
@@ -122,6 +138,7 @@
 				9D9F15172F72589B00A9C891 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				9D9F151E2F72621200A9C891 /* XCRemoteSwiftPackageReference "Zoomable" */,
 				9D9F16082F73C1E000A9C891 /* XCRemoteSwiftPackageReference "SwiftStomp" */,
+				9D9F16912F77A16D00A9C891 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9D9F142A2F70283900A9C891 /* Products */;
@@ -283,6 +300,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = app/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "가까운 사람들과 채팅하려면 현재 위치 접근이 필요합니다.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -328,6 +346,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = app/Info.plist;
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "가까운 사람들과 채팅하려면 현재 위치 접근이 필요합니다.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -432,6 +451,14 @@
 				minimumVersion = 1.2.1;
 			};
 		};
+		9D9F16912F77A16D00A9C891 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.1.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -464,6 +491,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9D9F16082F73C1E000A9C891 /* XCRemoteSwiftPackageReference "SwiftStomp" */;
 			productName = SwiftStomp;
+		};
+		9D9F16922F77A16D00A9C891 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9D9F16912F77A16D00A9C891 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
